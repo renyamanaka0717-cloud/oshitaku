@@ -5,25 +5,19 @@ import { Redirect } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { AppText } from '@/components/AppText';
 import { StatBadge } from '@/components/StatBadge';
-import { CelebrationModal } from '@/components/CelebrationModal';
-import { AllCompleteCelebration } from '@/components/AllCompleteCelebration';
 import { useChildStore, useActiveChild } from '@/features/child/store';
 import { useChildData } from '@/features/child/useChildData';
 import { ChildSwitcherModal } from '@/features/child/components/ChildSwitcherModal';
 import { GreetingHeader } from '@/features/home/components/GreetingHeader';
-import { TodayTimetableCard } from '@/features/home/components/TodayTimetableCard';
-import { TodayItemsCard } from '@/features/home/components/TodayItemsCard';
 import { TodayBonusCard } from '@/features/home/components/TodayBonusCard';
 import { TodayStampsRow } from '@/features/home/components/TodayStampsRow';
 import { PrepLinkCard } from '@/features/home/components/PrepLinkCard';
-import { useTimetableStore } from '@/features/timetable/store';
 import { useItemsStore } from '@/features/items/store';
 import { useMorningStore } from '@/features/morning/store';
 import { useEveningStore } from '@/features/evening/store';
 import { usePointsStore } from '@/features/points/store';
 import { useStampsStore } from '@/features/stamps/store';
 import { useStreakStore } from '@/features/home/streakStore';
-import { isAllCompleteToday } from '@/features/home/allComplete';
 import { getSuggestedMode } from '@/features/home/timeMode';
 import { ColorPalette, spacing, useTheme } from '@/theme';
 import { todayKey } from '@/utils/date';
@@ -38,19 +32,9 @@ export default function ChildHome() {
   const [switcherVisible, setSwitcherVisible] = useState(false);
   const streak = useStreakStore((s) => s.streak);
 
-  const dayOfWeek = new Date().getDay();
   const suggestedMode = useMemo(() => getSuggestedMode(), []);
-  const timetableEntries = useTimetableStore((s) => s.entries);
-  const timetableSubjects = useTimetableStore((s) => s.subjects);
-  const getEntriesForDay = useTimetableStore((s) => s.getEntriesForDay);
-  const entries = useMemo(
-    () => getEntriesForDay(dayOfWeek),
-    [getEntriesForDay, dayOfWeek, timetableEntries, timetableSubjects]
-  );
 
   const items = useItemsStore((s) => s.items);
-  const itemsChecked = useItemsStore((s) => s.checked);
-  const toggleItem = useItemsStore((s) => s.toggle);
   const itemsComplete = useItemsStore((s) => s.isComplete());
 
   const morningTasks = useMorningStore((s) => s.tasks);
@@ -78,9 +62,6 @@ export default function ChildHome() {
   const stamps = useStampsStore((s) => s.stamps);
   const todayStamps = useMemo(() => stamps.filter((s) => s.date === todayKey()), [stamps]);
 
-  const [celebration, setCelebration] = useState<{ points: number; stampKind: 'normal' | 'rare' | null; stampType?: string } | null>(null);
-  const [allComplete, setAllComplete] = useState(false);
-
   const bonusPoints = useMemo(() => {
     if (!rule) return 0;
     let total = 0;
@@ -94,17 +75,6 @@ export default function ChildHome() {
     if (children.length === 0) return <Redirect href="/onboarding" />;
     return null;
   }
-
-  const handleToggleItem = async (itemId: string) => {
-    const result = await toggleItem(child, itemId);
-    if (result?.pointsAwarded) {
-      if (isAllCompleteToday()) {
-        setAllComplete(true);
-      } else {
-        setCelebration({ points: result.pointsAwarded, stampKind: null, stampType: undefined });
-      }
-    }
-  };
 
   return (
     <Screen>
@@ -141,9 +111,6 @@ export default function ChildHome() {
       <TodayBonusCard bonusPoints={bonusPoints} />
       <TodayStampsRow stamps={todayStamps} />
 
-      <TodayTimetableCard entries={entries} />
-      <TodayItemsCard items={items} checked={itemsChecked} onToggle={handleToggleItem} />
-
       <View style={styles.linkRow}>
         <Pressable style={styles.linkItem} onPress={() => router.push('/child/rewards')}>
           <AppText style={styles.linkIcon}>🎁</AppText>
@@ -174,16 +141,6 @@ export default function ChildHome() {
         onSelect={(id) => setActiveChild(id)}
         onClose={() => setSwitcherVisible(false)}
       />
-
-      <CelebrationModal
-        visible={!!celebration}
-        points={celebration?.points ?? 0}
-        stampKind={celebration?.stampKind ?? null}
-        stampType={celebration?.stampType}
-        onClose={() => setCelebration(null)}
-      />
-
-      <AllCompleteCelebration visible={allComplete} onClose={() => setAllComplete(false)} />
     </Screen>
   );
 }
