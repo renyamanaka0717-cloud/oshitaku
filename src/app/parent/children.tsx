@@ -30,26 +30,55 @@ export default function ChildrenSettings() {
 
       <View style={styles.list}>
         {children.map((child) => (
-          <Card key={child.id} style={styles.childRow}>
-            <Pressable style={styles.childInfo} onPress={() => setActiveChild(child.id)}>
-              <AppText style={styles.emoji}>{child.avatarEmoji}</AppText>
-              <View style={styles.childText}>
-                <AppText variant="subtitle">
-                  {child.name} {child.id === activeChildId ? '（選択中）' : ''}
+          <Card key={child.id} style={styles.childCard}>
+            <View style={styles.switchRow}>
+              <Pressable style={styles.switchTapArea} onPress={() => setActiveChild(child.id)}>
+                <View style={[styles.currentAvatar, { backgroundColor: child.avatarColor }]}>
+                  <AppText style={styles.currentAvatarEmoji}>{child.avatarEmoji}</AppText>
+                </View>
+                <AppText variant="subtitle" style={styles.switchLabel}>
+                  {child.id === activeChildId ? '選択中' : 'タップして切りかえ'}
                 </AppText>
-                <AppText variant="caption">登校時間</AppText>
-                <TextInput
-                  value={child.schoolArrivalTime}
-                  onChangeText={(v) => updateChild(child.id, { schoolArrivalTime: v })}
-                  style={styles.timeInput}
-                  placeholder="08:20"
-                  placeholderTextColor={colors.textMuted}
+              </Pressable>
+              {children.length > 1 ? (
+                <Button
+                  label="削除"
+                  variant="danger"
+                  size="md"
+                  onPress={() => removeChild(child.id)}
                 />
-              </View>
-            </Pressable>
-            {children.length > 1 ? (
-              <Button label="削除" variant="danger" size="md" onPress={() => removeChild(child.id)} />
-            ) : null}
+              ) : null}
+            </View>
+
+            <AppText variant="caption">なまえ</AppText>
+            <TextInput
+              value={child.name}
+              onChangeText={(v) => updateChild(child.id, { name: v })}
+              style={styles.input}
+              maxLength={12}
+            />
+
+            <AppText variant="caption">アイコン</AppText>
+            <View style={styles.avatarRow}>
+              {AVATARS.map((a) => (
+                <AppText
+                  key={a}
+                  onPress={() => updateChild(child.id, { avatarEmoji: a })}
+                  style={[styles.avatar, child.avatarEmoji === a ? styles.avatarSelected : null]}
+                >
+                  {a}
+                </AppText>
+              ))}
+            </View>
+
+            <AppText variant="caption">登校時間</AppText>
+            <TextInput
+              value={child.schoolArrivalTime}
+              onChangeText={(v) => updateChild(child.id, { schoolArrivalTime: v })}
+              style={styles.timeInput}
+              placeholder="08:20"
+              placeholderTextColor={colors.textMuted}
+            />
           </Card>
         ))}
       </View>
@@ -84,25 +113,41 @@ export default function ChildrenSettings() {
 function createStyles(colors: ColorPalette) {
   return StyleSheet.create({
     list: {
+      gap: spacing.md,
+    },
+    childCard: {
       gap: spacing.sm,
     },
-    childRow: {
+    switchRow: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing.md,
     },
-    childInfo: {
+    switchTapArea: {
       flex: 1,
       flexDirection: 'row',
-      gap: spacing.md,
       alignItems: 'center',
+      gap: spacing.md,
     },
-    childText: {
+    currentAvatar: {
+      width: 48,
+      height: 48,
+      borderRadius: radius.round,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    currentAvatarEmoji: {
+      fontSize: 26,
+    },
+    switchLabel: {
       flex: 1,
-      gap: 4,
     },
-    emoji: {
-      fontSize: 32,
+    input: {
+      backgroundColor: colors.surfaceAlt,
+      borderRadius: radius.md,
+      padding: spacing.md,
+      fontSize: 16,
+      color: colors.text,
     },
     timeInput: {
       backgroundColor: colors.surfaceAlt,
@@ -114,13 +159,6 @@ function createStyles(colors: ColorPalette) {
     },
     addCard: {
       gap: spacing.sm,
-    },
-    input: {
-      backgroundColor: colors.surfaceAlt,
-      borderRadius: radius.md,
-      padding: spacing.md,
-      fontSize: 16,
-      color: colors.text,
     },
     avatarRow: {
       flexDirection: 'row',

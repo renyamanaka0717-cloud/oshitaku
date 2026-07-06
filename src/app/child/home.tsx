@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { Redirect } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { AppText } from '@/components/AppText';
@@ -55,10 +55,21 @@ export default function ChildHome() {
   const morningTasks = useMorningStore((s) => s.tasks);
   const morningChecked = useMorningStore((s) => s.checked);
   const morningComplete = useMorningStore((s) => s.isComplete());
+  const loadMorning = useMorningStore((s) => s.load);
 
   const eveningTasks = useEveningStore((s) => s.tasks);
   const eveningChecked = useEveningStore((s) => s.checked);
   const eveningComplete = useEveningStore((s) => s.isComplete());
+  const loadEvening = useEveningStore((s) => s.load);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (child) {
+        loadMorning(child.id);
+        loadEvening(child.id);
+      }
+    }, [child, loadMorning, loadEvening])
+  );
 
   const totalPoints = usePointsStore((s) => s.total);
   const rule = usePointsStore((s) => s.rule);

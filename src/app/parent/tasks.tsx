@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { StyleSheet, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
@@ -7,6 +7,7 @@ import { AppText } from '@/components/AppText';
 import { Card } from '@/components/Card';
 import { Button } from '@/components/Button';
 import { SectionHeader } from '@/components/SectionHeader';
+import { WeekdayChips } from '@/features/parent/components/WeekdayChips';
 import { useActiveChild } from '@/features/child/store';
 import {
   createEveningTask,
@@ -15,6 +16,8 @@ import {
   deleteMorningTask,
   listEveningTasks,
   listMorningTasks,
+  moveEveningTask,
+  moveMorningTask,
   updateEveningTask,
   updateMorningTask,
 } from '@/db/repositories/taskRepository';
@@ -48,18 +51,47 @@ export default function TasksSettings() {
 
       <View style={styles.section}>
         <SectionHeader title="朝のタスク" icon="☀️" />
-        {morningTasks.map((task) => (
-          <Card key={task.id} style={styles.row}>
-            <TextInput
-              value={task.icon}
-              onChangeText={(v) => updateMorningTask(task.id, { icon: v }).then(() => reload(child.id))}
-              style={styles.iconInput}
-              maxLength={2}
-            />
-            <TextInput
-              value={task.label}
-              onChangeText={(v) => updateMorningTask(task.id, { label: v }).then(() => reload(child.id))}
-              style={styles.labelInput}
+        {morningTasks.map((task, index) => (
+          <Card key={task.id} style={styles.card}>
+            <View style={styles.row}>
+              <TextInput
+                value={task.icon}
+                onChangeText={(v) => updateMorningTask(task.id, { icon: v }).then(() => reload(child.id))}
+                style={styles.iconInput}
+                maxLength={2}
+              />
+              <TextInput
+                value={task.label}
+                onChangeText={(v) => updateMorningTask(task.id, { label: v }).then(() => reload(child.id))}
+                style={styles.labelInput}
+              />
+              <View style={styles.reorderCol}>
+                <Pressable
+                  onPress={() => moveMorningTask(child.id, task.id, 'up').then(() => reload(child.id))}
+                  disabled={index === 0}
+                  hitSlop={4}
+                >
+                  <AppText style={[styles.reorderArrow, index === 0 ? styles.reorderDisabled : null]}>▲</AppText>
+                </Pressable>
+                <Pressable
+                  onPress={() => moveMorningTask(child.id, task.id, 'down').then(() => reload(child.id))}
+                  disabled={index === morningTasks.length - 1}
+                  hitSlop={4}
+                >
+                  <AppText
+                    style={[
+                      styles.reorderArrow,
+                      index === morningTasks.length - 1 ? styles.reorderDisabled : null,
+                    ]}
+                  >
+                    ▼
+                  </AppText>
+                </Pressable>
+              </View>
+            </View>
+            <WeekdayChips
+              value={task.daysOfWeek}
+              onChange={(days) => updateMorningTask(task.id, { daysOfWeek: days }).then(() => reload(child.id))}
             />
             <Button label="削除" variant="danger" onPress={() => deleteMorningTask(task.id).then(() => reload(child.id))} />
           </Card>
@@ -87,18 +119,47 @@ export default function TasksSettings() {
 
       <View style={styles.section}>
         <SectionHeader title="夜のタスク" icon="🌙" />
-        {eveningTasks.map((task) => (
-          <Card key={task.id} style={styles.row}>
-            <TextInput
-              value={task.icon}
-              onChangeText={(v) => updateEveningTask(task.id, { icon: v }).then(() => reload(child.id))}
-              style={styles.iconInput}
-              maxLength={2}
-            />
-            <TextInput
-              value={task.label}
-              onChangeText={(v) => updateEveningTask(task.id, { label: v }).then(() => reload(child.id))}
-              style={styles.labelInput}
+        {eveningTasks.map((task, index) => (
+          <Card key={task.id} style={styles.card}>
+            <View style={styles.row}>
+              <TextInput
+                value={task.icon}
+                onChangeText={(v) => updateEveningTask(task.id, { icon: v }).then(() => reload(child.id))}
+                style={styles.iconInput}
+                maxLength={2}
+              />
+              <TextInput
+                value={task.label}
+                onChangeText={(v) => updateEveningTask(task.id, { label: v }).then(() => reload(child.id))}
+                style={styles.labelInput}
+              />
+              <View style={styles.reorderCol}>
+                <Pressable
+                  onPress={() => moveEveningTask(child.id, task.id, 'up').then(() => reload(child.id))}
+                  disabled={index === 0}
+                  hitSlop={4}
+                >
+                  <AppText style={[styles.reorderArrow, index === 0 ? styles.reorderDisabled : null]}>▲</AppText>
+                </Pressable>
+                <Pressable
+                  onPress={() => moveEveningTask(child.id, task.id, 'down').then(() => reload(child.id))}
+                  disabled={index === eveningTasks.length - 1}
+                  hitSlop={4}
+                >
+                  <AppText
+                    style={[
+                      styles.reorderArrow,
+                      index === eveningTasks.length - 1 ? styles.reorderDisabled : null,
+                    ]}
+                  >
+                    ▼
+                  </AppText>
+                </Pressable>
+              </View>
+            </View>
+            <WeekdayChips
+              value={task.daysOfWeek}
+              onChange={(days) => updateEveningTask(task.id, { daysOfWeek: days }).then(() => reload(child.id))}
             />
             <Button label="削除" variant="danger" onPress={() => deleteEveningTask(task.id).then(() => reload(child.id))} />
           </Card>
@@ -132,6 +193,9 @@ function createStyles(colors: ColorPalette) {
     section: {
       gap: spacing.sm,
     },
+    card: {
+      gap: spacing.sm,
+    },
     row: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -153,6 +217,18 @@ function createStyles(colors: ColorPalette) {
       padding: spacing.sm,
       fontSize: 16,
       color: colors.text,
+    },
+    reorderCol: {
+      alignItems: 'center',
+      gap: 2,
+    },
+    reorderArrow: {
+      fontSize: 14,
+      color: colors.textMuted,
+      padding: 2,
+    },
+    reorderDisabled: {
+      opacity: 0.25,
     },
   });
 }

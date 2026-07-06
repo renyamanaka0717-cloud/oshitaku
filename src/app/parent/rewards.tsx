@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { StyleSheet, TextInput, View } from 'react-native';
+import { Image, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
@@ -11,6 +11,7 @@ import { EmptyState } from '@/components/EmptyState';
 import { useActiveChild } from '@/features/child/store';
 import { useRewardsStore } from '@/features/rewards/store';
 import { usePointsStore } from '@/features/points/store';
+import { pickRewardImage } from '@/features/rewards/imagePicker';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 export default function RewardsSettings() {
@@ -28,6 +29,7 @@ export default function RewardsSettings() {
   const [icon, setIcon] = useState('🎁');
   const [description, setDescription] = useState('');
   const [cost, setCost] = useState('50');
+  const [imageUri, setImageUri] = useState<string | null>(null);
 
   useEffect(() => {
     if (child) load(child.id);
@@ -36,10 +38,21 @@ export default function RewardsSettings() {
   const handleAdd = async () => {
     if (!name.trim()) return;
     const pointCost = Number(cost) || 0;
-    await createReward({ name: name.trim(), icon, description: description.trim(), pointCost });
+    await createReward({ name: name.trim(), icon, description: description.trim(), imageUri, pointCost });
     setName('');
     setDescription('');
     setCost('50');
+    setImageUri(null);
+  };
+
+  const handlePickImageForNew = async () => {
+    const uri = await pickRewardImage();
+    if (uri) setImageUri(uri);
+  };
+
+  const handlePickImageForExisting = async (rewardId: string) => {
+    const uri = await pickRewardImage();
+    if (uri) updateReward(rewardId, { imageUri: uri });
   };
 
   const exchangeHistory = useMemo(
@@ -56,6 +69,13 @@ export default function RewardsSettings() {
         {rewards.map((reward) => (
           <Card key={reward.id} style={styles.card}>
             <View style={styles.row}>
+              <Pressable onPress={() => handlePickImageForExisting(reward.id)} style={styles.imageBox}>
+                {reward.imageUri ? (
+                  <Image source={{ uri: reward.imageUri }} style={styles.image} resizeMode="cover" />
+                ) : (
+                  <AppText style={styles.imagePlaceholder}>{reward.icon}</AppText>
+                )}
+              </Pressable>
               <TextInput
                 value={reward.icon}
                 onChangeText={(v) => updateReward(reward.id, { icon: v })}
@@ -88,6 +108,13 @@ export default function RewardsSettings() {
         <Card style={styles.addCard}>
           <AppText variant="subtitle">ごほうびを追加</AppText>
           <View style={styles.row}>
+            <Pressable onPress={handlePickImageForNew} style={styles.imageBox}>
+              {imageUri ? (
+                <Image source={{ uri: imageUri }} style={styles.image} resizeMode="cover" />
+              ) : (
+                <AppText style={styles.imagePlaceholder}>{icon}</AppText>
+              )}
+            </Pressable>
             <TextInput value={icon} onChangeText={setIcon} style={styles.iconInput} maxLength={2} />
             <TextInput
               value={name}
@@ -143,6 +170,22 @@ function createStyles(colors: ColorPalette) {
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing.sm,
+    },
+    imageBox: {
+      width: 44,
+      height: 44,
+      borderRadius: radius.sm,
+      backgroundColor: colors.surfaceAlt,
+      alignItems: 'center',
+      justifyContent: 'center',
+      overflow: 'hidden',
+    },
+    image: {
+      width: '100%',
+      height: '100%',
+    },
+    imagePlaceholder: {
+      fontSize: 20,
     },
     iconInput: {
       width: 44,

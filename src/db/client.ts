@@ -159,6 +159,14 @@ async function migrate(db: SQLite.SQLiteDatabase) {
     version = 2;
   }
 
+  if (version < 3) {
+    await db.execAsync(`
+      ALTER TABLE morning_task ADD COLUMN daysOfWeek TEXT NOT NULL DEFAULT '[0,1,2,3,4,5,6]';
+      ALTER TABLE evening_task ADD COLUMN daysOfWeek TEXT NOT NULL DEFAULT '[0,1,2,3,4,5,6]';
+    `);
+    version = 3;
+  }
+
   await db.execAsync(`PRAGMA user_version = ${version}`);
 }
 

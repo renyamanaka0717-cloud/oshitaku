@@ -25,10 +25,12 @@ export const useEveningStore = create<EveningState>((set, get) => ({
   load: async (childId: string) => {
     set({ isLoading: true });
     const date = todayKey();
-    const [tasks, logs] = await Promise.all([
+    const dayOfWeek = new Date().getDay();
+    const [allTasks, logs] = await Promise.all([
       taskRepository.listEveningTasks(childId),
       dailyTaskLogRepository.listLogsForDate(childId, date, 'evening_task'),
     ]);
+    const tasks = allTasks.filter((t) => t.daysOfWeek.includes(dayOfWeek));
     const checked: Record<string, boolean> = {};
     for (const log of logs) checked[log.refId] = log.checked;
     set({ childId, date, tasks, checked, isLoading: false });

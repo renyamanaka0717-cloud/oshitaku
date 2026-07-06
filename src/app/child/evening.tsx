@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { ChecklistItem } from '@/components/ChecklistItem';
@@ -18,6 +18,7 @@ export default function EveningMode() {
   const tasks = useEveningStore((s) => s.tasks);
   const checked = useEveningStore((s) => s.checked);
   const toggle = useEveningStore((s) => s.toggle);
+  const load = useEveningStore((s) => s.load);
 
   const tomorrowDow = (new Date().getDay() + 1) % 7;
   const timetableEntries = useTimetableStore((s) => s.entries);
@@ -37,6 +38,12 @@ export default function EveningMode() {
 
   const [celebration, setCelebration] = useState<{ points: number; stampKind: 'normal' | 'rare' | null; stampType?: string } | null>(null);
   const [allComplete, setAllComplete] = useState(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (child) load(child.id);
+    }, [child, load])
+  );
 
   if (!child) return null;
 

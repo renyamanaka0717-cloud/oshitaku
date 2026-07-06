@@ -45,6 +45,7 @@ export type MorningTask = {
   label: string;
   icon: string;
   sortOrder: number;
+  daysOfWeek: number[];
 };
 
 export type EveningTask = {
@@ -53,6 +54,7 @@ export type EveningTask = {
   label: string;
   icon: string;
   sortOrder: number;
+  daysOfWeek: number[];
 };
 
 export type ChecklistKind = 'morning_task' | 'evening_task' | 'item';

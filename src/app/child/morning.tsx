@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { ChecklistItem } from '@/components/ChecklistItem';
@@ -17,9 +17,16 @@ export default function MorningMode() {
   const tasks = useMorningStore((s) => s.tasks);
   const checked = useMorningStore((s) => s.checked);
   const toggle = useMorningStore((s) => s.toggle);
+  const load = useMorningStore((s) => s.load);
 
   const [celebration, setCelebration] = useState<{ points: number; stampKind: 'normal' | 'rare' | null; stampType?: string } | null>(null);
   const [allComplete, setAllComplete] = useState(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (child) load(child.id);
+    }, [child, load])
+  );
 
   if (!child) return null;
 
