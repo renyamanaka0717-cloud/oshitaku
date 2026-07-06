@@ -4,7 +4,7 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { getDb } from '@/db/client';
+import { useChildStore } from '@/features/child/store';
 import { lightColors, ThemeProvider, useTheme } from '@/theme';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -25,7 +25,12 @@ export default function RootLayout() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    getDb()
+    // Load the child list here (not just in index.tsx) so it's populated
+    // before ANY route renders, including a hard reload that lands
+    // directly on a deep route like /child/home rather than "/".
+    useChildStore
+      .getState()
+      .load()
       .then(() => setReady(true))
       .finally(() => SplashScreen.hideAsync().catch(() => {}));
   }, []);
