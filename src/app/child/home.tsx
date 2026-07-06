@@ -11,7 +11,6 @@ import { useChildStore, useActiveChild } from '@/features/child/store';
 import { useChildData } from '@/features/child/useChildData';
 import { ChildSwitcherModal } from '@/features/child/components/ChildSwitcherModal';
 import { GreetingHeader } from '@/features/home/components/GreetingHeader';
-import { SchoolCountdownCard } from '@/features/home/components/SchoolCountdownCard';
 import { TodayTimetableCard } from '@/features/home/components/TodayTimetableCard';
 import { TodayItemsCard } from '@/features/home/components/TodayItemsCard';
 import { TodayBonusCard } from '@/features/home/components/TodayBonusCard';
@@ -82,15 +81,6 @@ export default function ChildHome() {
   const [celebration, setCelebration] = useState<{ points: number; stampKind: 'normal' | 'rare' | null; stampType?: string } | null>(null);
   const [allComplete, setAllComplete] = useState(false);
 
-  const progress = useMemo(() => {
-    const morningDone = morningTasks.filter((t) => morningChecked[t.id]).length;
-    const eveningDone = eveningTasks.filter((t) => eveningChecked[t.id]).length;
-    const itemsDone = items.filter((i) => itemsChecked[i.id]).length;
-    const total = morningTasks.length + eveningTasks.length + items.length;
-    if (total === 0) return 0;
-    return (morningDone + eveningDone + itemsDone) / total;
-  }, [morningTasks, morningChecked, eveningTasks, eveningChecked, items, itemsChecked]);
-
   const bonusPoints = useMemo(() => {
     if (!rule) return 0;
     let total = 0;
@@ -119,8 +109,6 @@ export default function ChildHome() {
   return (
     <Screen>
       <GreetingHeader child={child} onPressAvatar={() => setSwitcherVisible(true)} />
-
-      <SchoolCountdownCard schoolArrivalTime={child.schoolArrivalTime} progress={progress} />
 
       <View style={styles.prepRow}>
         <PrepLinkCard

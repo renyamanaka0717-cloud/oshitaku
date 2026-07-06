@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { Screen } from '@/components/Screen';
@@ -7,7 +7,7 @@ import { ChecklistItem } from '@/components/ChecklistItem';
 import { CelebrationModal } from '@/components/CelebrationModal';
 import { AllCompleteCelebration } from '@/components/AllCompleteCelebration';
 import { ModeSwitch } from '@/components/ModeSwitch';
-import { BigCountdown } from '@/features/morning/components/BigCountdown';
+import { SchoolCountdownCard } from '@/features/home/components/SchoolCountdownCard';
 import { useActiveChild } from '@/features/child/store';
 import { useMorningStore } from '@/features/morning/store';
 import { isAllCompleteToday } from '@/features/home/allComplete';
@@ -19,6 +19,11 @@ export default function MorningMode() {
   const checked = useMorningStore((s) => s.checked);
   const toggle = useMorningStore((s) => s.toggle);
   const load = useMorningStore((s) => s.load);
+
+  const progress = useMemo(() => {
+    if (tasks.length === 0) return 0;
+    return tasks.filter((t) => checked[t.id]).length / tasks.length;
+  }, [tasks, checked]);
 
   const [celebration, setCelebration] = useState<{ points: number; stampKind: 'normal' | 'rare' | null; stampType?: string } | null>(null);
   const [allComplete, setAllComplete] = useState(false);
@@ -49,7 +54,7 @@ export default function MorningMode() {
   return (
     <Screen>
       <HeaderBar title="朝のおしたく" onBack={() => router.back()} right={<ModeSwitch active="morning" />} />
-      <BigCountdown schoolArrivalTime={child.schoolArrivalTime} />
+      <SchoolCountdownCard schoolArrivalTime={child.schoolArrivalTime} progress={progress} />
       <View style={styles.list}>
         {tasks.map((task) => (
           <ChecklistItem
