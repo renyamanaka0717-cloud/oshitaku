@@ -29,6 +29,7 @@ export default function TimetableSettings() {
   const createSubject = useTimetableStore((s) => s.createSubject);
   const deleteSubject = useTimetableStore((s) => s.deleteSubject);
   const setSubjectItems = useTimetableStore((s) => s.setSubjectItems);
+  const createItem = useTimetableStore((s) => s.createItem);
   const setSlot = useTimetableStore((s) => s.setSlot);
   const getEntriesForDay = useTimetableStore((s) => s.getEntriesForDay);
 
@@ -143,6 +144,7 @@ export default function TimetableSettings() {
         onSave={(ids) => {
           if (itemPickerSubjectId) setSubjectItems(itemPickerSubjectId, ids);
         }}
+        onCreateItem={createItem}
         onClose={() => setItemPickerSubjectId(null)}
       />
     </Screen>

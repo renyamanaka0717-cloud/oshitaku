@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Modal, Pressable, StyleSheet, View } from 'react-native';
+import { Modal, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { Item } from '@/db/models';
@@ -10,20 +10,42 @@ type Props = {
   items: Item[];
   selectedIds: string[];
   onSave: (ids: string[]) => void;
+  onCreateItem: (name: string, icon: string) => Promise<Item>;
   onClose: () => void;
 };
 
-export function ItemMultiPickerModal({ visible, items, selectedIds, onSave, onClose }: Props) {
+export function ItemMultiPickerModal({
+  visible,
+  items,
+  selectedIds,
+  onSave,
+  onCreateItem,
+  onClose,
+}: Props) {
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const [selected, setSelected] = useState<string[]>(selectedIds);
+  const [newIcon, setNewIcon] = useState('📦');
+  const [newName, setNewName] = useState('');
 
   useEffect(() => {
-    if (visible) setSelected(selectedIds);
+    if (visible) {
+      setSelected(selectedIds);
+      setNewIcon('📦');
+      setNewName('');
+    }
   }, [visible, selectedIds]);
 
   const toggle = (id: string) => {
     setSelected((prev) => (prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]));
+  };
+
+  const handleCreate = async () => {
+    if (!newName.trim()) return;
+    const item = await onCreateItem(newName.trim(), newIcon || '📦');
+    setSelected((prev) => [...prev, item.id]);
+    setNewName('');
+    setNewIcon('📦');
   };
 
   return (
@@ -49,6 +71,25 @@ export function ItemMultiPickerModal({ visible, items, selectedIds, onSave, onCl
               );
             })}
           </View>
+
+          <View style={styles.newItemRow}>
+            <TextInput
+              value={newIcon}
+              onChangeText={setNewIcon}
+              maxLength={2}
+              style={styles.newIconInput}
+            />
+            <TextInput
+              value={newName}
+              onChangeText={setNewName}
+              placeholder="あたらしい持ち物を入力"
+              placeholderTextColor={colors.textMuted}
+              style={styles.newNameInput}
+              onSubmitEditing={handleCreate}
+            />
+            <Button label="登録" size="md" onPress={handleCreate} disabled={!newName.trim()} />
+          </View>
+
           <Button
             label="決定"
             onPress={() => {
@@ -93,6 +134,31 @@ function createStyles(colors: ColorPalette) {
     },
     chipActive: {
       backgroundColor: colors.secondaryDark,
+    },
+    newItemRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.sm,
+      borderTopWidth: 1,
+      borderTopColor: colors.border,
+      paddingTop: spacing.md,
+    },
+    newIconInput: {
+      width: 44,
+      textAlign: 'center',
+      backgroundColor: colors.surfaceAlt,
+      borderRadius: radius.sm,
+      padding: spacing.sm,
+      fontSize: 18,
+      color: colors.text,
+    },
+    newNameInput: {
+      flex: 1,
+      backgroundColor: colors.surfaceAlt,
+      borderRadius: radius.sm,
+      padding: spacing.sm,
+      fontSize: 16,
+      color: colors.text,
     },
   });
 }
