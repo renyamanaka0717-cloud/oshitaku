@@ -9,11 +9,12 @@ import { useActiveChild } from '@/features/child/store';
 import { usePointsStore } from '@/features/points/store';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
-const FIELDS: Array<{ key: 'morningComplete' | 'eveningComplete' | 'onTime' | 'noForgottenItems'; label: string; icon: string }> = [
+const FIELDS: Array<{ key: 'morningComplete' | 'eveningComplete' | 'onTime' | 'noForgottenItems' | 'perfectDayBonus'; label: string; icon: string }> = [
   { key: 'morningComplete', label: '朝完了', icon: '☀️' },
   { key: 'eveningComplete', label: '夜完了', icon: '🌙' },
   { key: 'onTime', label: '時間内達成', icon: '⏰' },
   { key: 'noForgottenItems', label: '忘れ物ゼロ', icon: '🎒' },
+  { key: 'perfectDayBonus', label: '朝＋夜パーフェクト', icon: '✨' },
 ];
 
 export default function PointsSettings() {

@@ -167,6 +167,14 @@ async function migrate(db: SQLite.SQLiteDatabase) {
     version = 3;
   }
 
+  if (version < 4) {
+    await db.execAsync(`
+      ALTER TABLE day_completion ADD COLUMN eveningOnTime INTEGER NOT NULL DEFAULT 0;
+      ALTER TABLE point_rule ADD COLUMN perfectDayBonus INTEGER NOT NULL DEFAULT 20;
+    `);
+    version = 4;
+  }
+
   await db.execAsync(`PRAGMA user_version = ${version}`);
 }
 

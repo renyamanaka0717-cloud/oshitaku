@@ -102,6 +102,10 @@ export default function StampCalendarScreen() {
             <View style={[styles.legendDot, { backgroundColor: colors.accent }]} />
             <AppText variant="caption">レアスタンプ</AppText>
           </View>
+          <View style={styles.legendItem}>
+            <View style={[styles.legendDot, { backgroundColor: colors.purple }]} />
+            <AppText variant="caption">パーフェクト</AppText>
+          </View>
         </View>
       </Card>
 

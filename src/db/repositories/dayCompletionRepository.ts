@@ -11,6 +11,7 @@ type Row = {
   morningOnTime: number;
   eveningCompleted: number;
   eveningCompletedAt: string | null;
+  eveningOnTime: number;
   noForgottenItems: number;
   awardedRules: string;
 };
@@ -21,6 +22,7 @@ function toModel(row: Row): DayCompletion {
     morningCompleted: !!row.morningCompleted,
     morningOnTime: !!row.morningOnTime,
     eveningCompleted: !!row.eveningCompleted,
+    eveningOnTime: !!row.eveningOnTime,
     noForgottenItems: !!row.noForgottenItems,
     awardedRules: JSON.parse(row.awardedRules || '[]'),
   };
@@ -62,6 +64,7 @@ export async function updateDayCompletion(
     morningOnTime: boolean;
     eveningCompleted: boolean;
     eveningCompletedAt: string | null;
+    eveningOnTime: boolean;
     noForgottenItems: boolean;
   }>
 ): Promise<DayCompletion> {

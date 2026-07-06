@@ -25,6 +25,7 @@ import { usePointsStore } from '@/features/points/store';
 import { useStampsStore } from '@/features/stamps/store';
 import { useStreakStore } from '@/features/home/streakStore';
 import { isAllCompleteToday } from '@/features/home/allComplete';
+import { getSuggestedMode } from '@/features/home/timeMode';
 import { ColorPalette, spacing, useTheme } from '@/theme';
 import { todayKey } from '@/utils/date';
 
@@ -39,6 +40,7 @@ export default function ChildHome() {
   const streak = useStreakStore((s) => s.streak);
 
   const dayOfWeek = new Date().getDay();
+  const suggestedMode = useMemo(() => getSuggestedMode(), []);
   const timetableEntries = useTimetableStore((s) => s.entries);
   const timetableSubjects = useTimetableStore((s) => s.subjects);
   const getEntriesForDay = useTimetableStore((s) => s.getEntriesForDay);
@@ -128,6 +130,7 @@ export default function ChildHome() {
           total={morningTasks.length}
           complete={morningComplete}
           tint={colors.yellow}
+          active={suggestedMode === 'morning'}
           onPress={() => router.push('/child/morning')}
         />
         <PrepLinkCard
@@ -137,6 +140,7 @@ export default function ChildHome() {
           total={eveningTasks.length}
           complete={eveningComplete}
           tint={colors.purple}
+          active={suggestedMode === 'evening'}
           onPress={() => router.push('/child/evening')}
         />
       </View>
@@ -156,6 +160,10 @@ export default function ChildHome() {
         <Pressable style={styles.linkItem} onPress={() => router.push('/child/rewards')}>
           <AppText style={styles.linkIcon}>🎁</AppText>
           <AppText variant="caption">ごほうび</AppText>
+        </Pressable>
+        <Pressable style={styles.linkItem} onPress={() => router.push('/child/stampbook')}>
+          <AppText style={styles.linkIcon}>📔</AppText>
+          <AppText variant="caption">スタンプ図鑑</AppText>
         </Pressable>
         <Pressable style={styles.linkItem} onPress={() => router.push('/child/calendar')}>
           <AppText style={styles.linkIcon}>📅</AppText>

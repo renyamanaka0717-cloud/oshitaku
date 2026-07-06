@@ -1,5 +1,12 @@
-import { useEffect, useMemo, useRef } from 'react';
-import { Animated, Easing, StyleSheet, View } from 'react-native';
+import { useEffect, useMemo } from 'react';
+import { StyleSheet, View } from 'react-native';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withTiming,
+  Easing,
+} from 'react-native-reanimated';
 import { useTheme } from '@/theme';
 
 type Props = {
@@ -28,50 +35,42 @@ function buildParticles(count: number, colors: string[]): Particle[] {
 }
 
 function ConfettiPiece({ particle, active }: { particle: Particle; active: boolean }) {
-  const progress = useRef(new Animated.Value(0)).current;
+  const progress = useSharedValue(0);
 
   useEffect(() => {
     if (!active) {
-      progress.setValue(0);
+      progress.value = 0;
       return;
     }
-    Animated.timing(progress, {
-      toValue: 1,
-      duration: 900,
-      delay: particle.delay,
-      easing: Easing.out(Easing.cubic),
-      useNativeDriver: true,
-    }).start();
+    progress.value = withDelay(
+      particle.delay,
+      withTiming(1, { duration: 900, easing: Easing.out(Easing.cubic) })
+    );
   }, [active, particle.delay, progress]);
 
-  const translateX = progress.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, Math.cos(particle.angle) * particle.distance],
-  });
-  const translateY = progress.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, Math.sin(particle.angle) * particle.distance],
-  });
-  const opacity = progress.interpolate({
-    inputRange: [0, 0.7, 1],
-    outputRange: [1, 1, 0],
-  });
-  const rotate = progress.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['0deg', `${particle.rotation}deg`],
+  const style = useAnimatedStyle(() => {
+    const translateX = progress.value * Math.cos(particle.angle) * particle.distance;
+    const translateY = progress.value * Math.sin(particle.angle) * particle.distance;
+    const opacity = progress.value < 0.7 ? 1 : 1 - (progress.value - 0.7) / 0.3;
+    const rotate = `${progress.value * particle.rotation}deg`;
+    return {
+      opacity,
+      transform: [{ translateX }, { translateY }, { rotate }],
+    };
   });
 
   return (
     <Animated.View
-      style={{
-        position: 'absolute',
-        width: particle.size,
-        height: particle.size,
-        borderRadius: particle.size / 3,
-        backgroundColor: particle.color,
-        opacity,
-        transform: [{ translateX }, { translateY }, { rotate }],
-      }}
+      style={[
+        {
+          position: 'absolute',
+          width: particle.size,
+          height: particle.size,
+          borderRadius: particle.size / 3,
+          backgroundColor: particle.color,
+        },
+        style,
+      ]}
     />
   );
 }

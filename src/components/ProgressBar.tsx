@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useRef } from 'react';
-import { Animated, StyleSheet, View } from 'react-native';
+import { useEffect, useMemo } from 'react';
+import { StyleSheet, View } from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { ColorPalette, radius, useTheme } from '@/theme';
 
 type Props = {
@@ -12,24 +13,24 @@ export function ProgressBar({ progress, color, height = 16 }: Props) {
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const tint = color ?? colors.primary;
-  const anim = useRef(new Animated.Value(0)).current;
+  const clamped = Math.max(0, Math.min(1, progress));
+  const anim = useSharedValue(clamped);
 
   useEffect(() => {
-    Animated.timing(anim, {
-      toValue: Math.max(0, Math.min(1, progress)),
-      duration: 400,
-      useNativeDriver: false,
-    }).start();
-  }, [progress, anim]);
+    anim.value = withTiming(clamped, { duration: 400 });
+  }, [clamped, anim]);
 
-  const width = anim.interpolate({ inputRange: [0, 1], outputRange: ['0%', '100%'] });
+  const fillStyle = useAnimatedStyle(() => ({
+    width: `${anim.value * 100}%`,
+  }));
 
   return (
     <View style={[styles.track, { height, borderRadius: height / 2 }]}>
       <Animated.View
         style={[
           styles.fill,
-          { width, height, borderRadius: height / 2, backgroundColor: tint },
+          fillStyle,
+          { height, borderRadius: height / 2, backgroundColor: tint },
         ]}
       />
     </View>

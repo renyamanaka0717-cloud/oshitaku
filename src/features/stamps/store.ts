@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { Stamp } from '@/db/models';
 import { stampRepository } from '@/db/repositories';
+import { STAMP_CATALOG_BY_ID } from '@/db/stampCatalog';
 
 type StampsState = {
   childId: string | null;
@@ -27,14 +28,7 @@ export const useStampsStore = create<StampsState>((set, get) => ({
 }));
 
 export const STAMP_EMOJI: Record<string, string> = {
-  star: '⭐',
-  flower: '🌸',
-  sun: '☀️',
-  leaf: '🍀',
-  rainbow: '🌈',
-  crown: '👑',
-  diamond: '💎',
-  party: '🎉',
+  ...Object.fromEntries(Object.entries(STAMP_CATALOG_BY_ID).map(([id, def]) => [id, def.emoji])),
   // legacy stamp types kept so previously earned stamps still render correctly
   heart: '💖',
   shooting_star: '🌠',

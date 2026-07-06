@@ -1,23 +1,20 @@
 import { getDb } from '../client';
 import { Stamp, StampKind } from '../models';
 import { generateId } from '@/utils/id';
+import { NORMAL_STAMP_TYPES, RARE_STAMP_TYPES, pickRandom } from '../stampCatalog';
 
-export const NORMAL_STAMP_TYPES = ['star', 'flower', 'sun', 'leaf'];
-export const RARE_STAMP_TYPES = ['rainbow', 'crown', 'diamond', 'party'];
-
-export function pickRandom<T>(list: T[]): T {
-  return list[Math.floor(Math.random() * list.length)];
-}
+export { NORMAL_STAMP_TYPES, RARE_STAMP_TYPES, pickRandom } from '../stampCatalog';
 
 export async function addStamp(input: {
   childId: string;
   date: string;
   kind: StampKind;
-  source: 'morning' | 'evening';
+  source: 'morning' | 'evening' | 'perfect';
+  stampType?: string;
 }): Promise<Stamp> {
   const db = await getDb();
   const stampType =
-    input.kind === 'rare' ? pickRandom(RARE_STAMP_TYPES) : pickRandom(NORMAL_STAMP_TYPES);
+    input.stampType ?? (input.kind === 'rare' ? pickRandom(RARE_STAMP_TYPES) : pickRandom(NORMAL_STAMP_TYPES));
   const stamp: Stamp = {
     id: generateId(),
     childId: input.childId,

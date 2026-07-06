@@ -35,6 +35,13 @@ export function DayDetailModal({ visible, dateKey, completion, stamps, points, o
             <EmptyState icon="🌤️" message="この日はまだ記録がありません" />
           ) : (
             <View style={styles.body}>
+              {completion.morningCompleted && completion.eveningCompleted ? (
+                <View style={styles.perfectBanner}>
+                  <AppText variant="subtitle" color={colors.white} style={styles.center}>
+                    ✨ パーフェクトな一日！
+                  </AppText>
+                </View>
+              ) : null}
               <View style={styles.row}>
                 <AppText style={styles.icon}>☀️</AppText>
                 <AppText variant="body" style={styles.label}>
@@ -112,6 +119,14 @@ function createStyles(colors: ColorPalette) {
     },
     body: {
       gap: spacing.md,
+    },
+    perfectBanner: {
+      backgroundColor: colors.purple,
+      borderRadius: radius.lg,
+      paddingVertical: spacing.sm,
+    },
+    center: {
+      textAlign: 'center',
     },
     row: {
       flexDirection: 'row',

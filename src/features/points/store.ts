@@ -9,7 +9,7 @@ type PointsState = {
   rule: PointRule | null;
   load: (childId: string) => Promise<void>;
   refresh: () => Promise<void>;
-  updateRule: (patch: Partial<Pick<PointRule, 'morningComplete' | 'eveningComplete' | 'onTime' | 'noForgottenItems'>>) => Promise<void>;
+  updateRule: (patch: Partial<Pick<PointRule, 'morningComplete' | 'eveningComplete' | 'onTime' | 'noForgottenItems' | 'perfectDayBonus'>>) => Promise<void>;
   spend: (childId: string, date: string, amount: number, note: string) => Promise<void>;
 };
 

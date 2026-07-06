@@ -6,6 +6,7 @@ import { HeaderBar } from '@/components/HeaderBar';
 import { ChecklistItem } from '@/components/ChecklistItem';
 import { CelebrationModal } from '@/components/CelebrationModal';
 import { AllCompleteCelebration } from '@/components/AllCompleteCelebration';
+import { ModeSwitch } from '@/components/ModeSwitch';
 import { BigCountdown } from '@/features/morning/components/BigCountdown';
 import { useActiveChild } from '@/features/child/store';
 import { useMorningStore } from '@/features/morning/store';
@@ -21,6 +22,7 @@ export default function MorningMode() {
 
   const [celebration, setCelebration] = useState<{ points: number; stampKind: 'normal' | 'rare' | null; stampType?: string } | null>(null);
   const [allComplete, setAllComplete] = useState(false);
+  const [perfectDay, setPerfectDay] = useState<{ bonusPoints: number; specialStampType: string } | null>(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -32,7 +34,10 @@ export default function MorningMode() {
 
   const handleToggle = async (taskId: string) => {
     const result = await toggle(child, taskId);
-    if (result?.gotStamp) {
+    if (result?.perfectDay) {
+      setPerfectDay(result.perfectDay);
+      setAllComplete(true);
+    } else if (result?.gotStamp) {
       if (isAllCompleteToday()) {
         setAllComplete(true);
       } else {
@@ -43,7 +48,7 @@ export default function MorningMode() {
 
   return (
     <Screen>
-      <HeaderBar title="朝のおしたく" onBack={() => router.back()} />
+      <HeaderBar title="朝のおしたく" onBack={() => router.back()} right={<ModeSwitch active="morning" />} />
       <BigCountdown schoolArrivalTime={child.schoolArrivalTime} />
       <View style={styles.list}>
         {tasks.map((task) => (
@@ -65,7 +70,14 @@ export default function MorningMode() {
         onClose={() => setCelebration(null)}
       />
 
-      <AllCompleteCelebration visible={allComplete} onClose={() => setAllComplete(false)} />
+      <AllCompleteCelebration
+        visible={allComplete}
+        perfectDay={perfectDay}
+        onClose={() => {
+          setAllComplete(false);
+          setPerfectDay(null);
+        }}
+      />
     </Screen>
   );
 }

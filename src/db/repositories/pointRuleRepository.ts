@@ -18,7 +18,7 @@ export async function getPointRule(childId: string): Promise<PointRule> {
 
 export async function updatePointRule(
   childId: string,
-  patch: Partial<Pick<PointRule, 'morningComplete' | 'eveningComplete' | 'onTime' | 'noForgottenItems'>>
+  patch: Partial<Pick<PointRule, 'morningComplete' | 'eveningComplete' | 'onTime' | 'noForgottenItems' | 'perfectDayBonus'>>
 ): Promise<PointRule> {
   const db = await getDb();
   await getPointRule(childId);

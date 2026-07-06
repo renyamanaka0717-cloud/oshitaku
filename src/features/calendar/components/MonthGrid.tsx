@@ -44,8 +44,10 @@ export function MonthGrid({ year, month, stampsByDate, completionsByDate, onSele
           if (!cell) return <View key={`empty-${i}`} style={styles.cell} />;
           const stamps = stampsByDate[cell.dateKey] ?? [];
           const completion = completionsByDate[cell.dateKey];
+          const isPerfectDay = !!completion?.morningCompleted && !!completion?.eveningCompleted;
           const hasRare = stamps.some((s) => s.kind === 'rare');
-          const bestStamp = stamps.find((s) => s.kind === 'rare') ?? stamps[0];
+          const bestStamp =
+            stamps.find((s) => s.kind === 'special') ?? stamps.find((s) => s.kind === 'rare') ?? stamps[0];
           const isToday = cell.dateKey === today;
 
           return (
@@ -56,6 +58,7 @@ export function MonthGrid({ year, month, stampsByDate, completionsByDate, onSele
                 styles.dayCell,
                 isToday ? styles.today : null,
                 completion ? (hasRare ? styles.rareDay : styles.completedDay) : null,
+                isPerfectDay ? styles.perfectDay : null,
               ]}
               onPress={() => onSelectDate(cell.dateKey)}
             >
@@ -111,6 +114,11 @@ function createStyles(colors: ColorPalette) {
     },
     rareDay: {
       backgroundColor: colors.accent,
+    },
+    perfectDay: {
+      backgroundColor: colors.purple,
+      borderWidth: 2,
+      borderColor: colors.accentDark,
     },
     stampEmoji: {
       fontSize: 16,

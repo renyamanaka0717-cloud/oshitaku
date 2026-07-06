@@ -78,6 +78,7 @@ export type DayCompletion = {
   morningOnTime: boolean;
   eveningCompleted: boolean;
   eveningCompletedAt: string | null;
+  eveningOnTime: boolean;
   noForgottenItems: boolean;
   awardedRules: string[]; // point rule keys already awarded for this date
 };
@@ -99,6 +100,7 @@ export type PointHistoryType =
   | 'evening_complete'
   | 'on_time'
   | 'no_forgotten_items'
+  | 'perfect_day_bonus'
   | 'reward_exchange'
   | 'manual_adjust';
 
@@ -112,7 +114,7 @@ export type PointHistory = {
   createdAt: string;
 };
 
-export type StampKind = 'normal' | 'rare';
+export type StampKind = 'normal' | 'rare' | 'special';
 
 export type Stamp = {
   id: string;
@@ -120,7 +122,7 @@ export type Stamp = {
   date: string;
   kind: StampKind;
   stampType: string;
-  source: 'morning' | 'evening';
+  source: 'morning' | 'evening' | 'perfect';
   createdAt: string;
 };
 
@@ -140,4 +142,5 @@ export type PointRule = {
   eveningComplete: number;
   onTime: number;
   noForgottenItems: number;
+  perfectDayBonus: number;
 };
