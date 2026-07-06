@@ -1,5 +1,5 @@
 import { StyleProp, Text, TextProps, TextStyle } from 'react-native';
-import { typography } from '@/theme';
+import { mutedVariants, typography, useTheme } from '@/theme';
 
 type Variant = keyof typeof typography;
 
@@ -10,6 +10,8 @@ type Props = TextProps & {
 };
 
 export function AppText({ variant = 'body', color, style, ...props }: Props) {
+  const { colors } = useTheme();
   const base = typography[variant];
-  return <Text {...props} style={[base, color ? { color } : null, style]} />;
+  const defaultColor = mutedVariants.has(variant) ? colors.textMuted : colors.text;
+  return <Text {...props} style={[base, { color: color ?? defaultColor }, style]} />;
 }

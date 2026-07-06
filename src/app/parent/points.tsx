@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
 import { Screen } from '@/components/Screen';
@@ -7,7 +7,7 @@ import { AppText } from '@/components/AppText';
 import { Card } from '@/components/Card';
 import { useActiveChild } from '@/features/child/store';
 import { usePointsStore } from '@/features/points/store';
-import { colors, radius, spacing } from '@/theme';
+import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 const FIELDS: Array<{ key: 'morningComplete' | 'eveningComplete' | 'onTime' | 'noForgottenItems'; label: string; icon: string }> = [
   { key: 'morningComplete', label: '朝完了', icon: '☀️' },
@@ -17,6 +17,8 @@ const FIELDS: Array<{ key: 'morningComplete' | 'eveningComplete' | 'onTime' | 'n
 ];
 
 export default function PointsSettings() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const child = useActiveChild();
   const rule = usePointsStore((s) => s.rule);
   const load = usePointsStore((s) => s.load);
@@ -57,25 +59,27 @@ export default function PointsSettings() {
   );
 }
 
-const styles = StyleSheet.create({
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-  },
-  icon: {
-    fontSize: 24,
-  },
-  label: {
-    flex: 1,
-  },
-  input: {
-    width: 64,
-    textAlign: 'center',
-    backgroundColor: colors.surfaceAlt,
-    borderRadius: radius.sm,
-    padding: spacing.sm,
-    fontSize: 18,
-    color: colors.text,
-  },
-});
+function createStyles(colors: ColorPalette) {
+  return StyleSheet.create({
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.sm,
+    },
+    icon: {
+      fontSize: 24,
+    },
+    label: {
+      flex: 1,
+    },
+    input: {
+      width: 64,
+      textAlign: 'center',
+      backgroundColor: colors.surfaceAlt,
+      borderRadius: radius.sm,
+      padding: spacing.sm,
+      fontSize: 18,
+      color: colors.text,
+    },
+  });
+}

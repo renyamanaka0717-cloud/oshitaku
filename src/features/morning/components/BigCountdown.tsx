@@ -1,20 +1,21 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
-import { colors, radius, spacing } from '@/theme';
+import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 import { formatMinutes, minutesUntil } from '@/utils/date';
 
 type Props = {
   schoolArrivalTime: string;
 };
 
-function colorForMinutes(minutes: number): string {
+function colorForMinutes(colors: ColorPalette, minutes: number): string {
   if (minutes <= 15) return colors.timeDanger;
   if (minutes <= 45) return colors.timeWarn;
   return colors.timeSafe;
 }
 
 export function BigCountdown({ schoolArrivalTime }: Props) {
+  const { colors } = useTheme();
   const [remaining, setRemaining] = useState(() => minutesUntil(schoolArrivalTime));
 
   useEffect(() => {
@@ -22,7 +23,7 @@ export function BigCountdown({ schoolArrivalTime }: Props) {
     return () => clearInterval(id);
   }, [schoolArrivalTime]);
 
-  const tint = colorForMinutes(remaining);
+  const tint = colorForMinutes(colors, remaining);
 
   return (
     <View style={[styles.container, { backgroundColor: tint }]}>

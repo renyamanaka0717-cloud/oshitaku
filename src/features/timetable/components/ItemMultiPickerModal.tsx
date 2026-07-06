@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Modal, Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { Item } from '@/db/models';
-import { colors, radius, spacing } from '@/theme';
+import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 type Props = {
   visible: boolean;
@@ -14,6 +14,8 @@ type Props = {
 };
 
 export function ItemMultiPickerModal({ visible, items, selectedIds, onSave, onClose }: Props) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const [selected, setSelected] = useState<string[]>(selectedIds);
 
   useEffect(() => {
@@ -60,35 +62,37 @@ export function ItemMultiPickerModal({ visible, items, selectedIds, onSave, onCl
   );
 }
 
-const styles = StyleSheet.create({
-  backdrop: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.35)',
-    justifyContent: 'flex-end',
-  },
-  sheet: {
-    backgroundColor: colors.surface,
-    borderTopLeftRadius: radius.xl,
-    borderTopRightRadius: radius.xl,
-    padding: spacing.lg,
-    gap: spacing.md,
-    maxHeight: '70%',
-  },
-  title: {
-    textAlign: 'center',
-  },
-  grid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.sm,
-  },
-  chip: {
-    borderRadius: radius.round,
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.md,
-    backgroundColor: colors.surfaceAlt,
-  },
-  chipActive: {
-    backgroundColor: colors.secondaryDark,
-  },
-});
+function createStyles(colors: ColorPalette) {
+  return StyleSheet.create({
+    backdrop: {
+      flex: 1,
+      backgroundColor: 'rgba(0,0,0,0.35)',
+      justifyContent: 'flex-end',
+    },
+    sheet: {
+      backgroundColor: colors.surface,
+      borderTopLeftRadius: radius.xl,
+      borderTopRightRadius: radius.xl,
+      padding: spacing.lg,
+      gap: spacing.md,
+      maxHeight: '70%',
+    },
+    title: {
+      textAlign: 'center',
+    },
+    grid: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: spacing.sm,
+    },
+    chip: {
+      borderRadius: radius.round,
+      paddingVertical: spacing.sm,
+      paddingHorizontal: spacing.md,
+      backgroundColor: colors.surfaceAlt,
+    },
+    chipActive: {
+      backgroundColor: colors.secondaryDark,
+    },
+  });
+}

@@ -1,7 +1,8 @@
+import { useMemo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { router } from 'expo-router';
 import { AppText } from './AppText';
-import { colors, radius, spacing } from '@/theme';
+import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 type Props = {
   title: string;
@@ -10,6 +11,9 @@ type Props = {
 };
 
 export function HeaderBar({ title, onBack, right }: Props) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
+
   return (
     <View style={styles.row}>
       <Pressable
@@ -27,29 +31,31 @@ export function HeaderBar({ title, onBack, right }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-  },
-  backButton: {
-    width: 44,
-    height: 44,
-    borderRadius: radius.round,
-    backgroundColor: colors.surfaceAlt,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  backIcon: {
-    fontSize: 20,
-    color: colors.text,
-  },
-  title: {
-    flex: 1,
-  },
-  right: {
-    minWidth: 44,
-    alignItems: 'flex-end',
-  },
-});
+function createStyles(colors: ColorPalette) {
+  return StyleSheet.create({
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.sm,
+    },
+    backButton: {
+      width: 44,
+      height: 44,
+      borderRadius: radius.round,
+      backgroundColor: colors.surfaceAlt,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    backIcon: {
+      fontSize: 20,
+      color: colors.text,
+    },
+    title: {
+      flex: 1,
+    },
+    right: {
+      minWidth: 44,
+      alignItems: 'flex-end',
+    },
+  });
+}

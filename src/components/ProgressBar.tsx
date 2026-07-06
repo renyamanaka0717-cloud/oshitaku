@@ -1,6 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { Animated, StyleSheet, View } from 'react-native';
-import { colors, radius } from '@/theme';
+import { ColorPalette, radius, useTheme } from '@/theme';
 
 type Props = {
   progress: number; // 0..1
@@ -8,7 +8,10 @@ type Props = {
   height?: number;
 };
 
-export function ProgressBar({ progress, color = colors.primary, height = 16 }: Props) {
+export function ProgressBar({ progress, color, height = 16 }: Props) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
+  const tint = color ?? colors.primary;
   const anim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -26,20 +29,22 @@ export function ProgressBar({ progress, color = colors.primary, height = 16 }: P
       <Animated.View
         style={[
           styles.fill,
-          { width, height, borderRadius: height / 2, backgroundColor: color },
+          { width, height, borderRadius: height / 2, backgroundColor: tint },
         ]}
       />
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  track: {
-    width: '100%',
-    backgroundColor: colors.surfaceAlt,
-    overflow: 'hidden',
-  },
-  fill: {
-    borderRadius: radius.round,
-  },
-});
+function createStyles(colors: ColorPalette) {
+  return StyleSheet.create({
+    track: {
+      width: '100%',
+      backgroundColor: colors.surfaceAlt,
+      overflow: 'hidden',
+    },
+    fill: {
+      borderRadius: radius.round,
+    },
+  });
+}

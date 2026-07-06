@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
 import { Screen } from '@/components/Screen';
@@ -8,9 +8,11 @@ import { Card } from '@/components/Card';
 import { Button } from '@/components/Button';
 import { useActiveChild } from '@/features/child/store';
 import { useTimetableStore } from '@/features/timetable/store';
-import { colors, radius, spacing } from '@/theme';
+import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 export default function ItemsSettings() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const child = useActiveChild();
   const items = useTimetableStore((s) => s.items);
   const load = useTimetableStore((s) => s.load);
@@ -73,32 +75,35 @@ export default function ItemsSettings() {
   );
 }
 
-const styles = StyleSheet.create({
-  list: {
-    gap: spacing.sm,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-  },
-  iconInput: {
-    width: 48,
-    textAlign: 'center',
-    backgroundColor: colors.surfaceAlt,
-    borderRadius: radius.sm,
-    padding: spacing.sm,
-    fontSize: 20,
-  },
-  nameInput: {
-    flex: 1,
-    backgroundColor: colors.surfaceAlt,
-    borderRadius: radius.sm,
-    padding: spacing.sm,
-    fontSize: 16,
-    color: colors.text,
-  },
-  addCard: {
-    gap: spacing.sm,
-  },
-});
+function createStyles(colors: ColorPalette) {
+  return StyleSheet.create({
+    list: {
+      gap: spacing.sm,
+    },
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.sm,
+    },
+    iconInput: {
+      width: 48,
+      textAlign: 'center',
+      backgroundColor: colors.surfaceAlt,
+      borderRadius: radius.sm,
+      padding: spacing.sm,
+      fontSize: 20,
+      color: colors.text,
+    },
+    nameInput: {
+      flex: 1,
+      backgroundColor: colors.surfaceAlt,
+      borderRadius: radius.sm,
+      padding: spacing.sm,
+      fontSize: 16,
+      color: colors.text,
+    },
+    addCard: {
+      gap: spacing.sm,
+    },
+  });
+}

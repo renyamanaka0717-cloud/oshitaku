@@ -5,9 +5,11 @@ import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { ChecklistItem } from '@/components/ChecklistItem';
 import { CelebrationModal } from '@/components/CelebrationModal';
+import { AllCompleteCelebration } from '@/components/AllCompleteCelebration';
 import { BigCountdown } from '@/features/morning/components/BigCountdown';
 import { useActiveChild } from '@/features/child/store';
 import { useMorningStore } from '@/features/morning/store';
+import { isAllCompleteToday } from '@/features/home/allComplete';
 import { spacing } from '@/theme';
 
 export default function MorningMode() {
@@ -17,13 +19,18 @@ export default function MorningMode() {
   const toggle = useMorningStore((s) => s.toggle);
 
   const [celebration, setCelebration] = useState<{ points: number; stampKind: 'normal' | 'rare' | null; stampType?: string } | null>(null);
+  const [allComplete, setAllComplete] = useState(false);
 
   if (!child) return null;
 
   const handleToggle = async (taskId: string) => {
     const result = await toggle(child, taskId);
     if (result?.gotStamp) {
-      setCelebration({ points: result.pointsAwarded, stampKind: result.stampKind });
+      if (isAllCompleteToday()) {
+        setAllComplete(true);
+      } else {
+        setCelebration({ points: result.pointsAwarded, stampKind: result.stampKind, stampType: result.stampType });
+      }
     }
   };
 
@@ -50,6 +57,8 @@ export default function MorningMode() {
         stampType={celebration?.stampType}
         onClose={() => setCelebration(null)}
       />
+
+      <AllCompleteCelebration visible={allComplete} onClose={() => setAllComplete(false)} />
     </Screen>
   );
 }

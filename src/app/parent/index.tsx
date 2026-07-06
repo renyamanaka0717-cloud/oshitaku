@@ -6,11 +6,12 @@ import { HeaderBar } from '@/components/HeaderBar';
 import { AppText } from '@/components/AppText';
 import { PinPad } from '@/components/PinPad';
 import { useParentAuthStore } from '@/features/parent/store';
-import { colors, spacing } from '@/theme';
+import { spacing, useTheme } from '@/theme';
 
 const PIN_LENGTH = 4;
 
 export default function ParentGate() {
+  const { colors } = useTheme();
   const { hasPin, loaded, load, setPin, verifyPin } = useParentAuthStore();
   const [pin, setPinValue] = useState('');
   const [confirmPin, setConfirmPin] = useState<string | null>(null);

@@ -1,9 +1,10 @@
-import { StyleSheet, View } from 'react-native';
+import { useMemo } from 'react';
+import { Image, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
 import { Reward } from '@/db/models';
-import { colors, spacing } from '@/theme';
+import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 type Props = {
   reward: Reward;
@@ -12,36 +13,85 @@ type Props = {
 };
 
 export function RewardCard({ reward, currentPoints, onExchange }: Props) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const canAfford = currentPoints >= reward.pointCost;
+
   return (
     <Card style={styles.card}>
-      <AppText style={styles.icon}>{reward.icon}</AppText>
-      <View style={styles.info}>
-        <AppText variant="subtitle">{reward.name}</AppText>
-        <AppText variant="caption" color={colors.textMuted}>
-          {reward.pointCost} ポイント
+      <View style={styles.imageBox}>
+        {reward.imageUri ? (
+          <Image source={{ uri: reward.imageUri }} style={styles.image} resizeMode="cover" />
+        ) : (
+          <AppText style={styles.icon}>{reward.icon}</AppText>
+        )}
+      </View>
+
+      <AppText variant="subtitle" style={styles.name} numberOfLines={1}>
+        {reward.name}
+      </AppText>
+      {reward.description ? (
+        <AppText variant="caption" color={colors.textMuted} numberOfLines={2} style={styles.description}>
+          {reward.description}
+        </AppText>
+      ) : null}
+
+      <View style={styles.costBadge}>
+        <AppText variant="caption" color={colors.primaryDark}>
+          ⭐ {reward.pointCost}pt
         </AppText>
       </View>
+
       <Button
         label="こうかん"
         onPress={onExchange}
         disabled={!canAfford}
         variant={canAfford ? 'secondary' : 'ghost'}
+        style={styles.button}
       />
     </Card>
   );
 }
 
-const styles = StyleSheet.create({
-  card: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.md,
-  },
-  icon: {
-    fontSize: 36,
-  },
-  info: {
-    flex: 1,
-  },
-});
+function createStyles(colors: ColorPalette) {
+  return StyleSheet.create({
+    card: {
+      flex: 1,
+      minWidth: 150,
+      gap: spacing.xs,
+      alignItems: 'center',
+    },
+    imageBox: {
+      width: '100%',
+      aspectRatio: 1.3,
+      borderRadius: radius.md,
+      backgroundColor: colors.surfaceAlt,
+      alignItems: 'center',
+      justifyContent: 'center',
+      overflow: 'hidden',
+    },
+    image: {
+      width: '100%',
+      height: '100%',
+    },
+    icon: {
+      fontSize: 44,
+    },
+    name: {
+      alignSelf: 'stretch',
+    },
+    description: {
+      alignSelf: 'stretch',
+    },
+    costBadge: {
+      backgroundColor: colors.surfaceAlt,
+      borderRadius: radius.round,
+      paddingVertical: 2,
+      paddingHorizontal: spacing.sm,
+    },
+    button: {
+      alignSelf: 'stretch',
+      marginTop: spacing.xs,
+    },
+  });
+}

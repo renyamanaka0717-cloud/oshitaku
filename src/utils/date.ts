@@ -50,3 +50,18 @@ export function formatMinutes(totalMinutes: number): string {
   if (h > 0) return `${sign}${h}時間${m}分`;
   return `${sign}${m}分`;
 }
+
+export function daysInMonth(year: number, month: number): number {
+  return new Date(year, month + 1, 0).getDate();
+}
+
+export function firstWeekdayOfMonth(year: number, month: number): number {
+  return new Date(year, month, 1).getDay();
+}
+
+export function formatTime(iso: string): string {
+  const d = new Date(iso);
+  const h = String(d.getHours()).padStart(2, '0');
+  const m = String(d.getMinutes()).padStart(2, '0');
+  return `${h}:${m}`;
+}

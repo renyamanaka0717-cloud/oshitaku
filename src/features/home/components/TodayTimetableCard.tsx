@@ -1,8 +1,10 @@
+import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Card } from '@/components/Card';
 import { AppText } from '@/components/AppText';
 import { SectionHeader } from '@/components/SectionHeader';
-import { colors, radius, spacing } from '@/theme';
+import { EmptyState } from '@/components/EmptyState';
+import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 import { Subject, TimetableEntry } from '@/db/models';
 
 type Props = {
@@ -10,13 +12,13 @@ type Props = {
 };
 
 export function TodayTimetableCard({ entries }: Props) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <Card>
       <SectionHeader title="今日の時間割" icon="📚" />
       {entries.length === 0 ? (
-        <AppText variant="body" color={colors.textMuted} style={styles.empty}>
-          時間割がまだ登録されていません
-        </AppText>
+        <EmptyState icon="📚" message="時間割がまだ登録されていません" />
       ) : (
         <View style={styles.list}>
           {entries.map((entry) => (
@@ -35,24 +37,23 @@ export function TodayTimetableCard({ entries }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  empty: {
-    marginTop: spacing.sm,
-  },
-  list: {
-    gap: spacing.sm,
-    marginTop: spacing.sm,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.md,
-  },
-  periodBadge: {
-    width: 32,
-    height: 32,
-    borderRadius: radius.round,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+function createStyles(colors: ColorPalette) {
+  return StyleSheet.create({
+    list: {
+      gap: spacing.sm,
+      marginTop: spacing.sm,
+    },
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.md,
+    },
+    periodBadge: {
+      width: 32,
+      height: 32,
+      borderRadius: radius.round,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+  });
+}

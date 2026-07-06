@@ -1,7 +1,8 @@
+import { useMemo } from 'react';
 import { Modal, Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { Child } from '@/db/models';
-import { colors, radius, spacing } from '@/theme';
+import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 type Props = {
   visible: boolean;
@@ -12,6 +13,9 @@ type Props = {
 };
 
 export function ChildSwitcherModal({ visible, children, activeChildId, onSelect, onClose }: Props) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
+
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <Pressable style={styles.backdrop} onPress={onClose}>
@@ -44,41 +48,43 @@ export function ChildSwitcherModal({ visible, children, activeChildId, onSelect,
   );
 }
 
-const styles = StyleSheet.create({
-  backdrop: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.35)',
-    justifyContent: 'flex-end',
-  },
-  sheet: {
-    backgroundColor: colors.surface,
-    borderTopLeftRadius: radius.xl,
-    borderTopRightRadius: radius.xl,
-    padding: spacing.lg,
-    gap: spacing.md,
-  },
-  title: {
-    textAlign: 'center',
-  },
-  grid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.md,
-    justifyContent: 'center',
-  },
-  item: {
-    width: 100,
-    height: 100,
-    borderRadius: radius.lg,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 4,
-  },
-  itemActive: {
-    borderWidth: 4,
-    borderColor: colors.primaryDark,
-  },
-  emoji: {
-    fontSize: 36,
-  },
-});
+function createStyles(colors: ColorPalette) {
+  return StyleSheet.create({
+    backdrop: {
+      flex: 1,
+      backgroundColor: 'rgba(0,0,0,0.35)',
+      justifyContent: 'flex-end',
+    },
+    sheet: {
+      backgroundColor: colors.surface,
+      borderTopLeftRadius: radius.xl,
+      borderTopRightRadius: radius.xl,
+      padding: spacing.lg,
+      gap: spacing.md,
+    },
+    title: {
+      textAlign: 'center',
+    },
+    grid: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: spacing.md,
+      justifyContent: 'center',
+    },
+    item: {
+      width: 100,
+      height: 100,
+      borderRadius: radius.lg,
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 4,
+    },
+    itemActive: {
+      borderWidth: 4,
+      borderColor: colors.primaryDark,
+    },
+    emoji: {
+      fontSize: 36,
+    },
+  });
+}

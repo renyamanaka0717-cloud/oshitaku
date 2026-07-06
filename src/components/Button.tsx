@@ -1,7 +1,8 @@
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import {
   Animated,
   Pressable,
+  StyleProp,
   StyleSheet,
   ViewStyle,
   TextStyle,
@@ -9,7 +10,7 @@ import {
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { AppText } from './AppText';
-import { colors, radius, spacing } from '@/theme';
+import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
 type Size = 'md' | 'lg';
@@ -20,17 +21,19 @@ type Props = {
   variant?: Variant;
   size?: Size;
   disabled?: boolean;
-  style?: ViewStyle;
-  textStyle?: TextStyle;
+  style?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
   icon?: string;
 };
 
-const variantStyles: Record<Variant, { bg: string; text: string }> = {
-  primary: { bg: colors.primary, text: colors.textOnPrimary },
-  secondary: { bg: colors.secondary, text: colors.textOnPrimary },
-  ghost: { bg: colors.surfaceAlt, text: colors.text },
-  danger: { bg: colors.danger, text: colors.textOnPrimary },
-};
+function getVariantStyles(colors: ColorPalette): Record<Variant, { bg: string; text: string }> {
+  return {
+    primary: { bg: colors.primary, text: colors.textOnPrimary },
+    secondary: { bg: colors.secondary, text: colors.textOnPrimary },
+    ghost: { bg: colors.surfaceAlt, text: colors.text },
+    danger: { bg: colors.danger, text: colors.textOnPrimary },
+  };
+}
 
 export function Button({
   label,
@@ -42,8 +45,10 @@ export function Button({
   textStyle,
   icon,
 }: Props) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(), []);
+  const v = useMemo(() => getVariantStyles(colors), [colors])[variant];
   const scale = useRef(new Animated.Value(1)).current;
-  const v = variantStyles[variant];
 
   const pressIn = () => {
     Animated.spring(scale, { toValue: 0.94, useNativeDriver: true, speed: 40 }).start();
@@ -82,26 +87,28 @@ export function Button({
   );
 }
 
-const styles = StyleSheet.create({
-  base: {
-    borderRadius: radius.round,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: spacing.sm,
-  },
-  md: {
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.lg,
-  },
-  lg: {
-    paddingVertical: spacing.lg,
-    paddingHorizontal: spacing.xl,
-  },
-  disabled: {
-    opacity: 0.5,
-  },
-  icon: {
-    fontSize: 20,
-  },
-});
+function createStyles() {
+  return StyleSheet.create({
+    base: {
+      borderRadius: radius.round,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: spacing.sm,
+    },
+    md: {
+      paddingVertical: spacing.md,
+      paddingHorizontal: spacing.lg,
+    },
+    lg: {
+      paddingVertical: spacing.lg,
+      paddingHorizontal: spacing.xl,
+    },
+    disabled: {
+      opacity: 0.5,
+    },
+    icon: {
+      fontSize: 20,
+    },
+  });
+}

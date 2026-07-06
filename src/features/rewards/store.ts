@@ -8,8 +8,8 @@ type RewardsState = {
   childId: string | null;
   rewards: Reward[];
   load: (childId: string) => Promise<void>;
-  createReward: (input: { name: string; icon: string; pointCost: number }) => Promise<void>;
-  updateReward: (id: string, input: Partial<Pick<Reward, 'name' | 'icon' | 'pointCost' | 'isActive'>>) => Promise<void>;
+  createReward: (input: { name: string; icon: string; description?: string; imageUri?: string | null; pointCost: number }) => Promise<void>;
+  updateReward: (id: string, input: Partial<Pick<Reward, 'name' | 'icon' | 'description' | 'imageUri' | 'pointCost' | 'isActive'>>) => Promise<void>;
   deleteReward: (id: string) => Promise<void>;
   exchange: (reward: Reward) => Promise<boolean>;
 };

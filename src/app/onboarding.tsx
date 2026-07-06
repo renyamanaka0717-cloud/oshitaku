@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
 import { Screen } from '@/components/Screen';
@@ -6,11 +6,13 @@ import { AppText } from '@/components/AppText';
 import { Card } from '@/components/Card';
 import { Button } from '@/components/Button';
 import { useChildStore } from '@/features/child/store';
-import { colors, radius, spacing } from '@/theme';
+import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 const AVATARS = ['🐣', '🐻', '🐰', '🐱', '🦊', '🐶', '🐼', '🦁'];
 
 export default function Onboarding() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const addChild = useChildStore((s) => s.addChild);
   const [name, setName] = useState('');
   const [avatar, setAvatar] = useState(AVATARS[0]);
@@ -67,31 +69,33 @@ export default function Onboarding() {
   );
 }
 
-const styles = StyleSheet.create({
-  center: { textAlign: 'center' },
-  subtitle: { marginBottom: spacing.md },
-  label: { marginBottom: spacing.sm },
-  input: {
-    backgroundColor: colors.surfaceAlt,
-    borderRadius: radius.md,
-    padding: spacing.md,
-    fontSize: 18,
-    color: colors.text,
-    marginBottom: spacing.lg,
-  },
-  avatarRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.sm,
-  },
-  avatar: {
-    fontSize: 32,
-    padding: spacing.sm,
-    borderRadius: radius.round,
-    backgroundColor: colors.surfaceAlt,
-    overflow: 'hidden',
-  },
-  avatarSelected: {
-    backgroundColor: colors.accent,
-  },
-});
+function createStyles(colors: ColorPalette) {
+  return StyleSheet.create({
+    center: { textAlign: 'center' },
+    subtitle: { marginBottom: spacing.md },
+    label: { marginBottom: spacing.sm },
+    input: {
+      backgroundColor: colors.surfaceAlt,
+      borderRadius: radius.md,
+      padding: spacing.md,
+      fontSize: 18,
+      color: colors.text,
+      marginBottom: spacing.lg,
+    },
+    avatarRow: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: spacing.sm,
+    },
+    avatar: {
+      fontSize: 32,
+      padding: spacing.sm,
+      borderRadius: radius.round,
+      backgroundColor: colors.surfaceAlt,
+      overflow: 'hidden',
+    },
+    avatarSelected: {
+      backgroundColor: colors.accent,
+    },
+  });
+}

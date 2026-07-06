@@ -2,9 +2,10 @@ import { useEffect } from 'react';
 import { View } from 'react-native';
 import { Redirect } from 'expo-router';
 import { useChildStore } from '@/features/child/store';
-import { colors } from '@/theme';
+import { useTheme } from '@/theme';
 
 export default function Index() {
+  const { colors } = useTheme();
   const { loaded, children, load } = useChildStore();
 
   useEffect(() => {

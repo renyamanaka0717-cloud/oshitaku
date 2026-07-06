@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { router } from 'expo-router';
 import { Screen } from '@/components/Screen';
@@ -6,7 +7,7 @@ import { AppText } from '@/components/AppText';
 import { Card } from '@/components/Card';
 import { useActiveChild, useChildStore } from '@/features/child/store';
 import { useParentAuthStore } from '@/features/parent/store';
-import { colors, radius, spacing } from '@/theme';
+import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 const MENU: Array<{ href: string; icon: string; label: string; description: string }> = [
   { href: '/parent/children', icon: '👨‍👩‍👧‍👦', label: 'お子さま管理', description: 'きょうだいの追加・登校時間' },
@@ -16,9 +17,12 @@ const MENU: Array<{ href: string; icon: string; label: string; description: stri
   { href: '/parent/points', icon: '⭐', label: 'ポイント設定', description: 'もらえるポイント数' },
   { href: '/parent/rewards', icon: '🎁', label: 'ごほうび設定', description: 'ごほうびと交換履歴' },
   { href: '/parent/notifications', icon: '🔔', label: '通知設定', description: '通知する時間' },
+  { href: '/parent/appearance', icon: '🎨', label: '表示設定', description: 'ライト・ダークモード' },
 ];
 
 export default function ParentDashboard() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const child = useActiveChild();
   const lock = useParentAuthStore((s) => s.lock);
 
@@ -35,9 +39,7 @@ export default function ParentDashboard() {
         <Card style={styles.childCard}>
           <AppText style={styles.emoji}>{child.avatarEmoji}</AppText>
           <View>
-            <AppText variant="caption" color={colors.textMuted}>
-              いま設定中のお子さま
-            </AppText>
+            <AppText variant="caption">いま設定中のお子さま</AppText>
             <AppText variant="subtitle">{child.name}</AppText>
           </View>
         </Card>
@@ -49,9 +51,7 @@ export default function ParentDashboard() {
             <AppText style={styles.menuIcon}>{item.icon}</AppText>
             <View style={styles.menuText}>
               <AppText variant="subtitle">{item.label}</AppText>
-              <AppText variant="caption" color={colors.textMuted}>
-                {item.description}
-              </AppText>
+              <AppText variant="caption">{item.description}</AppText>
             </View>
             <AppText style={styles.chevron}>›</AppText>
           </Pressable>
@@ -61,34 +61,36 @@ export default function ParentDashboard() {
   );
 }
 
-const styles = StyleSheet.create({
-  childCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.md,
-  },
-  emoji: {
-    fontSize: 36,
-  },
-  menu: {
-    gap: spacing.sm,
-  },
-  menuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.md,
-    backgroundColor: colors.surface,
-    borderRadius: radius.lg,
-    padding: spacing.md,
-  },
-  menuIcon: {
-    fontSize: 28,
-  },
-  menuText: {
-    flex: 1,
-  },
-  chevron: {
-    fontSize: 24,
-    color: colors.textMuted,
-  },
-});
+function createStyles(colors: ColorPalette) {
+  return StyleSheet.create({
+    childCard: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.md,
+    },
+    emoji: {
+      fontSize: 36,
+    },
+    menu: {
+      gap: spacing.sm,
+    },
+    menuItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.md,
+      backgroundColor: colors.surface,
+      borderRadius: radius.lg,
+      padding: spacing.md,
+    },
+    menuIcon: {
+      fontSize: 28,
+    },
+    menuText: {
+      flex: 1,
+    },
+    chevron: {
+      fontSize: 24,
+      color: colors.textMuted,
+    },
+  });
+}

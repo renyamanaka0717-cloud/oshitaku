@@ -11,13 +11,15 @@ import { SubjectPickerModal } from '@/features/timetable/components/SubjectPicke
 import { ItemMultiPickerModal } from '@/features/timetable/components/ItemMultiPickerModal';
 import { useActiveChild } from '@/features/child/store';
 import { useTimetableStore } from '@/features/timetable/store';
-import { colors, radius, spacing } from '@/theme';
+import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 import { WEEKDAY_LABELS_JA } from '@/utils/date';
 
 const DAYS = [1, 2, 3, 4, 5]; // 月-金
 const PERIODS = [1, 2, 3, 4, 5, 6];
 
 export default function TimetableSettings() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const child = useActiveChild();
   const load = useTimetableStore((s) => s.load);
   const subjects = useTimetableStore((s) => s.subjects);
@@ -78,9 +80,7 @@ export default function TimetableSettings() {
           />
           <Button label="追加" onPress={handleAddSubject} disabled={!subjectName.trim()} />
         </View>
-        <AppText variant="caption" color={colors.textMuted}>
-          教科をタップすると必要な持ち物を設定できます
-        </AppText>
+        <AppText variant="caption">教科をタップすると必要な持ち物を設定できます</AppText>
       </View>
 
       <View style={styles.section}>
@@ -149,65 +149,67 @@ export default function TimetableSettings() {
   );
 }
 
-const styles = StyleSheet.create({
-  section: {
-    gap: spacing.sm,
-  },
-  subjectList: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.xs,
-  },
-  subjectChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.xs,
-    borderRadius: radius.round,
-    paddingVertical: spacing.xs,
-    paddingHorizontal: spacing.md,
-  },
-  row: {
-    flexDirection: 'row',
-    gap: spacing.sm,
-    alignItems: 'center',
-  },
-  input: {
-    flex: 1,
-    backgroundColor: colors.surfaceAlt,
-    borderRadius: radius.sm,
-    padding: spacing.sm,
-    fontSize: 16,
-    color: colors.text,
-  },
-  dayTabs: {
-    flexDirection: 'row',
-    gap: spacing.xs,
-  },
-  dayTab: {
-    flex: 1,
-    alignItems: 'center',
-    paddingVertical: spacing.sm,
-    borderRadius: radius.md,
-    backgroundColor: colors.surfaceAlt,
-  },
-  dayTabActive: {
-    backgroundColor: colors.primary,
-  },
-  periodList: {
-    gap: spacing.sm,
-  },
-  periodRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-  },
-  periodBadge: {
-    width: 32,
-    alignItems: 'center',
-  },
-  subjectSlot: {
-    flex: 1,
-    borderRadius: radius.md,
-    padding: spacing.md,
-  },
-});
+function createStyles(colors: ColorPalette) {
+  return StyleSheet.create({
+    section: {
+      gap: spacing.sm,
+    },
+    subjectList: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: spacing.xs,
+    },
+    subjectChip: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.xs,
+      borderRadius: radius.round,
+      paddingVertical: spacing.xs,
+      paddingHorizontal: spacing.md,
+    },
+    row: {
+      flexDirection: 'row',
+      gap: spacing.sm,
+      alignItems: 'center',
+    },
+    input: {
+      flex: 1,
+      backgroundColor: colors.surfaceAlt,
+      borderRadius: radius.sm,
+      padding: spacing.sm,
+      fontSize: 16,
+      color: colors.text,
+    },
+    dayTabs: {
+      flexDirection: 'row',
+      gap: spacing.xs,
+    },
+    dayTab: {
+      flex: 1,
+      alignItems: 'center',
+      paddingVertical: spacing.sm,
+      borderRadius: radius.md,
+      backgroundColor: colors.surfaceAlt,
+    },
+    dayTabActive: {
+      backgroundColor: colors.primary,
+    },
+    periodList: {
+      gap: spacing.sm,
+    },
+    periodRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.sm,
+    },
+    periodBadge: {
+      width: 32,
+      alignItems: 'center',
+    },
+    subjectSlot: {
+      flex: 1,
+      borderRadius: radius.md,
+      padding: spacing.md,
+    },
+  });
+}

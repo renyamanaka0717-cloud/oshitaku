@@ -25,6 +25,8 @@ export async function createReward(input: {
   childId: string;
   name: string;
   icon: string;
+  description?: string;
+  imageUri?: string | null;
   pointCost: number;
 }): Promise<Reward> {
   const db = await getDb();
@@ -33,21 +35,33 @@ export async function createReward(input: {
     childId: input.childId,
     name: input.name,
     icon: input.icon,
+    description: input.description ?? '',
+    imageUri: input.imageUri ?? null,
     pointCost: input.pointCost,
     isActive: true,
     createdAt: new Date().toISOString(),
   };
   await db.runAsync(
-    `INSERT INTO reward (id, childId, name, icon, pointCost, isActive, createdAt)
-     VALUES (?, ?, ?, ?, ?, ?, ?)`,
-    [reward.id, reward.childId, reward.name, reward.icon, reward.pointCost, 1, reward.createdAt]
+    `INSERT INTO reward (id, childId, name, icon, description, imageUri, pointCost, isActive, createdAt)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [
+      reward.id,
+      reward.childId,
+      reward.name,
+      reward.icon,
+      reward.description,
+      reward.imageUri,
+      reward.pointCost,
+      1,
+      reward.createdAt,
+    ]
   );
   return reward;
 }
 
 export async function updateReward(
   id: string,
-  input: Partial<Pick<Reward, 'name' | 'icon' | 'pointCost' | 'isActive'>>
+  input: Partial<Pick<Reward, 'name' | 'icon' | 'description' | 'imageUri' | 'pointCost' | 'isActive'>>
 ): Promise<void> {
   const db = await getDb();
   const fields = Object.keys(input);

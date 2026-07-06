@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { StyleSheet, Switch, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
 import { Screen } from '@/components/Screen';
@@ -7,9 +7,11 @@ import { AppText } from '@/components/AppText';
 import { Card } from '@/components/Card';
 import { useActiveChild } from '@/features/child/store';
 import { useNotificationStore } from '@/features/notifications/store';
-import { colors, radius, spacing } from '@/theme';
+import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 export default function NotificationsSettings() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const child = useActiveChild();
   const setting = useNotificationStore((s) => s.setting);
   const load = useNotificationStore((s) => s.load);
@@ -34,6 +36,7 @@ export default function NotificationsSettings() {
             onChangeText={(v) => update(child.name, { morningTime: v })}
             style={styles.timeInput}
             placeholder="07:00"
+            placeholderTextColor={colors.textMuted}
           />
         </View>
         <Switch
@@ -51,6 +54,7 @@ export default function NotificationsSettings() {
             onChangeText={(v) => update(child.name, { eveningTime: v })}
             style={styles.timeInput}
             placeholder="20:00"
+            placeholderTextColor={colors.textMuted}
           />
         </View>
         <Switch
@@ -63,9 +67,7 @@ export default function NotificationsSettings() {
         <AppText style={styles.icon}>📝</AppText>
         <View style={styles.info}>
           <AppText variant="subtitle">未完了リマインド</AppText>
-          <AppText variant="caption" color={colors.textMuted}>
-            朝の通知から{setting.reminderMinutesAfter}分後
-          </AppText>
+          <AppText variant="caption">朝の通知から{setting.reminderMinutesAfter}分後</AppText>
         </View>
         <Switch
           value={setting.reminderEnabled}
@@ -76,25 +78,27 @@ export default function NotificationsSettings() {
   );
 }
 
-const styles = StyleSheet.create({
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.md,
-  },
-  icon: {
-    fontSize: 28,
-  },
-  info: {
-    flex: 1,
-    gap: 4,
-  },
-  timeInput: {
-    backgroundColor: colors.surfaceAlt,
-    borderRadius: radius.sm,
-    padding: spacing.sm,
-    fontSize: 16,
-    color: colors.text,
-    width: 100,
-  },
-});
+function createStyles(colors: ColorPalette) {
+  return StyleSheet.create({
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.md,
+    },
+    icon: {
+      fontSize: 28,
+    },
+    info: {
+      flex: 1,
+      gap: 4,
+    },
+    timeInput: {
+      backgroundColor: colors.surfaceAlt,
+      borderRadius: radius.sm,
+      padding: spacing.sm,
+      fontSize: 16,
+      color: colors.text,
+      width: 100,
+    },
+  });
+}

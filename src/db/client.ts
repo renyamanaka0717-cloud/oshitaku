@@ -151,6 +151,14 @@ async function migrate(db: SQLite.SQLiteDatabase) {
     version = 1;
   }
 
+  if (version < 2) {
+    await db.execAsync(`
+      ALTER TABLE reward ADD COLUMN description TEXT NOT NULL DEFAULT '';
+      ALTER TABLE reward ADD COLUMN imageUri TEXT;
+    `);
+    version = 2;
+  }
+
   await db.execAsync(`PRAGMA user_version = ${version}`);
 }
 

@@ -1,8 +1,9 @@
+import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Card } from '@/components/Card';
 import { AppText } from '@/components/AppText';
 import { SectionHeader } from '@/components/SectionHeader';
-import { colors, radius, spacing } from '@/theme';
+import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 import { Item, Subject, TimetableEntry } from '@/db/models';
 
 type Props = {
@@ -11,6 +12,9 @@ type Props = {
 };
 
 export function TomorrowPreview({ entries, items }: Props) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
+
   return (
     <Card style={styles.card}>
       <SectionHeader title="明日の時間割" icon="📅" />
@@ -48,24 +52,26 @@ export function TomorrowPreview({ entries, items }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  card: {
-    gap: spacing.sm,
-  },
-  subjectRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.xs,
-  },
-  chip: {
-    borderRadius: radius.round,
-    paddingVertical: spacing.xs,
-    paddingHorizontal: spacing.sm,
-  },
-  itemChip: {
-    borderRadius: radius.round,
-    paddingVertical: spacing.xs,
-    paddingHorizontal: spacing.sm,
-    backgroundColor: colors.surfaceAlt,
-  },
-});
+function createStyles(colors: ColorPalette) {
+  return StyleSheet.create({
+    card: {
+      gap: spacing.sm,
+    },
+    subjectRow: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: spacing.xs,
+    },
+    chip: {
+      borderRadius: radius.round,
+      paddingVertical: spacing.xs,
+      paddingHorizontal: spacing.sm,
+    },
+    itemChip: {
+      borderRadius: radius.round,
+      paddingVertical: spacing.xs,
+      paddingHorizontal: spacing.sm,
+      backgroundColor: colors.surfaceAlt,
+    },
+  });
+}

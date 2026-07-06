@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
 import { Screen } from '@/components/Screen';
@@ -19,9 +19,11 @@ import {
   updateMorningTask,
 } from '@/db/repositories/taskRepository';
 import { EveningTask, MorningTask } from '@/db/models';
-import { colors, radius, spacing } from '@/theme';
+import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 export default function TasksSettings() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const child = useActiveChild();
   const [morningTasks, setMorningTasks] = useState<MorningTask[]>([]);
   const [eveningTasks, setEveningTasks] = useState<EveningTask[]>([]);
@@ -125,29 +127,32 @@ export default function TasksSettings() {
   );
 }
 
-const styles = StyleSheet.create({
-  section: {
-    gap: spacing.sm,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-  },
-  iconInput: {
-    width: 44,
-    textAlign: 'center',
-    backgroundColor: colors.surfaceAlt,
-    borderRadius: radius.sm,
-    padding: spacing.sm,
-    fontSize: 18,
-  },
-  labelInput: {
-    flex: 1,
-    backgroundColor: colors.surfaceAlt,
-    borderRadius: radius.sm,
-    padding: spacing.sm,
-    fontSize: 16,
-    color: colors.text,
-  },
-});
+function createStyles(colors: ColorPalette) {
+  return StyleSheet.create({
+    section: {
+      gap: spacing.sm,
+    },
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.sm,
+    },
+    iconInput: {
+      width: 44,
+      textAlign: 'center',
+      backgroundColor: colors.surfaceAlt,
+      borderRadius: radius.sm,
+      padding: spacing.sm,
+      fontSize: 18,
+      color: colors.text,
+    },
+    labelInput: {
+      flex: 1,
+      backgroundColor: colors.surfaceAlt,
+      borderRadius: radius.sm,
+      padding: spacing.sm,
+      fontSize: 16,
+      color: colors.text,
+    },
+  });
+}

@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Child } from '@/db/models';
 import { AppText } from '@/components/AppText';
-import { colors, radius, spacing } from '@/theme';
+import { radius, spacing, useTheme } from '@/theme';
 import { formatJapaneseDate } from '@/utils/date';
 
 function greetingForHour(hour: number): string {
@@ -16,6 +16,7 @@ type Props = {
 };
 
 export function GreetingHeader({ child, onPressAvatar }: Props) {
+  const { colors } = useTheme();
   const now = new Date();
   return (
     <View style={styles.row}>

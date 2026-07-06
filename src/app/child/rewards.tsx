@@ -3,14 +3,16 @@ import { StyleSheet, View } from 'react-native';
 import { router } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
-import { AppText } from '@/components/AppText';
 import { SectionHeader } from '@/components/SectionHeader';
 import { StatBadge } from '@/components/StatBadge';
+import { EmptyState } from '@/components/EmptyState';
 import { RewardCard } from '@/features/rewards/components/RewardCard';
+import { RewardCelebration } from '@/features/rewards/components/RewardCelebration';
 import { StampGrid } from '@/features/stamps/components/StampGrid';
 import { useRewardsStore } from '@/features/rewards/store';
 import { usePointsStore } from '@/features/points/store';
 import { useStampsStore } from '@/features/stamps/store';
+import { Reward } from '@/db/models';
 import { colors, spacing } from '@/theme';
 
 export default function RewardsScreen() {
@@ -19,14 +21,13 @@ export default function RewardsScreen() {
   const exchange = useRewardsStore((s) => s.exchange);
   const totalPoints = usePointsStore((s) => s.total);
   const stamps = useStampsStore((s) => s.stamps);
-  const [message, setMessage] = useState<string | null>(null);
+  const [gotReward, setGotReward] = useState<Reward | null>(null);
 
   const handleExchange = async (rewardId: string) => {
     const reward = rewards.find((r) => r.id === rewardId);
     if (!reward) return;
     const ok = await exchange(reward);
-    setMessage(ok ? `${reward.name}とこうかんしたよ！🎉` : 'ポイントがたりないよ');
-    setTimeout(() => setMessage(null), 2000);
+    if (ok) setGotReward(reward);
   };
 
   return (
@@ -35,20 +36,12 @@ export default function RewardsScreen() {
 
       <StatBadge icon="⭐" value={totalPoints} label="いまのポイント" color={colors.accent} />
 
-      {message ? (
-        <AppText variant="subtitle" color={colors.primaryDark} style={styles.message}>
-          {message}
-        </AppText>
-      ) : null}
-
       <View style={styles.section}>
         <SectionHeader title="ごほうびこうかん" icon="🎁" />
         {rewards.length === 0 ? (
-          <AppText variant="body" color={colors.textMuted}>
-            ごほうびがまだ登録されていません
-          </AppText>
+          <EmptyState icon="🎁" message="ごほうびがまだ登録されていません" />
         ) : (
-          <View style={styles.list}>
+          <View style={styles.grid}>
             {rewards.map((reward) => (
               <RewardCard
                 key={reward.id}
@@ -65,6 +58,8 @@ export default function RewardsScreen() {
         <SectionHeader title="スタンプ帳" icon="📔" />
         <StampGrid stamps={stamps} />
       </View>
+
+      <RewardCelebration visible={!!gotReward} reward={gotReward} onClose={() => setGotReward(null)} />
     </Screen>
   );
 }
@@ -73,10 +68,9 @@ const styles = StyleSheet.create({
   section: {
     gap: spacing.sm,
   },
-  list: {
-    gap: spacing.sm,
-  },
-  message: {
-    textAlign: 'center',
+  grid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.md,
   },
 });

@@ -85,6 +85,8 @@ export type Reward = {
   childId: string;
   name: string;
   icon: string;
+  description: string;
+  imageUri: string | null;
   pointCost: number;
   isActive: boolean;
   createdAt: string;
