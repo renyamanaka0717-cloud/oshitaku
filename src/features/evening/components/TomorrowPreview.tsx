@@ -5,6 +5,7 @@ import { AppText } from '@/components/AppText';
 import { SectionHeader } from '@/components/SectionHeader';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 import { Item, Subject, TimetableEntry } from '@/db/models';
+import { LESSON_PERIOD } from '@/features/timetable/constants';
 
 type Props = {
   entries: Array<TimetableEntry & { subject: Subject | undefined }>;
@@ -27,7 +28,7 @@ export function TomorrowPreview({ entries, items }: Props) {
           {entries.map((e) => (
             <View key={e.id} style={[styles.chip, { backgroundColor: e.subject?.color ?? colors.surfaceAlt }]}>
               <AppText variant="caption" color={colors.white}>
-                {e.period}. {e.subject?.name ?? '？'}
+                {e.period === LESSON_PERIOD ? '🎨' : `${e.period}.`} {e.subject?.name ?? '？'}
               </AppText>
             </View>
           ))}

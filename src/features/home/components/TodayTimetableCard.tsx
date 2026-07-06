@@ -6,6 +6,7 @@ import { SectionHeader } from '@/components/SectionHeader';
 import { EmptyState } from '@/components/EmptyState';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 import { Subject, TimetableEntry } from '@/db/models';
+import { LESSON_PERIOD } from '@/features/timetable/constants';
 
 type Props = {
   entries: Array<TimetableEntry & { subject: Subject | undefined }>;
@@ -25,7 +26,7 @@ export function TodayTimetableCard({ entries }: Props) {
             <View key={entry.id} style={styles.row}>
               <View style={[styles.periodBadge, { backgroundColor: entry.subject?.color ?? colors.surfaceAlt }]}>
                 <AppText variant="subtitle" color={colors.white}>
-                  {entry.period}
+                  {entry.period === LESSON_PERIOD ? '🎨' : entry.period}
                 </AppText>
               </View>
               <AppText variant="subtitle">{entry.subject?.name ?? '？'}</AppText>

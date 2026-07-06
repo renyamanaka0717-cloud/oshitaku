@@ -31,6 +31,7 @@ export async function createChild(input: {
     schoolArrivalTime: input.schoolArrivalTime,
     sortOrder: countRow?.count ?? 0,
     createdAt: new Date().toISOString(),
+    activeTimetableSetId: null,
   };
   await db.runAsync(
     `INSERT INTO child (id, name, avatarEmoji, avatarColor, schoolArrivalTime, sortOrder, createdAt)
@@ -56,6 +57,11 @@ export async function createChild(input: {
   return child;
 }
 
+export async function setActiveTimetableSet(childId: string, timetableSetId: string): Promise<void> {
+  const db = await getDb();
+  await db.runAsync('UPDATE child SET activeTimetableSetId = ? WHERE id = ?', [timetableSetId, childId]);
+}
+
 export async function updateChild(
   id: string,
   input: Partial<Pick<Child, 'name' | 'avatarEmoji' | 'avatarColor' | 'schoolArrivalTime' | 'sortOrder'>>
@@ -79,6 +85,7 @@ export async function deleteChild(id: string): Promise<void> {
     await db.runAsync('DELETE FROM subject WHERE childId = ?', [id]);
     await db.runAsync('DELETE FROM item WHERE childId = ?', [id]);
     await db.runAsync('DELETE FROM timetable_entry WHERE childId = ?', [id]);
+    await db.runAsync('DELETE FROM timetable_set WHERE childId = ?', [id]);
     await db.runAsync('DELETE FROM morning_task WHERE childId = ?', [id]);
     await db.runAsync('DELETE FROM evening_task WHERE childId = ?', [id]);
     await db.runAsync('DELETE FROM daily_task_log WHERE childId = ?', [id]);

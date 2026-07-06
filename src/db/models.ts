@@ -6,6 +6,7 @@ export type Child = {
   schoolArrivalTime: string; // "HH:MM"
   sortOrder: number;
   createdAt: string;
+  activeTimetableSetId: string | null;
 };
 
 export type Subject = {
@@ -30,10 +31,19 @@ export type SubjectItemLink = {
   itemId: string;
 };
 
+export type TimetableSet = {
+  id: string;
+  childId: string;
+  name: string;
+  sortOrder: number;
+  createdAt: string;
+};
+
 // day of week: 0 = Sunday ... 6 = Saturday
 export type TimetableEntry = {
   id: string;
   childId: string;
+  timetableSetId: string;
   dayOfWeek: number;
   period: number;
   subjectId: string;

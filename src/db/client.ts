@@ -175,6 +175,38 @@ async function migrate(db: SQLite.SQLiteDatabase) {
     version = 4;
   }
 
+  if (version < 5) {
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS timetable_set (
+        id TEXT PRIMARY KEY NOT NULL,
+        childId TEXT NOT NULL,
+        name TEXT NOT NULL,
+        sortOrder INTEGER NOT NULL,
+        createdAt TEXT NOT NULL
+      );
+
+      ALTER TABLE timetable_entry ADD COLUMN timetableSetId TEXT NOT NULL DEFAULT '';
+      ALTER TABLE child ADD COLUMN activeTimetableSetId TEXT;
+    `);
+
+    // Backfill: give every existing child a default timetable set and
+    // attach their existing timetable_entry rows to it.
+    const children = await db.getAllAsync<{ id: string }>('SELECT id FROM child');
+    for (const { id: childId } of children) {
+      const setId = `default-${childId}`;
+      await db.runAsync(
+        'INSERT INTO timetable_set (id, childId, name, sortOrder, createdAt) VALUES (?, ?, ?, 0, ?)',
+        [setId, childId, '通常の時間割', new Date().toISOString()]
+      );
+      await db.runAsync(
+        "UPDATE timetable_entry SET timetableSetId = ? WHERE childId = ? AND timetableSetId = ''",
+        [setId, childId]
+      );
+      await db.runAsync('UPDATE child SET activeTimetableSetId = ? WHERE id = ?', [setId, childId]);
+    }
+    version = 5;
+  }
+
   await db.execAsync(`PRAGMA user_version = ${version}`);
 }
 

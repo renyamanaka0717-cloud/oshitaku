@@ -1,6 +1,7 @@
 import { create } from 'zustand';
-import { Item, Subject, TimetableEntry } from '@/db/models';
+import { Item, Subject, TimetableEntry, TimetableSet } from '@/db/models';
 import {
+  childRepository,
   subjectRepository,
   itemRepository,
   timetableRepository,
@@ -9,12 +10,19 @@ import { subjectPalette } from '@/theme';
 
 type TimetableState = {
   childId: string | null;
+  sets: TimetableSet[];
+  activeSetId: string | null;
   subjects: Subject[];
   items: Item[];
   entries: TimetableEntry[];
   subjectItemMap: Record<string, string[]>;
   isLoading: boolean;
   load: (childId: string) => Promise<void>;
+
+  createSet: (name: string) => Promise<TimetableSet>;
+  renameSet: (id: string, name: string) => Promise<void>;
+  deleteSet: (id: string) => Promise<void>;
+  setActiveSet: (id: string) => Promise<void>;
 
   createSubject: (name: string) => Promise<Subject>;
   updateSubject: (id: string, input: Partial<Pick<Subject, 'name' | 'color'>>) => Promise<void>;
@@ -33,6 +41,8 @@ type TimetableState = {
 
 export const useTimetableStore = create<TimetableState>((set, get) => ({
   childId: null,
+  sets: [],
+  activeSetId: null,
   subjects: [],
   items: [],
   entries: [],
@@ -41,15 +51,62 @@ export const useTimetableStore = create<TimetableState>((set, get) => ({
 
   load: async (childId: string) => {
     set({ isLoading: true });
-    const [subjects, items, entries] = await Promise.all([
+    await timetableRepository.ensureDefaultTimetableSet(childId);
+    const [sets, child, subjects, items] = await Promise.all([
+      timetableRepository.listTimetableSets(childId),
+      childRepository.getChild(childId),
       subjectRepository.listSubjects(childId),
       itemRepository.listItems(childId),
-      timetableRepository.listTimetable(childId),
     ]);
+    let activeSetId = child?.activeTimetableSetId ?? null;
+    if (!activeSetId || !sets.find((s) => s.id === activeSetId)) {
+      activeSetId = sets[0]?.id ?? null;
+    }
+    const entries = activeSetId ? await timetableRepository.listTimetable(activeSetId) : [];
     const map = await subjectRepository.getItemIdsForSubjects(subjects.map((s) => s.id));
     const subjectItemMap: Record<string, string[]> = {};
     map.forEach((v, k) => (subjectItemMap[k] = v));
-    set({ childId, subjects, items, entries, subjectItemMap, isLoading: false });
+    set({ childId, sets, activeSetId, subjects, items, entries, subjectItemMap, isLoading: false });
+  },
+
+  createSet: async (name: string) => {
+    const childId = get().childId!;
+    const newSet = await timetableRepository.createTimetableSet(childId, name);
+    await childRepository.setActiveTimetableSet(childId, newSet.id);
+    set({ sets: [...get().sets, newSet], activeSetId: newSet.id, entries: [] });
+    return newSet;
+  },
+
+  renameSet: async (id: string, name: string) => {
+    await timetableRepository.renameTimetableSet(id, name);
+    set({ sets: get().sets.map((s) => (s.id === id ? { ...s, name } : s)) });
+  },
+
+  deleteSet: async (id: string) => {
+    const { sets, activeSetId, childId } = get();
+    if (sets.length <= 1 || !childId) return;
+    await timetableRepository.deleteTimetableSet(id);
+    const remaining = sets.filter((s) => s.id !== id);
+
+    if (activeSetId !== id) {
+      set({ sets: remaining });
+      return;
+    }
+
+    const nextActiveId = remaining[0]?.id ?? null;
+    if (nextActiveId) {
+      await childRepository.setActiveTimetableSet(childId, nextActiveId);
+    }
+    const entries = nextActiveId ? await timetableRepository.listTimetable(nextActiveId) : [];
+    set({ sets: remaining, activeSetId: nextActiveId, entries });
+  },
+
+  setActiveSet: async (id: string) => {
+    const { childId, activeSetId } = get();
+    if (!childId || activeSetId === id) return;
+    await childRepository.setActiveTimetableSet(childId, id);
+    const entries = await timetableRepository.listTimetable(id);
+    set({ activeSetId: id, entries });
   },
 
   createSubject: async (name: string) => {
@@ -104,13 +161,27 @@ export const useTimetableStore = create<TimetableState>((set, get) => ({
   },
 
   setSlot: async (dayOfWeek: number, period: number, subjectId: string | null) => {
-    const childId = get().childId!;
-    await timetableRepository.setTimetableSlot({ childId, dayOfWeek, period, subjectId });
+    const { childId, activeSetId } = get();
+    if (!childId || !activeSetId) return;
+    await timetableRepository.setTimetableSlot({
+      childId,
+      timetableSetId: activeSetId,
+      dayOfWeek,
+      period,
+      subjectId,
+    });
     const entries = get().entries.filter(
       (e) => !(e.dayOfWeek === dayOfWeek && e.period === period)
     );
     if (subjectId) {
-      entries.push({ id: `${childId}-${dayOfWeek}-${period}`, childId, dayOfWeek, period, subjectId });
+      entries.push({
+        id: `${activeSetId}-${dayOfWeek}-${period}`,
+        childId,
+        timetableSetId: activeSetId,
+        dayOfWeek,
+        period,
+        subjectId,
+      });
     }
     set({ entries });
   },
