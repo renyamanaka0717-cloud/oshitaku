@@ -1,11 +1,13 @@
 import { useMemo, useState } from 'react';
-import { StyleSheet, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { AppText } from '@/components/AppText';
 import { Card } from '@/components/Card';
 import { Button } from '@/components/Button';
+import { ChildAvatar } from '@/features/child/components/ChildAvatar';
 import { useChildStore } from '@/features/child/store';
+import { pickChildAvatarImage } from '@/features/child/imagePicker';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 const AVATARS = ['🐣', '🐻', '🐰', '🐱', '🦊', '🐶', '🐼', '🦁'];
@@ -16,12 +18,23 @@ export default function Onboarding() {
   const addChild = useChildStore((s) => s.addChild);
   const [name, setName] = useState('');
   const [avatar, setAvatar] = useState(AVATARS[0]);
+  const [photoUri, setPhotoUri] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+
+  const handlePickPhoto = async () => {
+    const uri = await pickChildAvatarImage();
+    if (uri) setPhotoUri(uri);
+  };
+
+  const handleSelectEmoji = (a: string) => {
+    setAvatar(a);
+    setPhotoUri(null);
+  };
 
   const handleStart = async () => {
     if (!name.trim() || saving) return;
     setSaving(true);
-    await addChild({ name: name.trim(), avatarEmoji: avatar });
+    await addChild({ name: name.trim(), avatarEmoji: avatar, avatarImageUri: photoUri });
     setSaving(false);
     router.replace('/child/home');
   };
@@ -51,12 +64,28 @@ export default function Onboarding() {
         <AppText variant="subtitle" style={styles.label}>
           アイコンをえらぼう
         </AppText>
+        <View style={styles.photoRow}>
+          <ChildAvatar avatarImageUri={photoUri} avatarEmoji={avatar} avatarColor={colors.accent} size={56} />
+          <Pressable onPress={handlePickPhoto}>
+            <AppText color={colors.primaryDark}>📷 写真を選ぶ</AppText>
+          </Pressable>
+          {photoUri ? (
+            <Pressable onPress={() => setPhotoUri(null)}>
+              <AppText variant="caption" color={colors.textMuted}>
+                写真をやめる
+              </AppText>
+            </Pressable>
+          ) : null}
+        </View>
         <View style={styles.avatarRow}>
           {AVATARS.map((a) => (
             <AppText
               key={a}
-              onPress={() => setAvatar(a)}
-              style={[styles.avatar, avatar === a ? styles.avatarSelected : null]}
+              onPress={() => handleSelectEmoji(a)}
+              style={[
+                styles.avatar,
+                !photoUri && avatar === a ? styles.avatarSelected : null,
+              ]}
             >
               {a}
             </AppText>
@@ -81,6 +110,12 @@ function createStyles(colors: ColorPalette) {
       fontSize: 18,
       color: colors.text,
       marginBottom: spacing.lg,
+    },
+    photoRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.md,
+      marginBottom: spacing.md,
     },
     avatarRow: {
       flexDirection: 'row',

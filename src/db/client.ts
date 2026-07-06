@@ -207,6 +207,13 @@ async function migrate(db: SQLite.SQLiteDatabase) {
     version = 5;
   }
 
+  if (version < 6) {
+    await db.execAsync(`
+      ALTER TABLE child ADD COLUMN avatarImageUri TEXT;
+    `);
+    version = 6;
+  }
+
   await db.execAsync(`PRAGMA user_version = ${version}`);
 }
 

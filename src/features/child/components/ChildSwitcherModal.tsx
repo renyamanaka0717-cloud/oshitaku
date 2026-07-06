@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Modal, Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { Child } from '@/db/models';
+import { ChildAvatar } from './ChildAvatar';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 type Props = {
@@ -27,17 +28,18 @@ export function ChildSwitcherModal({ visible, children, activeChildId, onSelect,
             {children.map((child) => (
               <Pressable
                 key={child.id}
-                style={[
-                  styles.item,
-                  { backgroundColor: child.avatarColor },
-                  child.id === activeChildId ? styles.itemActive : null,
-                ]}
+                style={[styles.item, child.id === activeChildId ? styles.itemActive : null]}
                 onPress={() => {
                   onSelect(child.id);
                   onClose();
                 }}
               >
-                <AppText style={styles.emoji}>{child.avatarEmoji}</AppText>
+                <ChildAvatar
+                  avatarImageUri={child.avatarImageUri}
+                  avatarEmoji={child.avatarEmoji}
+                  avatarColor={child.avatarColor}
+                  size={56}
+                />
                 <AppText variant="subtitle">{child.name}</AppText>
               </Pressable>
             ))}
@@ -75,6 +77,7 @@ function createStyles(colors: ColorPalette) {
       width: 100,
       height: 100,
       borderRadius: radius.lg,
+      backgroundColor: colors.surfaceAlt,
       alignItems: 'center',
       justifyContent: 'center',
       gap: 4,
@@ -82,9 +85,6 @@ function createStyles(colors: ColorPalette) {
     itemActive: {
       borderWidth: 4,
       borderColor: colors.primaryDark,
-    },
-    emoji: {
-      fontSize: 36,
     },
   });
 }

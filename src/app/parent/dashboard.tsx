@@ -6,6 +6,7 @@ import { HeaderBar } from '@/components/HeaderBar';
 import { AppText } from '@/components/AppText';
 import { Card } from '@/components/Card';
 import { useActiveChild, useChildStore } from '@/features/child/store';
+import { ChildAvatar } from '@/features/child/components/ChildAvatar';
 import { useParentAuthStore } from '@/features/parent/store';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
@@ -37,7 +38,12 @@ export default function ParentDashboard() {
 
       {child ? (
         <Card style={styles.childCard}>
-          <AppText style={styles.emoji}>{child.avatarEmoji}</AppText>
+          <ChildAvatar
+            avatarImageUri={child.avatarImageUri}
+            avatarEmoji={child.avatarEmoji}
+            avatarColor={child.avatarColor}
+            size={48}
+          />
           <View>
             <AppText variant="caption">いま設定中のお子さま</AppText>
             <AppText variant="subtitle">{child.name}</AppText>
@@ -67,9 +73,6 @@ function createStyles(colors: ColorPalette) {
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing.md,
-    },
-    emoji: {
-      fontSize: 36,
     },
     menu: {
       gap: spacing.sm,

@@ -47,7 +47,7 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "ごほうびの画像をえらぶために写真ライブラリを使用します。"
+          "photosPermission": "ごほうびやお子さまのアイコンの画像をえらぶために写真ライブラリを使用します。"
         }
       ]
     ],

@@ -1,7 +1,8 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Child } from '@/db/models';
 import { AppText } from '@/components/AppText';
-import { radius, spacing, useTheme } from '@/theme';
+import { ChildAvatar } from '@/features/child/components/ChildAvatar';
+import { spacing, useTheme } from '@/theme';
 import { formatJapaneseDate } from '@/utils/date';
 
 function greetingForHour(hour: number): string {
@@ -26,11 +27,13 @@ export function GreetingHeader({ child, onPressAvatar }: Props) {
           {formatJapaneseDate(now)}
         </AppText>
       </View>
-      <Pressable
-        onPress={onPressAvatar}
-        style={[styles.avatar, { backgroundColor: child.avatarColor }]}
-      >
-        <AppText style={styles.avatarEmoji}>{child.avatarEmoji}</AppText>
+      <Pressable onPress={onPressAvatar}>
+        <ChildAvatar
+          avatarImageUri={child.avatarImageUri}
+          avatarEmoji={child.avatarEmoji}
+          avatarColor={child.avatarColor}
+          size={64}
+        />
       </Pressable>
     </View>
   );
@@ -44,15 +47,5 @@ const styles = StyleSheet.create({
   },
   textCol: {
     gap: 2,
-  },
-  avatar: {
-    width: 64,
-    height: 64,
-    borderRadius: radius.round,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  avatarEmoji: {
-    fontSize: 32,
   },
 });

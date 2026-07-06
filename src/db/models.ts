@@ -3,6 +3,7 @@ export type Child = {
   name: string;
   avatarEmoji: string;
   avatarColor: string;
+  avatarImageUri: string | null;
   schoolArrivalTime: string; // "HH:MM"
   sortOrder: number;
   createdAt: string;

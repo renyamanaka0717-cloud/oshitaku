@@ -13,8 +13,17 @@ type ChildState = {
   loaded: boolean;
   load: () => Promise<void>;
   setActiveChild: (id: string) => Promise<void>;
-  addChild: (input: { name: string; avatarEmoji?: string; avatarColor?: string; schoolArrivalTime?: string }) => Promise<Child>;
-  updateChild: (id: string, input: Partial<Pick<Child, 'name' | 'avatarEmoji' | 'avatarColor' | 'schoolArrivalTime'>>) => Promise<void>;
+  addChild: (input: {
+    name: string;
+    avatarEmoji?: string;
+    avatarColor?: string;
+    avatarImageUri?: string | null;
+    schoolArrivalTime?: string;
+  }) => Promise<Child>;
+  updateChild: (
+    id: string,
+    input: Partial<Pick<Child, 'name' | 'avatarEmoji' | 'avatarColor' | 'avatarImageUri' | 'schoolArrivalTime'>>
+  ) => Promise<void>;
   removeChild: (id: string) => Promise<void>;
 };
 
@@ -46,6 +55,7 @@ export const useChildStore = create<ChildState>((set, get) => ({
       name: input.name,
       avatarEmoji: input.avatarEmoji ?? DEFAULT_AVATARS[existingCount % DEFAULT_AVATARS.length],
       avatarColor: input.avatarColor ?? DEFAULT_COLORS[existingCount % DEFAULT_COLORS.length],
+      avatarImageUri: input.avatarImageUri ?? null,
       schoolArrivalTime: input.schoolArrivalTime ?? '08:20',
     });
     await ensureDefaultTasks(child.id);

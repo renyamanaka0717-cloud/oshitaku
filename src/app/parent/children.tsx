@@ -6,7 +6,9 @@ import { HeaderBar } from '@/components/HeaderBar';
 import { AppText } from '@/components/AppText';
 import { Card } from '@/components/Card';
 import { Button } from '@/components/Button';
+import { ChildAvatar } from '@/features/child/components/ChildAvatar';
 import { useChildStore } from '@/features/child/store';
+import { pickChildAvatarImage } from '@/features/child/imagePicker';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 const AVATARS = ['🐣', '🐻', '🐰', '🐱', '🦊', '🐶', '🐼', '🦁'];
@@ -17,11 +19,18 @@ export default function ChildrenSettings() {
   const { children, activeChildId, setActiveChild, addChild, updateChild, removeChild } = useChildStore();
   const [name, setName] = useState('');
   const [avatar, setAvatar] = useState(AVATARS[0]);
+  const [photoUri, setPhotoUri] = useState<string | null>(null);
 
   const handleAdd = async () => {
     if (!name.trim()) return;
-    await addChild({ name: name.trim(), avatarEmoji: avatar });
+    await addChild({ name: name.trim(), avatarEmoji: avatar, avatarImageUri: photoUri });
     setName('');
+    setPhotoUri(null);
+  };
+
+  const handlePickExistingPhoto = async (childId: string) => {
+    const uri = await pickChildAvatarImage();
+    if (uri) updateChild(childId, { avatarImageUri: uri });
   };
 
   return (
@@ -33,9 +42,12 @@ export default function ChildrenSettings() {
           <Card key={child.id} style={styles.childCard}>
             <View style={styles.switchRow}>
               <Pressable style={styles.switchTapArea} onPress={() => setActiveChild(child.id)}>
-                <View style={[styles.currentAvatar, { backgroundColor: child.avatarColor }]}>
-                  <AppText style={styles.currentAvatarEmoji}>{child.avatarEmoji}</AppText>
-                </View>
+                <ChildAvatar
+                  avatarImageUri={child.avatarImageUri}
+                  avatarEmoji={child.avatarEmoji}
+                  avatarColor={child.avatarColor}
+                  size={48}
+                />
                 <AppText variant="subtitle" style={styles.switchLabel}>
                   {child.id === activeChildId ? '選択中' : 'タップして切りかえ'}
                 </AppText>
@@ -59,12 +71,27 @@ export default function ChildrenSettings() {
             />
 
             <AppText variant="caption">アイコン</AppText>
+            <View style={styles.photoRow}>
+              <Pressable onPress={() => handlePickExistingPhoto(child.id)}>
+                <AppText color={colors.primaryDark}>📷 写真を選ぶ</AppText>
+              </Pressable>
+              {child.avatarImageUri ? (
+                <Pressable onPress={() => updateChild(child.id, { avatarImageUri: null })}>
+                  <AppText variant="caption" color={colors.textMuted}>
+                    写真をやめる
+                  </AppText>
+                </Pressable>
+              ) : null}
+            </View>
             <View style={styles.avatarRow}>
               {AVATARS.map((a) => (
                 <AppText
                   key={a}
-                  onPress={() => updateChild(child.id, { avatarEmoji: a })}
-                  style={[styles.avatar, child.avatarEmoji === a ? styles.avatarSelected : null]}
+                  onPress={() => updateChild(child.id, { avatarEmoji: a, avatarImageUri: null })}
+                  style={[
+                    styles.avatar,
+                    !child.avatarImageUri && child.avatarEmoji === a ? styles.avatarSelected : null,
+                  ]}
                 >
                   {a}
                 </AppText>
@@ -93,12 +120,33 @@ export default function ChildrenSettings() {
           style={styles.input}
           maxLength={12}
         />
+        <View style={styles.photoRow}>
+          <ChildAvatar avatarImageUri={photoUri} avatarEmoji={avatar} avatarColor={colors.accent} size={48} />
+          <Pressable
+            onPress={async () => {
+              const uri = await pickChildAvatarImage();
+              if (uri) setPhotoUri(uri);
+            }}
+          >
+            <AppText color={colors.primaryDark}>📷 写真を選ぶ</AppText>
+          </Pressable>
+          {photoUri ? (
+            <Pressable onPress={() => setPhotoUri(null)}>
+              <AppText variant="caption" color={colors.textMuted}>
+                写真をやめる
+              </AppText>
+            </Pressable>
+          ) : null}
+        </View>
         <View style={styles.avatarRow}>
           {AVATARS.map((a) => (
             <AppText
               key={a}
-              onPress={() => setAvatar(a)}
-              style={[styles.avatar, avatar === a ? styles.avatarSelected : null]}
+              onPress={() => {
+                setAvatar(a);
+                setPhotoUri(null);
+              }}
+              style={[styles.avatar, !photoUri && avatar === a ? styles.avatarSelected : null]}
             >
               {a}
             </AppText>
@@ -129,16 +177,6 @@ function createStyles(colors: ColorPalette) {
       alignItems: 'center',
       gap: spacing.md,
     },
-    currentAvatar: {
-      width: 48,
-      height: 48,
-      borderRadius: radius.round,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    currentAvatarEmoji: {
-      fontSize: 26,
-    },
     switchLabel: {
       flex: 1,
     },
@@ -159,6 +197,11 @@ function createStyles(colors: ColorPalette) {
     },
     addCard: {
       gap: spacing.sm,
+    },
+    photoRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.md,
     },
     avatarRow: {
       flexDirection: 'row',

@@ -17,6 +17,7 @@ export async function createChild(input: {
   name: string;
   avatarEmoji: string;
   avatarColor: string;
+  avatarImageUri?: string | null;
   schoolArrivalTime: string;
 }): Promise<Child> {
   const db = await getDb();
@@ -28,19 +29,21 @@ export async function createChild(input: {
     name: input.name,
     avatarEmoji: input.avatarEmoji,
     avatarColor: input.avatarColor,
+    avatarImageUri: input.avatarImageUri ?? null,
     schoolArrivalTime: input.schoolArrivalTime,
     sortOrder: countRow?.count ?? 0,
     createdAt: new Date().toISOString(),
     activeTimetableSetId: null,
   };
   await db.runAsync(
-    `INSERT INTO child (id, name, avatarEmoji, avatarColor, schoolArrivalTime, sortOrder, createdAt)
-     VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO child (id, name, avatarEmoji, avatarColor, avatarImageUri, schoolArrivalTime, sortOrder, createdAt)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       child.id,
       child.name,
       child.avatarEmoji,
       child.avatarColor,
+      child.avatarImageUri,
       child.schoolArrivalTime,
       child.sortOrder,
       child.createdAt,
@@ -64,7 +67,9 @@ export async function setActiveTimetableSet(childId: string, timetableSetId: str
 
 export async function updateChild(
   id: string,
-  input: Partial<Pick<Child, 'name' | 'avatarEmoji' | 'avatarColor' | 'schoolArrivalTime' | 'sortOrder'>>
+  input: Partial<
+    Pick<Child, 'name' | 'avatarEmoji' | 'avatarColor' | 'avatarImageUri' | 'schoolArrivalTime' | 'sortOrder'>
+  >
 ): Promise<void> {
   const db = await getDb();
   const fields = Object.keys(input);
