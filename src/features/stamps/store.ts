@@ -28,12 +28,14 @@ export const useStampsStore = create<StampsState>((set, get) => ({
 
 export const STAMP_EMOJI: Record<string, string> = {
   star: '⭐',
-  heart: '💖',
+  flower: '🌸',
   sun: '☀️',
   leaf: '🍀',
-  flower: '🌸',
   rainbow: '🌈',
   crown: '👑',
   diamond: '💎',
+  party: '🎉',
+  // legacy stamp types kept so previously earned stamps still render correctly
+  heart: '💖',
   shooting_star: '🌠',
 };

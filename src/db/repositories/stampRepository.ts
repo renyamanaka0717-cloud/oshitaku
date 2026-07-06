@@ -2,8 +2,8 @@ import { getDb } from '../client';
 import { Stamp, StampKind } from '../models';
 import { generateId } from '@/utils/id';
 
-export const NORMAL_STAMP_TYPES = ['star', 'heart', 'sun', 'leaf', 'flower'];
-export const RARE_STAMP_TYPES = ['rainbow', 'crown', 'diamond', 'shooting_star'];
+export const NORMAL_STAMP_TYPES = ['star', 'flower', 'sun', 'leaf'];
+export const RARE_STAMP_TYPES = ['rainbow', 'crown', 'diamond', 'party'];
 
 export function pickRandom<T>(list: T[]): T {
   return list[Math.floor(Math.random() * list.length)];
