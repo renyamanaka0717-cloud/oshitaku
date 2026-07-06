@@ -1,0 +1,71 @@
+import { StyleSheet, View } from 'react-native';
+import { Card } from '@/components/Card';
+import { AppText } from '@/components/AppText';
+import { SectionHeader } from '@/components/SectionHeader';
+import { colors, radius, spacing } from '@/theme';
+import { Item, Subject, TimetableEntry } from '@/db/models';
+
+type Props = {
+  entries: Array<TimetableEntry & { subject: Subject | undefined }>;
+  items: Item[];
+};
+
+export function TomorrowPreview({ entries, items }: Props) {
+  return (
+    <Card style={styles.card}>
+      <SectionHeader title="明日の時間割" icon="📅" />
+      {entries.length === 0 ? (
+        <AppText variant="body" color={colors.textMuted}>
+          時間割が登録されていません
+        </AppText>
+      ) : (
+        <View style={styles.subjectRow}>
+          {entries.map((e) => (
+            <View key={e.id} style={[styles.chip, { backgroundColor: e.subject?.color ?? colors.surfaceAlt }]}>
+              <AppText variant="caption" color={colors.white}>
+                {e.period}. {e.subject?.name ?? '？'}
+              </AppText>
+            </View>
+          ))}
+        </View>
+      )}
+
+      <SectionHeader title="明日の持ち物" icon="🎒" />
+      {items.length === 0 ? (
+        <AppText variant="body" color={colors.textMuted}>
+          明日必要な持ち物はありません
+        </AppText>
+      ) : (
+        <View style={styles.subjectRow}>
+          {items.map((item) => (
+            <View key={item.id} style={styles.itemChip}>
+              <AppText>{item.icon} {item.name}</AppText>
+            </View>
+          ))}
+        </View>
+      )}
+    </Card>
+  );
+}
+
+const styles = StyleSheet.create({
+  card: {
+    gap: spacing.sm,
+  },
+  subjectRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.xs,
+  },
+  chip: {
+    borderRadius: radius.round,
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.sm,
+  },
+  itemChip: {
+    borderRadius: radius.round,
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.sm,
+    backgroundColor: colors.surfaceAlt,
+  },
+});
