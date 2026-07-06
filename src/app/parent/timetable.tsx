@@ -15,7 +15,7 @@ import { LESSON_PERIOD } from '@/features/timetable/constants';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 import { WEEKDAY_LABELS_JA } from '@/utils/date';
 
-const DAYS = [1, 2, 3, 4, 5]; // 月-金
+const DAYS = [1, 2, 3, 4, 5, 6, 0]; // 月-日
 const PERIODS = [1, 2, 3, 4, 5, 6];
 
 export default function TimetableSettings() {
@@ -189,12 +189,13 @@ function createStyles(colors: ColorPalette) {
     },
     dayTabs: {
       flexDirection: 'row',
-      gap: spacing.xs,
+      gap: 4,
     },
     dayTab: {
       flex: 1,
       alignItems: 'center',
       paddingVertical: spacing.sm,
+      paddingHorizontal: 2,
       borderRadius: radius.md,
       backgroundColor: colors.surfaceAlt,
     },

@@ -37,24 +37,15 @@ export default function SubjectsSettings() {
     setSubjectName('');
   };
 
+  const activeSubject = subjects.find((s) => s.id === itemPickerSubjectId);
+
   return (
     <Screen>
       <HeaderBar title="教科・持ち物の登録" onBack={() => router.back()} />
 
       <View style={styles.section}>
         <SectionHeader title="教科" icon="🖍️" />
-        <View style={styles.subjectList}>
-          {subjects.map((subject) => (
-            <View key={subject.id} style={[styles.subjectChip, { backgroundColor: subject.color }]}>
-              <Pressable onPress={() => setItemPickerSubjectId(subject.id)}>
-                <AppText color={colors.white}>{subject.name}</AppText>
-              </Pressable>
-              <Pressable onPress={() => deleteSubject(subject.id)} hitSlop={8}>
-                <AppText color={colors.white}> ✕</AppText>
-              </Pressable>
-            </View>
-          ))}
-        </View>
+
         <View style={styles.row}>
           <TextInput
             value={subjectName}
@@ -65,11 +56,47 @@ export default function SubjectsSettings() {
           />
           <Button label="追加" onPress={handleAddSubject} disabled={!subjectName.trim()} />
         </View>
+
+        <View style={styles.subjectList}>
+          {subjects.map((subject) => {
+            const itemCount = subjectItemMap[subject.id]?.length ?? 0;
+            return (
+              <View key={subject.id} style={styles.subjectCard}>
+                <Pressable
+                  style={styles.subjectTapArea}
+                  onPress={() => setItemPickerSubjectId(subject.id)}
+                >
+                  <View style={[styles.subjectIcon, { backgroundColor: subject.color }]}>
+                    <AppText style={styles.subjectIconText}>🖍️</AppText>
+                  </View>
+                  <View style={styles.subjectTextCol}>
+                    <AppText variant="subtitle">{subject.name}</AppText>
+                    <AppText variant="caption" color={colors.textMuted}>
+                      {itemCount > 0 ? `持ち物 ${itemCount}こ` : '持ち物を追加する'}
+                    </AppText>
+                  </View>
+                  <AppText style={styles.chevron} color={colors.textMuted}>
+                    ›
+                  </AppText>
+                </Pressable>
+                <Pressable
+                  onPress={() => deleteSubject(subject.id)}
+                  hitSlop={8}
+                  style={styles.deleteButton}
+                >
+                  <AppText color={colors.textMuted}>✕</AppText>
+                </Pressable>
+              </View>
+            );
+          })}
+        </View>
+
         <AppText variant="caption">教科をタップすると必要な持ち物を設定できます</AppText>
       </View>
 
       <ItemMultiPickerModal
         visible={itemPickerSubjectId !== null}
+        title={activeSubject ? `${activeSubject.name}の持ち物` : undefined}
         items={items}
         selectedIds={itemPickerSubjectId ? subjectItemMap[itemPickerSubjectId] ?? [] : []}
         onSave={(ids) => {
@@ -87,19 +114,6 @@ function createStyles(colors: ColorPalette) {
     section: {
       gap: spacing.sm,
     },
-    subjectList: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      gap: spacing.xs,
-    },
-    subjectChip: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing.xs,
-      borderRadius: radius.round,
-      paddingVertical: spacing.xs,
-      paddingHorizontal: spacing.md,
-    },
     row: {
       flexDirection: 'row',
       gap: spacing.sm,
@@ -112,6 +126,48 @@ function createStyles(colors: ColorPalette) {
       padding: spacing.sm,
       fontSize: 16,
       color: colors.text,
+    },
+    subjectList: {
+      gap: spacing.sm,
+    },
+    subjectCard: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: colors.surface,
+      borderRadius: radius.lg,
+      shadowColor: colors.shadow,
+      shadowOpacity: 0.08,
+      shadowRadius: 6,
+      shadowOffset: { width: 0, height: 2 },
+      elevation: 1,
+    },
+    subjectTapArea: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.md,
+      padding: spacing.md,
+    },
+    subjectIcon: {
+      width: 48,
+      height: 48,
+      borderRadius: radius.round,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    subjectIconText: {
+      fontSize: 24,
+    },
+    subjectTextCol: {
+      flex: 1,
+      gap: 2,
+    },
+    chevron: {
+      fontSize: 24,
+    },
+    deleteButton: {
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.md,
     },
   });
 }

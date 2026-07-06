@@ -8,10 +8,8 @@ import { StatBadge } from '@/components/StatBadge';
 import { EmptyState } from '@/components/EmptyState';
 import { RewardCard } from '@/features/rewards/components/RewardCard';
 import { RewardCelebration } from '@/features/rewards/components/RewardCelebration';
-import { StampGrid } from '@/features/stamps/components/StampGrid';
 import { useRewardsStore } from '@/features/rewards/store';
 import { usePointsStore } from '@/features/points/store';
-import { useStampsStore } from '@/features/stamps/store';
 import { Reward } from '@/db/models';
 import { colors, spacing } from '@/theme';
 
@@ -20,7 +18,6 @@ export default function RewardsScreen() {
   const rewards = useMemo(() => allRewards.filter((r) => r.isActive), [allRewards]);
   const exchange = useRewardsStore((s) => s.exchange);
   const totalPoints = usePointsStore((s) => s.total);
-  const stamps = useStampsStore((s) => s.stamps);
   const [gotReward, setGotReward] = useState<Reward | null>(null);
 
   const handleExchange = async (rewardId: string) => {
@@ -32,7 +29,7 @@ export default function RewardsScreen() {
 
   return (
     <Screen>
-      <HeaderBar title="ごほうび・スタンプ" onBack={() => router.back()} />
+      <HeaderBar title="ごほうび" onBack={() => router.back()} />
 
       <StatBadge icon="⭐" value={totalPoints} label="いまのポイント" color={colors.accent} />
 
@@ -52,11 +49,6 @@ export default function RewardsScreen() {
             ))}
           </View>
         )}
-      </View>
-
-      <View style={styles.section}>
-        <SectionHeader title="スタンプ帳" icon="📔" />
-        <StampGrid stamps={stamps} />
       </View>
 
       <RewardCelebration visible={!!gotReward} reward={gotReward} onClose={() => setGotReward(null)} />

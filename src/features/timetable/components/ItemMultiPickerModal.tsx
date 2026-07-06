@@ -7,6 +7,7 @@ import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 type Props = {
   visible: boolean;
+  title?: string;
   items: Item[];
   selectedIds: string[];
   onSave: (ids: string[]) => void;
@@ -16,6 +17,7 @@ type Props = {
 
 export function ItemMultiPickerModal({
   visible,
+  title = '必要な持ち物をえらぶ',
   items,
   selectedIds,
   onSave,
@@ -53,7 +55,7 @@ export function ItemMultiPickerModal({
       <Pressable style={styles.backdrop} onPress={onClose}>
         <Pressable style={styles.sheet} onPress={(e) => e.stopPropagation()}>
           <AppText variant="subtitle" style={styles.title}>
-            必要な持ち物をえらぶ
+            {title}
           </AppText>
           <View style={styles.grid}>
             {items.map((item) => {
