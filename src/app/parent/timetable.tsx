@@ -8,6 +8,7 @@ import { Button } from '@/components/Button';
 import { SectionHeader } from '@/components/SectionHeader';
 import { SubjectPickerModal } from '@/features/timetable/components/SubjectPickerModal';
 import { TimetableSetModal } from '@/features/timetable/components/TimetableSetModal';
+import { TimetableSwitcherModal } from '@/features/timetable/components/TimetableSwitcherModal';
 import { useActiveChild } from '@/features/child/store';
 import { useTimetableStore } from '@/features/timetable/store';
 import { LESSON_PERIOD } from '@/features/timetable/constants';
@@ -35,6 +36,7 @@ export default function TimetableSettings() {
 
   const [selectedDay, setSelectedDay] = useState(1);
   const [pickerSlot, setPickerSlot] = useState<number | null>(null);
+  const [switcherVisible, setSwitcherVisible] = useState(false);
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [renameModalVisible, setRenameModalVisible] = useState(false);
 
@@ -55,32 +57,12 @@ export default function TimetableSettings() {
 
       <View style={styles.section}>
         <SectionHeader title="時間割を切り替え" icon="🗓️" />
-        <View style={styles.setChips}>
-          {sets.map((s) => (
-            <Pressable
-              key={s.id}
-              style={[styles.setChip, s.id === activeSetId ? styles.setChipActive : null]}
-              onPress={() => setActiveSet(s.id)}
-            >
-              <AppText color={s.id === activeSetId ? colors.white : colors.text}>{s.name}</AppText>
-            </Pressable>
-          ))}
-          <Pressable style={styles.addSetChip} onPress={() => setCreateModalVisible(true)}>
-            <AppText color={colors.primaryDark}>＋ 新しい時間割</AppText>
-          </Pressable>
-        </View>
-        <View style={styles.setActions}>
-          <Pressable onPress={() => setRenameModalVisible(true)} hitSlop={8}>
-            <AppText variant="caption">✏️ この時間割の名前を変更</AppText>
-          </Pressable>
-          {sets.length > 1 ? (
-            <Pressable onPress={() => activeSetId && deleteSet(activeSetId)} hitSlop={8}>
-              <AppText variant="caption" color={colors.danger}>
-                🗑️ この時間割を削除
-              </AppText>
-            </Pressable>
-          ) : null}
-        </View>
+        <Pressable style={styles.switchButton} onPress={() => setSwitcherVisible(true)}>
+          <AppText variant="subtitle" color={colors.white}>
+            {activeSet?.name ?? '時間割'}
+          </AppText>
+          <AppText color={colors.white}>切り替え ▾</AppText>
+        </Pressable>
       </View>
 
       <Button
@@ -162,6 +144,17 @@ export default function TimetableSettings() {
         onClose={() => setPickerSlot(null)}
       />
 
+      <TimetableSwitcherModal
+        visible={switcherVisible}
+        sets={sets}
+        activeSetId={activeSetId}
+        onSelect={(id) => setActiveSet(id)}
+        onCreate={() => setCreateModalVisible(true)}
+        onRename={() => setRenameModalVisible(true)}
+        onDelete={() => activeSetId && deleteSet(activeSetId)}
+        onClose={() => setSwitcherVisible(false)}
+      />
+
       <TimetableSetModal
         visible={createModalVisible}
         title="新しい時間割"
@@ -185,31 +178,14 @@ function createStyles(colors: ColorPalette) {
     section: {
       gap: spacing.sm,
     },
-    setChips: {
+    switchButton: {
       flexDirection: 'row',
-      flexWrap: 'wrap',
-      gap: spacing.xs,
-    },
-    setChip: {
-      borderRadius: radius.round,
-      paddingVertical: spacing.xs,
-      paddingHorizontal: spacing.md,
-      backgroundColor: colors.surfaceAlt,
-    },
-    setChipActive: {
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      borderRadius: radius.md,
+      paddingVertical: spacing.md,
+      paddingHorizontal: spacing.lg,
       backgroundColor: colors.primary,
-    },
-    addSetChip: {
-      borderRadius: radius.round,
-      paddingVertical: spacing.xs,
-      paddingHorizontal: spacing.md,
-      borderWidth: 1,
-      borderColor: colors.primary,
-      borderStyle: 'dashed',
-    },
-    setActions: {
-      flexDirection: 'row',
-      gap: spacing.lg,
     },
     dayTabs: {
       flexDirection: 'row',
