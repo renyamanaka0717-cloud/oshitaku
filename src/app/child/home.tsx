@@ -102,11 +102,11 @@ export default function ChildHome() {
       <View style={styles.statsRow}>
         <StatBadge icon="⭐" value={totalPoints} label="ポイント" color={colors.accent} />
         <StatBadge
-          icon="🎁"
-          value="ごほうび"
-          label="こうかんする"
+          icon="🧹"
+          value="おてつだい"
+          label="やってみる"
           color={colors.pink}
-          onPress={() => router.push('/child/rewards')}
+          onPress={() => router.push('/child/chores')}
         />
       </View>
 
