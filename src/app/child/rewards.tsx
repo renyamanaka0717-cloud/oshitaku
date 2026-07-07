@@ -7,6 +7,7 @@ import { SectionHeader } from '@/components/SectionHeader';
 import { StatBadge } from '@/components/StatBadge';
 import { EmptyState } from '@/components/EmptyState';
 import { RewardCard } from '@/features/rewards/components/RewardCard';
+import { RewardDetailModal } from '@/features/rewards/components/RewardDetailModal';
 import { RewardCelebration } from '@/features/rewards/components/RewardCelebration';
 import { useRewardsStore } from '@/features/rewards/store';
 import { usePointsStore } from '@/features/points/store';
@@ -18,11 +19,10 @@ export default function RewardsScreen() {
   const rewards = useMemo(() => allRewards.filter((r) => r.isActive), [allRewards]);
   const exchange = useRewardsStore((s) => s.exchange);
   const totalPoints = usePointsStore((s) => s.total);
+  const [selectedReward, setSelectedReward] = useState<Reward | null>(null);
   const [gotReward, setGotReward] = useState<Reward | null>(null);
 
-  const handleExchange = async (rewardId: string) => {
-    const reward = rewards.find((r) => r.id === rewardId);
-    if (!reward) return;
+  const handleExchange = async (reward: Reward) => {
     const ok = await exchange(reward);
     if (ok) setGotReward(reward);
   };
@@ -40,16 +40,19 @@ export default function RewardsScreen() {
         ) : (
           <View style={styles.grid}>
             {rewards.map((reward) => (
-              <RewardCard
-                key={reward.id}
-                reward={reward}
-                currentPoints={totalPoints}
-                onExchange={() => handleExchange(reward.id)}
-              />
+              <RewardCard key={reward.id} reward={reward} onPress={() => setSelectedReward(reward)} />
             ))}
           </View>
         )}
       </View>
+
+      <RewardDetailModal
+        visible={!!selectedReward}
+        reward={selectedReward}
+        currentPoints={totalPoints}
+        onExchange={() => selectedReward && handleExchange(selectedReward)}
+        onClose={() => setSelectedReward(null)}
+      />
 
       <RewardCelebration visible={!!gotReward} reward={gotReward} onClose={() => setGotReward(null)} />
     </Screen>

@@ -1,62 +1,50 @@
 import { useMemo } from 'react';
-import { Image, StyleSheet, View } from 'react-native';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
-import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
 import { Reward } from '@/db/models';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 type Props = {
   reward: Reward;
-  currentPoints: number;
-  onExchange: () => void;
+  onPress: () => void;
 };
 
-export function RewardCard({ reward, currentPoints, onExchange }: Props) {
+export function RewardCard({ reward, onPress }: Props) {
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
-  const canAfford = currentPoints >= reward.pointCost;
 
   return (
-    <Card style={styles.card}>
-      <View style={styles.imageBox}>
-        {reward.imageUri ? (
-          <Image source={{ uri: reward.imageUri }} style={styles.image} resizeMode="cover" />
-        ) : (
-          <AppText style={styles.icon}>{reward.icon}</AppText>
-        )}
-      </View>
+    <Pressable onPress={onPress} style={styles.pressable}>
+      <Card style={styles.card}>
+        <View style={styles.imageBox}>
+          {reward.imageUri ? (
+            <Image source={{ uri: reward.imageUri }} style={styles.image} resizeMode="cover" />
+          ) : (
+            <AppText style={styles.icon}>{reward.icon}</AppText>
+          )}
+        </View>
 
-      <AppText variant="subtitle" style={styles.name} numberOfLines={1}>
-        {reward.name}
-      </AppText>
-      {reward.description ? (
-        <AppText variant="caption" color={colors.textMuted} numberOfLines={2} style={styles.description}>
-          {reward.description}
+        <AppText variant="subtitle" style={styles.name} numberOfLines={1}>
+          {reward.name}
         </AppText>
-      ) : null}
 
-      <View style={styles.costBadge}>
-        <AppText variant="caption" color={colors.primaryDark}>
-          ⭐ {reward.pointCost}pt
-        </AppText>
-      </View>
-
-      <Button
-        label="こうかん"
-        onPress={onExchange}
-        disabled={!canAfford}
-        variant={canAfford ? 'secondary' : 'ghost'}
-        style={styles.button}
-      />
-    </Card>
+        <View style={styles.costBadge}>
+          <AppText variant="caption" color={colors.primaryDark}>
+            ⭐ {reward.pointCost}pt
+          </AppText>
+        </View>
+      </Card>
+    </Pressable>
   );
 }
 
 function createStyles(colors: ColorPalette) {
   return StyleSheet.create({
-    card: {
+    pressable: {
       width: '47%',
+    },
+    card: {
       gap: spacing.xs,
       alignItems: 'center',
       padding: spacing.sm,
@@ -80,18 +68,11 @@ function createStyles(colors: ColorPalette) {
     name: {
       alignSelf: 'stretch',
     },
-    description: {
-      alignSelf: 'stretch',
-    },
     costBadge: {
       backgroundColor: colors.surfaceAlt,
       borderRadius: radius.round,
       paddingVertical: 2,
       paddingHorizontal: spacing.sm,
-    },
-    button: {
-      alignSelf: 'stretch',
-      marginTop: spacing.xs,
     },
   });
 }
