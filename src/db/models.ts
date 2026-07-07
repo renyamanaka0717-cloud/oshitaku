@@ -106,6 +106,16 @@ export type Reward = {
   createdAt: string;
 };
 
+export type Chore = {
+  id: string;
+  childId: string;
+  name: string;
+  icon: string;
+  pointValue: number;
+  isActive: boolean;
+  createdAt: string;
+};
+
 export type PointHistoryType =
   | 'morning_complete'
   | 'evening_complete'
@@ -113,6 +123,7 @@ export type PointHistoryType =
   | 'no_forgotten_items'
   | 'perfect_day_bonus'
   | 'reward_exchange'
+  | 'chore_complete'
   | 'manual_adjust';
 
 export type PointHistory = {

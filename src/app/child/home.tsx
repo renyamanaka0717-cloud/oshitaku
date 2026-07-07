@@ -114,6 +114,10 @@ export default function ChildHome() {
           <AppText style={styles.linkIcon}>🎁</AppText>
           <AppText variant="caption">ごほうび</AppText>
         </Pressable>
+        <Pressable style={styles.linkItem} onPress={() => router.push('/child/chores')}>
+          <AppText style={styles.linkIcon}>🧹</AppText>
+          <AppText variant="caption">おてつだい</AppText>
+        </Pressable>
         <Pressable style={styles.linkItem} onPress={() => router.push('/child/stampbook')}>
           <AppText style={styles.linkIcon}>📔</AppText>
           <AppText variant="caption">スタンプ図鑑</AppText>

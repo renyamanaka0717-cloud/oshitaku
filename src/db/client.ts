@@ -214,6 +214,21 @@ async function migrate(db: SQLite.SQLiteDatabase) {
     version = 6;
   }
 
+  if (version < 7) {
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS chore (
+        id TEXT PRIMARY KEY NOT NULL,
+        childId TEXT NOT NULL,
+        name TEXT NOT NULL,
+        icon TEXT NOT NULL,
+        pointValue INTEGER NOT NULL,
+        isActive INTEGER NOT NULL DEFAULT 1,
+        createdAt TEXT NOT NULL
+      );
+    `);
+    version = 7;
+  }
+
   await db.execAsync(`PRAGMA user_version = ${version}`);
 }
 

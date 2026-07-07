@@ -17,6 +17,7 @@ const MENU: Array<{ href: string; icon: string; label: string; description: stri
   { href: '/parent/tasks', icon: '📝', label: '朝・夜タスク', description: 'チェックリストの内容' },
   { href: '/parent/points', icon: '⭐', label: 'ポイント設定', description: 'もらえるポイント数' },
   { href: '/parent/rewards', icon: '🎁', label: 'ごほうび設定', description: 'ごほうびと交換履歴' },
+  { href: '/parent/chores', icon: '🧹', label: 'おてつだい設定', description: 'おてつだいと完了履歴' },
   { href: '/parent/notifications', icon: '🔔', label: '通知設定', description: '通知する時間' },
   { href: '/parent/appearance', icon: '🎨', label: '表示設定', description: 'ライト・ダークモード' },
 ];

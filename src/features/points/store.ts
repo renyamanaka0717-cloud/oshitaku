@@ -11,6 +11,7 @@ type PointsState = {
   refresh: () => Promise<void>;
   updateRule: (patch: Partial<Pick<PointRule, 'morningComplete' | 'eveningComplete' | 'onTime' | 'noForgottenItems' | 'perfectDayBonus'>>) => Promise<void>;
   spend: (childId: string, date: string, amount: number, note: string) => Promise<void>;
+  earn: (childId: string, date: string, amount: number, note: string) => Promise<void>;
 };
 
 export const usePointsStore = create<PointsState>((set, get) => ({
@@ -51,6 +52,17 @@ export const usePointsStore = create<PointsState>((set, get) => ({
       date,
       type: 'reward_exchange',
       amount: -amount,
+      note,
+    });
+    await get().refresh();
+  },
+
+  earn: async (childId: string, date: string, amount: number, note: string) => {
+    await pointHistoryRepository.addPointHistory({
+      childId,
+      date,
+      type: 'chore_complete',
+      amount,
       note,
     });
     await get().refresh();
