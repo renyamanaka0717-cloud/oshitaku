@@ -79,7 +79,7 @@ export default function ParentGate() {
 const styles = StyleSheet.create({
   content: {
     alignItems: 'center',
-    gap: spacing.xl,
+    gap: spacing.lg,
   },
   title: {
     textAlign: 'center',

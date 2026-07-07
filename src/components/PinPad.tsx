@@ -45,7 +45,7 @@ function createStyles(colors: ColorPalette) {
   return StyleSheet.create({
     container: {
       alignItems: 'center',
-      gap: spacing.xl,
+      gap: spacing.lg,
     },
     dots: {
       flexDirection: 'row',
@@ -64,12 +64,12 @@ function createStyles(colors: ColorPalette) {
     grid: {
       flexDirection: 'row',
       flexWrap: 'wrap',
-      width: 3 * 76,
+      width: 3 * 64,
       justifyContent: 'center',
     },
     key: {
-      width: 76,
-      height: 76,
+      width: 64,
+      height: 64,
       borderRadius: radius.round,
       alignItems: 'center',
       justifyContent: 'center',
