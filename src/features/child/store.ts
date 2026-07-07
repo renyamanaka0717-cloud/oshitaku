@@ -22,7 +22,7 @@ type ChildState = {
   }) => Promise<Child>;
   updateChild: (
     id: string,
-    input: Partial<Pick<Child, 'name' | 'avatarEmoji' | 'avatarColor' | 'avatarImageUri' | 'schoolArrivalTime'>>
+    input: Partial<Pick<Child, 'name' | 'avatarEmoji' | 'avatarColor' | 'avatarImageUri' | 'schoolArrivalTimes'>>
   ) => Promise<void>;
   removeChild: (id: string) => Promise<void>;
 };
@@ -51,12 +51,15 @@ export const useChildStore = create<ChildState>((set, get) => ({
 
   addChild: async (input) => {
     const existingCount = get().children.length;
+    const time = input.schoolArrivalTime ?? '08:20';
+    const schoolArrivalTimes: Record<number, string> = {};
+    for (let day = 0; day <= 6; day++) schoolArrivalTimes[day] = time;
     const child = await childRepository.createChild({
       name: input.name,
       avatarEmoji: input.avatarEmoji ?? DEFAULT_AVATARS[existingCount % DEFAULT_AVATARS.length],
       avatarColor: input.avatarColor ?? DEFAULT_COLORS[existingCount % DEFAULT_COLORS.length],
       avatarImageUri: input.avatarImageUri ?? null,
-      schoolArrivalTime: input.schoolArrivalTime ?? '08:20',
+      schoolArrivalTimes,
     });
     await ensureDefaultTasks(child.id);
     const children = [...get().children, child];

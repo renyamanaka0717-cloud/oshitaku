@@ -7,7 +7,7 @@ import {
   stampRepository,
 } from '@/db/repositories';
 import { Child } from '@/db/models';
-import { minutesUntil } from '@/utils/date';
+import { minutesUntil, todayArrivalTime } from '@/utils/date';
 import { computeStreak } from '@/utils/streak';
 import { notifyCompletionNow } from '@/features/notifications/service';
 import { usePointsStore } from '@/features/points/store';
@@ -92,7 +92,7 @@ export async function evaluateMorning(
 
   const rule = await pointRuleRepository.getPointRule(child.id);
   const now = new Date();
-  const remaining = minutesUntil(child.schoolArrivalTime, now);
+  const remaining = minutesUntil(todayArrivalTime(child.schoolArrivalTimes), now);
   const onTime = remaining >= 0;
 
   await dayCompletionRepository.updateDayCompletion(child.id, date, {

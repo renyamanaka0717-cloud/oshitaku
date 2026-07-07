@@ -65,3 +65,11 @@ export function formatTime(iso: string): string {
   const m = String(d.getMinutes()).padStart(2, '0');
   return `${h}:${m}`;
 }
+
+export function arrivalTimeForDay(times: Record<number, string>, dayOfWeek: number): string {
+  return times[dayOfWeek] ?? '08:20';
+}
+
+export function todayArrivalTime(times: Record<number, string>): string {
+  return arrivalTimeForDay(times, new Date().getDay());
+}

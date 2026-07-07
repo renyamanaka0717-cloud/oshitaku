@@ -12,6 +12,7 @@ import { useActiveChild } from '@/features/child/store';
 import { useMorningStore } from '@/features/morning/store';
 import { isAllCompleteToday } from '@/features/home/allComplete';
 import { spacing } from '@/theme';
+import { todayArrivalTime } from '@/utils/date';
 
 export default function MorningMode() {
   const child = useActiveChild();
@@ -54,7 +55,7 @@ export default function MorningMode() {
   return (
     <Screen>
       <HeaderBar title="朝のおしたく" onBack={() => router.back()} right={<ModeSwitch active="morning" />} />
-      <SchoolCountdownCard schoolArrivalTime={child.schoolArrivalTime} progress={progress} />
+      <SchoolCountdownCard schoolArrivalTime={todayArrivalTime(child.schoolArrivalTimes)} progress={progress} />
       <View style={styles.list}>
         {tasks.map((task) => (
           <ChecklistItem

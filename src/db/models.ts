@@ -4,7 +4,7 @@ export type Child = {
   avatarEmoji: string;
   avatarColor: string;
   avatarImageUri: string | null;
-  schoolArrivalTime: string; // "HH:MM"
+  schoolArrivalTimes: Record<number, string>; // dayOfWeek(0=Sun..6=Sat) -> "HH:MM"
   sortOrder: number;
   createdAt: string;
   activeTimetableSetId: string | null;

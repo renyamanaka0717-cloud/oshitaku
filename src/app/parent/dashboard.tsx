@@ -11,7 +11,8 @@ import { useParentAuthStore } from '@/features/parent/store';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 const MENU: Array<{ href: string; icon: string; label: string; description: string }> = [
-  { href: '/parent/children', icon: '👨‍👩‍👧‍👦', label: 'お子さま管理', description: 'きょうだいの追加・登校時間' },
+  { href: '/parent/children', icon: '👨‍👩‍👧‍👦', label: 'お子さま管理', description: 'きょうだいの追加' },
+  { href: '/parent/schedule', icon: '⏰', label: '時間設定', description: '曜日ごとの登校時間' },
   { href: '/parent/timetable', icon: '📚', label: '時間割・教科', description: '曜日ごとの時間割と教科の持ち物' },
   { href: '/parent/items', icon: '🎒', label: '持ち物リスト', description: '持ち物の登録' },
   { href: '/parent/tasks', icon: '📝', label: '朝・夜タスク', description: 'チェックリストの内容' },

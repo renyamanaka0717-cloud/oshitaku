@@ -97,15 +97,6 @@ export default function ChildrenSettings() {
                 </AppText>
               ))}
             </View>
-
-            <AppText variant="caption">登校時間</AppText>
-            <TextInput
-              value={child.schoolArrivalTime}
-              onChangeText={(v) => updateChild(child.id, { schoolArrivalTime: v })}
-              style={styles.timeInput}
-              placeholder="08:20"
-              placeholderTextColor={colors.textMuted}
-            />
           </Card>
         ))}
       </View>
@@ -186,14 +177,6 @@ function createStyles(colors: ColorPalette) {
       padding: spacing.md,
       fontSize: 16,
       color: colors.text,
-    },
-    timeInput: {
-      backgroundColor: colors.surfaceAlt,
-      borderRadius: radius.sm,
-      padding: spacing.sm,
-      fontSize: 16,
-      color: colors.text,
-      width: 100,
     },
     addCard: {
       gap: spacing.sm,

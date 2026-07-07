@@ -2,15 +2,22 @@ import { getDb } from '../client';
 import { Child } from '../models';
 import { generateId } from '@/utils/id';
 
+type Row = Omit<Child, 'schoolArrivalTimes'> & { schoolArrivalTimes: string };
+
+function toModel(row: Row): Child {
+  return { ...row, schoolArrivalTimes: JSON.parse(row.schoolArrivalTimes || '{}') };
+}
+
 export async function listChildren(): Promise<Child[]> {
   const db = await getDb();
-  return db.getAllAsync<Child>('SELECT * FROM child ORDER BY sortOrder ASC');
+  const rows = await db.getAllAsync<Row>('SELECT * FROM child ORDER BY sortOrder ASC');
+  return rows.map(toModel);
 }
 
 export async function getChild(id: string): Promise<Child | null> {
   const db = await getDb();
-  const row = await db.getFirstAsync<Child>('SELECT * FROM child WHERE id = ?', [id]);
-  return row ?? null;
+  const row = await db.getFirstAsync<Row>('SELECT * FROM child WHERE id = ?', [id]);
+  return row ? toModel(row) : null;
 }
 
 export async function createChild(input: {
@@ -18,7 +25,7 @@ export async function createChild(input: {
   avatarEmoji: string;
   avatarColor: string;
   avatarImageUri?: string | null;
-  schoolArrivalTime: string;
+  schoolArrivalTimes: Record<number, string>;
 }): Promise<Child> {
   const db = await getDb();
   const countRow = await db.getFirstAsync<{ count: number }>(
@@ -30,21 +37,22 @@ export async function createChild(input: {
     avatarEmoji: input.avatarEmoji,
     avatarColor: input.avatarColor,
     avatarImageUri: input.avatarImageUri ?? null,
-    schoolArrivalTime: input.schoolArrivalTime,
+    schoolArrivalTimes: input.schoolArrivalTimes,
     sortOrder: countRow?.count ?? 0,
     createdAt: new Date().toISOString(),
     activeTimetableSetId: null,
   };
   await db.runAsync(
-    `INSERT INTO child (id, name, avatarEmoji, avatarColor, avatarImageUri, schoolArrivalTime, sortOrder, createdAt)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO child (id, name, avatarEmoji, avatarColor, avatarImageUri, schoolArrivalTime, schoolArrivalTimes, sortOrder, createdAt)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       child.id,
       child.name,
       child.avatarEmoji,
       child.avatarColor,
       child.avatarImageUri,
-      child.schoolArrivalTime,
+      child.schoolArrivalTimes[1] ?? '08:20',
+      JSON.stringify(child.schoolArrivalTimes),
       child.sortOrder,
       child.createdAt,
     ]
@@ -68,14 +76,16 @@ export async function setActiveTimetableSet(childId: string, timetableSetId: str
 export async function updateChild(
   id: string,
   input: Partial<
-    Pick<Child, 'name' | 'avatarEmoji' | 'avatarColor' | 'avatarImageUri' | 'schoolArrivalTime' | 'sortOrder'>
+    Pick<Child, 'name' | 'avatarEmoji' | 'avatarColor' | 'avatarImageUri' | 'schoolArrivalTimes' | 'sortOrder'>
   >
 ): Promise<void> {
   const db = await getDb();
-  const fields = Object.keys(input);
+  const patch: Record<string, unknown> = { ...input };
+  if (input.schoolArrivalTimes) patch.schoolArrivalTimes = JSON.stringify(input.schoolArrivalTimes);
+  const fields = Object.keys(patch);
   if (fields.length === 0) return;
   const setClause = fields.map((f) => `${f} = ?`).join(', ');
-  const values = fields.map((f) => (input as Record<string, unknown>)[f]) as (string | number | null)[];
+  const values = fields.map((f) => patch[f]) as (string | number | null)[];
   await db.runAsync(`UPDATE child SET ${setClause} WHERE id = ?`, [...values, id]);
 }
 

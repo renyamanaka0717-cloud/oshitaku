@@ -229,6 +229,27 @@ async function migrate(db: SQLite.SQLiteDatabase) {
     version = 7;
   }
 
+  if (version < 8) {
+    await db.execAsync(`
+      ALTER TABLE child ADD COLUMN schoolArrivalTimes TEXT NOT NULL DEFAULT '{}';
+    `);
+
+    // Backfill: expand the old single schoolArrivalTime into a per-day map.
+    const children = await db.getAllAsync<{ id: string; schoolArrivalTime: string }>(
+      'SELECT id, schoolArrivalTime FROM child'
+    );
+    for (const { id, schoolArrivalTime } of children) {
+      const time = schoolArrivalTime || '08:20';
+      const times: Record<number, string> = {};
+      for (let day = 0; day <= 6; day++) times[day] = time;
+      await db.runAsync('UPDATE child SET schoolArrivalTimes = ? WHERE id = ?', [
+        JSON.stringify(times),
+        id,
+      ]);
+    }
+    version = 8;
+  }
+
   await db.execAsync(`PRAGMA user_version = ${version}`);
 }
 
