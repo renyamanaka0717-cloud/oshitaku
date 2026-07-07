@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from './AppText';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
@@ -8,13 +8,15 @@ type Props = {
   value: string | number;
   label: string;
   color?: string;
+  onPress?: () => void;
 };
 
-export function StatBadge({ icon, value, label, color }: Props) {
+export function StatBadge({ icon, value, label, color, onPress }: Props) {
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
+  const Container = onPress ? Pressable : View;
   return (
-    <View style={[styles.badge, { backgroundColor: color ?? colors.accent }]}>
+    <Container style={[styles.badge, { backgroundColor: color ?? colors.accent }]} onPress={onPress}>
       <AppText style={styles.icon}>{icon}</AppText>
       <AppText variant="title" style={styles.value}>
         {value}
@@ -22,7 +24,7 @@ export function StatBadge({ icon, value, label, color }: Props) {
       <AppText variant="caption" style={styles.label}>
         {label}
       </AppText>
-    </View>
+    </Container>
   );
 }
 
