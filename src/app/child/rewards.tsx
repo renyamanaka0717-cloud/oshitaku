@@ -35,8 +35,8 @@ export default function RewardsScreen() {
         <StatBadge icon="⭐" value={totalPoints} label="いまのポイント" color={colors.accent} />
         <StatBadge
           icon="🧾"
-          value="履歴"
-          label="交換履歴"
+          value="りれき"
+          label="こうかんりれき"
           color={colors.surfaceAlt}
           onPress={() => router.push('/child/reward-history')}
         />

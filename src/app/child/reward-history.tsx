@@ -28,10 +28,10 @@ export default function RewardHistoryScreen() {
 
   return (
     <Screen>
-      <HeaderBar title="交換履歴" onBack={() => router.back()} />
+      <HeaderBar title="こうかんりれき" onBack={() => router.back()} />
 
       {exchanges.length === 0 ? (
-        <EmptyState icon="🧾" message="まだ交換したごほうびはありません" />
+        <EmptyState icon="🧾" message="まだこうかんしたごほうびはありません" />
       ) : (
         <View style={styles.list}>
           {exchanges.map((item) => (
