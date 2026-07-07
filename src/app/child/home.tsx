@@ -118,10 +118,6 @@ export default function ChildHome() {
           <AppText style={styles.linkIcon}>📔</AppText>
           <AppText variant="caption">スタンプ図鑑</AppText>
         </Pressable>
-        <Pressable style={styles.linkItem} onPress={() => router.push('/child/calendar')}>
-          <AppText style={styles.linkIcon}>📅</AppText>
-          <AppText variant="caption">カレンダー</AppText>
-        </Pressable>
         <Pressable style={styles.linkItem} onPress={() => router.push('/child/stats')}>
           <AppText style={styles.linkIcon}>📊</AppText>
           <AppText variant="caption">とうけい</AppText>
