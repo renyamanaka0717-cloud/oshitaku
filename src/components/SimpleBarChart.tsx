@@ -19,17 +19,26 @@ export function SimpleBarChart({ data, color, height = 100 }: Props) {
   const styles = useMemo(() => createStyles(colors), [colors]);
   const tint = color ?? colors.secondary;
   const max = Math.max(1, ...data.map((d) => d.value));
+  const barAreaHeight = height - 16;
 
   return (
     <View style={[styles.container, { height: height + 24 }]}>
       {data.map((bar, i) => (
         <View key={i} style={styles.column}>
           <View style={[styles.track, { height }]}>
+            <AppText
+              variant="caption"
+              style={styles.value}
+              color={bar.value > 0 ? tint : colors.textMuted}
+              numberOfLines={1}
+            >
+              {bar.value}
+            </AppText>
             <View
               style={[
                 styles.bar,
                 {
-                  height: Math.max(2, (bar.value / max) * height),
+                  height: Math.max(2, (bar.value / max) * barAreaHeight),
                   backgroundColor: bar.value > 0 ? tint : colors.surfaceAlt,
                 },
               ]}
@@ -60,10 +69,14 @@ function createStyles(colors: ColorPalette) {
       width: '100%',
       justifyContent: 'flex-end',
       alignItems: 'center',
+      gap: 2,
     },
     bar: {
       width: '70%',
       borderRadius: radius.sm,
+    },
+    value: {
+      fontSize: 10,
     },
     label: {
       fontSize: 10,
