@@ -1,188 +1,37 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { useMemo } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { router } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { AppText } from '@/components/AppText';
-import { Card } from '@/components/Card';
-import { Button } from '@/components/Button';
-import { SectionHeader } from '@/components/SectionHeader';
-import { WeekdayChips } from '@/features/parent/components/WeekdayChips';
-import { useActiveChild } from '@/features/child/store';
-import {
-  createEveningTask,
-  createMorningTask,
-  deleteEveningTask,
-  deleteMorningTask,
-  listEveningTasks,
-  listMorningTasks,
-  moveEveningTask,
-  moveMorningTask,
-  updateEveningTask,
-  updateMorningTask,
-} from '@/db/repositories/taskRepository';
-import { EveningTask, MorningTask } from '@/db/models';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
+
+const MENU: Array<{ href: string; icon: string; label: string; description: string }> = [
+  { href: '/parent/tasks-morning', icon: '☀️', label: '朝のタスク', description: 'チェックリストの内容を編集' },
+  { href: '/parent/tasks-evening', icon: '🌙', label: '夜のタスク', description: 'チェックリストの内容を編集' },
+];
 
 export default function TasksSettings() {
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
-  const child = useActiveChild();
-  const [morningTasks, setMorningTasks] = useState<MorningTask[]>([]);
-  const [eveningTasks, setEveningTasks] = useState<EveningTask[]>([]);
-  const [morningLabel, setMorningLabel] = useState('');
-  const [eveningLabel, setEveningLabel] = useState('');
-
-  const reload = async (childId: string) => {
-    const [m, e] = await Promise.all([listMorningTasks(childId), listEveningTasks(childId)]);
-    setMorningTasks(m);
-    setEveningTasks(e);
-  };
-
-  useEffect(() => {
-    if (child) reload(child.id);
-  }, [child]);
-
-  if (!child) return null;
 
   return (
     <Screen>
       <HeaderBar title="朝・夜タスク" onBack={() => router.back()} />
 
-      <View style={styles.section}>
-        <SectionHeader title="朝のタスク" icon="☀️" />
-        {morningTasks.map((task, index) => (
-          <Card key={task.id} style={styles.card}>
-            <View style={styles.row}>
-              <TextInput
-                value={task.icon}
-                onChangeText={(v) => updateMorningTask(task.id, { icon: v }).then(() => reload(child.id))}
-                style={styles.iconInput}
-                maxLength={2}
-              />
-              <TextInput
-                value={task.label}
-                onChangeText={(v) => updateMorningTask(task.id, { label: v }).then(() => reload(child.id))}
-                style={styles.labelInput}
-              />
-              <View style={styles.reorderCol}>
-                <Pressable
-                  onPress={() => moveMorningTask(child.id, task.id, 'up').then(() => reload(child.id))}
-                  disabled={index === 0}
-                  hitSlop={4}
-                >
-                  <AppText style={[styles.reorderArrow, index === 0 ? styles.reorderDisabled : null]}>▲</AppText>
-                </Pressable>
-                <Pressable
-                  onPress={() => moveMorningTask(child.id, task.id, 'down').then(() => reload(child.id))}
-                  disabled={index === morningTasks.length - 1}
-                  hitSlop={4}
-                >
-                  <AppText
-                    style={[
-                      styles.reorderArrow,
-                      index === morningTasks.length - 1 ? styles.reorderDisabled : null,
-                    ]}
-                  >
-                    ▼
-                  </AppText>
-                </Pressable>
-              </View>
+      <View style={styles.menu}>
+        {MENU.map((item) => (
+          <Pressable key={item.href} style={styles.menuItem} onPress={() => router.push(item.href as never)}>
+            <AppText style={styles.menuIcon}>{item.icon}</AppText>
+            <View style={styles.menuText}>
+              <AppText variant="subtitle">{item.label}</AppText>
+              <AppText variant="caption">{item.description}</AppText>
             </View>
-            <WeekdayChips
-              value={task.daysOfWeek}
-              onChange={(days) => updateMorningTask(task.id, { daysOfWeek: days }).then(() => reload(child.id))}
-            />
-            <Button label="削除" variant="danger" onPress={() => deleteMorningTask(task.id).then(() => reload(child.id))} />
-          </Card>
+            <AppText style={styles.chevron} color={colors.textMuted}>
+              ›
+            </AppText>
+          </Pressable>
         ))}
-        <View style={styles.row}>
-          <TextInput
-            value={morningLabel}
-            onChangeText={setMorningLabel}
-            placeholder="新しいタスク"
-            placeholderTextColor={colors.textMuted}
-            style={styles.labelInput}
-          />
-          <Button
-            label="追加"
-            onPress={async () => {
-              if (!morningLabel.trim()) return;
-              await createMorningTask({ childId: child.id, label: morningLabel.trim(), icon: '✅' });
-              setMorningLabel('');
-              reload(child.id);
-            }}
-            disabled={!morningLabel.trim()}
-          />
-        </View>
-      </View>
-
-      <View style={styles.section}>
-        <SectionHeader title="夜のタスク" icon="🌙" />
-        {eveningTasks.map((task, index) => (
-          <Card key={task.id} style={styles.card}>
-            <View style={styles.row}>
-              <TextInput
-                value={task.icon}
-                onChangeText={(v) => updateEveningTask(task.id, { icon: v }).then(() => reload(child.id))}
-                style={styles.iconInput}
-                maxLength={2}
-              />
-              <TextInput
-                value={task.label}
-                onChangeText={(v) => updateEveningTask(task.id, { label: v }).then(() => reload(child.id))}
-                style={styles.labelInput}
-              />
-              <View style={styles.reorderCol}>
-                <Pressable
-                  onPress={() => moveEveningTask(child.id, task.id, 'up').then(() => reload(child.id))}
-                  disabled={index === 0}
-                  hitSlop={4}
-                >
-                  <AppText style={[styles.reorderArrow, index === 0 ? styles.reorderDisabled : null]}>▲</AppText>
-                </Pressable>
-                <Pressable
-                  onPress={() => moveEveningTask(child.id, task.id, 'down').then(() => reload(child.id))}
-                  disabled={index === eveningTasks.length - 1}
-                  hitSlop={4}
-                >
-                  <AppText
-                    style={[
-                      styles.reorderArrow,
-                      index === eveningTasks.length - 1 ? styles.reorderDisabled : null,
-                    ]}
-                  >
-                    ▼
-                  </AppText>
-                </Pressable>
-              </View>
-            </View>
-            <WeekdayChips
-              value={task.daysOfWeek}
-              onChange={(days) => updateEveningTask(task.id, { daysOfWeek: days }).then(() => reload(child.id))}
-            />
-            <Button label="削除" variant="danger" onPress={() => deleteEveningTask(task.id).then(() => reload(child.id))} />
-          </Card>
-        ))}
-        <View style={styles.row}>
-          <TextInput
-            value={eveningLabel}
-            onChangeText={setEveningLabel}
-            placeholder="新しいタスク"
-            placeholderTextColor={colors.textMuted}
-            style={styles.labelInput}
-          />
-          <Button
-            label="追加"
-            onPress={async () => {
-              if (!eveningLabel.trim()) return;
-              await createEveningTask({ childId: child.id, label: eveningLabel.trim(), icon: '✅' });
-              setEveningLabel('');
-              reload(child.id);
-            }}
-            disabled={!eveningLabel.trim()}
-          />
-        </View>
       </View>
     </Screen>
   );
@@ -190,45 +39,25 @@ export default function TasksSettings() {
 
 function createStyles(colors: ColorPalette) {
   return StyleSheet.create({
-    section: {
+    menu: {
       gap: spacing.sm,
     },
-    card: {
-      gap: spacing.sm,
-    },
-    row: {
+    menuItem: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: spacing.sm,
+      gap: spacing.md,
+      backgroundColor: colors.surface,
+      borderRadius: radius.lg,
+      padding: spacing.md,
     },
-    iconInput: {
-      width: 44,
-      textAlign: 'center',
-      backgroundColor: colors.surfaceAlt,
-      borderRadius: radius.sm,
-      padding: spacing.sm,
-      fontSize: 18,
-      color: colors.text,
+    menuIcon: {
+      fontSize: 28,
     },
-    labelInput: {
+    menuText: {
       flex: 1,
-      backgroundColor: colors.surfaceAlt,
-      borderRadius: radius.sm,
-      padding: spacing.sm,
-      fontSize: 16,
-      color: colors.text,
     },
-    reorderCol: {
-      alignItems: 'center',
-      gap: 2,
-    },
-    reorderArrow: {
-      fontSize: 14,
-      color: colors.textMuted,
-      padding: 2,
-    },
-    reorderDisabled: {
-      opacity: 0.25,
+    chevron: {
+      fontSize: 24,
     },
   });
 }
