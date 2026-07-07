@@ -16,7 +16,6 @@ import { useMorningStore } from '@/features/morning/store';
 import { useEveningStore } from '@/features/evening/store';
 import { usePointsStore } from '@/features/points/store';
 import { useStampsStore } from '@/features/stamps/store';
-import { useStreakStore } from '@/features/home/streakStore';
 import { getSuggestedMode } from '@/features/home/timeMode';
 import { ColorPalette, spacing, useTheme } from '@/theme';
 import { todayKey } from '@/utils/date';
@@ -28,7 +27,6 @@ export default function ChildHome() {
   const child = useActiveChild();
 
   const [switcherVisible, setSwitcherVisible] = useState(false);
-  const streak = useStreakStore((s) => s.streak);
 
   const suggestedMode = useMemo(() => getSuggestedMode(), []);
 
@@ -103,7 +101,13 @@ export default function ChildHome() {
 
       <View style={styles.statsRow}>
         <StatBadge icon="⭐" value={totalPoints} label="ポイント" color={colors.accent} />
-        <StatBadge icon="🔥" value={`${streak}日`} label="おてつだい" color={colors.pink} />
+        <StatBadge
+          icon="🎁"
+          value="ごほうび"
+          label="こうかんする"
+          color={colors.pink}
+          onPress={() => router.push('/child/rewards')}
+        />
       </View>
 
       <TodayBonusCard bonusPoints={bonusPoints} />
