@@ -56,14 +56,14 @@ export function RewardCard({ reward, currentPoints, onExchange }: Props) {
 function createStyles(colors: ColorPalette) {
   return StyleSheet.create({
     card: {
-      flex: 1,
-      minWidth: 150,
+      width: '47%',
       gap: spacing.xs,
       alignItems: 'center',
+      padding: spacing.sm,
     },
     imageBox: {
       width: '100%',
-      aspectRatio: 1.3,
+      aspectRatio: 1,
       borderRadius: radius.md,
       backgroundColor: colors.surfaceAlt,
       alignItems: 'center',
@@ -75,7 +75,7 @@ function createStyles(colors: ColorPalette) {
       height: '100%',
     },
     icon: {
-      fontSize: 44,
+      fontSize: 32,
     },
     name: {
       alignSelf: 'stretch',

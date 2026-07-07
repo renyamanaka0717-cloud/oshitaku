@@ -6,7 +6,6 @@ import { Screen } from '@/components/Screen';
 import { AppText } from '@/components/AppText';
 import { StatBadge } from '@/components/StatBadge';
 import { useChildStore, useActiveChild } from '@/features/child/store';
-import { useChildData } from '@/features/child/useChildData';
 import { ChildSwitcherModal } from '@/features/child/components/ChildSwitcherModal';
 import { GreetingHeader } from '@/features/home/components/GreetingHeader';
 import { TodayBonusCard } from '@/features/home/components/TodayBonusCard';
@@ -27,7 +26,6 @@ export default function ChildHome() {
   const styles = useMemo(() => createStyles(colors), [colors]);
   const { children, activeChildId, setActiveChild } = useChildStore();
   const child = useActiveChild();
-  useChildData(child?.id);
 
   const [switcherVisible, setSwitcherVisible] = useState(false);
   const streak = useStreakStore((s) => s.streak);
