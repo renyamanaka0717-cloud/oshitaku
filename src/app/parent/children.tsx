@@ -41,6 +41,13 @@ export default function ChildrenSettings() {
         {children.map((child) => (
           <Card key={child.id} style={styles.childCard}>
             <View style={styles.switchRow}>
+              <Pressable
+                onPress={() => handlePickExistingPhoto(child.id)}
+                style={styles.cameraButton}
+                hitSlop={8}
+              >
+                <AppText style={styles.cameraIcon}>📷</AppText>
+              </Pressable>
               <Pressable style={styles.switchTapArea} onPress={() => setActiveChild(child.id)}>
                 <ChildAvatar
                   avatarImageUri={child.avatarImageUri}
@@ -71,18 +78,6 @@ export default function ChildrenSettings() {
             />
 
             <AppText variant="caption">アイコン</AppText>
-            <View style={styles.photoRow}>
-              <Pressable onPress={() => handlePickExistingPhoto(child.id)}>
-                <AppText color={colors.primaryDark}>📷 写真を選ぶ</AppText>
-              </Pressable>
-              {child.avatarImageUri ? (
-                <Pressable onPress={() => updateChild(child.id, { avatarImageUri: null })}>
-                  <AppText variant="caption" color={colors.textMuted}>
-                    写真をやめる
-                  </AppText>
-                </Pressable>
-              ) : null}
-            </View>
             <View style={styles.avatarRow}>
               {AVATARS.map((a) => (
                 <AppText
@@ -112,22 +107,17 @@ export default function ChildrenSettings() {
           maxLength={12}
         />
         <View style={styles.photoRow}>
-          <ChildAvatar avatarImageUri={photoUri} avatarEmoji={avatar} avatarColor={colors.accent} size={48} />
           <Pressable
             onPress={async () => {
               const uri = await pickChildAvatarImage();
               if (uri) setPhotoUri(uri);
             }}
+            style={styles.cameraButton}
+            hitSlop={8}
           >
-            <AppText color={colors.primaryDark}>📷 写真を選ぶ</AppText>
+            <AppText style={styles.cameraIcon}>📷</AppText>
           </Pressable>
-          {photoUri ? (
-            <Pressable onPress={() => setPhotoUri(null)}>
-              <AppText variant="caption" color={colors.textMuted}>
-                写真をやめる
-              </AppText>
-            </Pressable>
-          ) : null}
+          <ChildAvatar avatarImageUri={photoUri} avatarEmoji={avatar} avatarColor={colors.accent} size={48} />
         </View>
         <View style={styles.avatarRow}>
           {AVATARS.map((a) => (
@@ -170,6 +160,17 @@ function createStyles(colors: ColorPalette) {
     },
     switchLabel: {
       flex: 1,
+    },
+    cameraButton: {
+      width: 36,
+      height: 36,
+      borderRadius: radius.round,
+      backgroundColor: colors.surfaceAlt,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    cameraIcon: {
+      fontSize: 18,
     },
     input: {
       backgroundColor: colors.surfaceAlt,
