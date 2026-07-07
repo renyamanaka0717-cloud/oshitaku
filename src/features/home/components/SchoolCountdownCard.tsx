@@ -36,7 +36,7 @@ export function SchoolCountdownCard({ schoolArrivalTime, progress }: Props) {
   return (
     <Card style={styles.card}>
       <View style={styles.row}>
-        <CircularProgress progress={timeProgress} color={tint} size={104} strokeWidth={10}>
+        <CircularProgress progress={timeProgress} color={tint} size={80} strokeWidth={8}>
           <AppText style={styles.ringEmoji}>🏫</AppText>
         </CircularProgress>
         <View style={styles.info}>
@@ -58,7 +58,8 @@ export function SchoolCountdownCard({ schoolArrivalTime, progress }: Props) {
 function createStyles(colors: ColorPalette) {
   return StyleSheet.create({
     card: {
-      gap: 8,
+      gap: 6,
+      paddingVertical: spacing.sm,
     },
     row: {
       flexDirection: 'row',
@@ -66,17 +67,17 @@ function createStyles(colors: ColorPalette) {
       gap: spacing.lg,
     },
     ringEmoji: {
-      fontSize: 28,
+      fontSize: 24,
     },
     info: {
       flex: 1,
       gap: 2,
     },
     countdown: {
-      fontSize: 32,
+      fontSize: 28,
     },
     progressLabel: {
-      marginTop: 8,
+      marginTop: 4,
     },
   });
 }
