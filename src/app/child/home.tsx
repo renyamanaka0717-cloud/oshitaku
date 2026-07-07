@@ -103,7 +103,7 @@ export default function ChildHome() {
 
       <View style={styles.statsRow}>
         <StatBadge icon="⭐" value={totalPoints} label="ポイント" color={colors.accent} />
-        <StatBadge icon="🔥" value={`${streak}日`} label="連続達成" color={colors.pink} />
+        <StatBadge icon="🔥" value={`${streak}日`} label="おてつだい" color={colors.pink} />
       </View>
 
       <TodayBonusCard bonusPoints={bonusPoints} />
