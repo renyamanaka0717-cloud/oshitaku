@@ -8,6 +8,7 @@ import { Card } from '@/components/Card';
 import { Button } from '@/components/Button';
 import { SectionHeader } from '@/components/SectionHeader';
 import { EmptyState } from '@/components/EmptyState';
+import { ExpandableCard } from '@/components/ExpandableCard';
 import { useActiveChild } from '@/features/child/store';
 import { useChoresStore } from '@/features/chores/store';
 import { usePointsStore } from '@/features/points/store';
@@ -51,7 +52,20 @@ export default function ChoresSettings() {
       <View style={styles.section}>
         <SectionHeader title="おてつだい一覧" icon="🧹" />
         {chores.map((chore) => (
-          <Card key={chore.id} style={styles.card}>
+          <ExpandableCard
+            key={chore.id}
+            summary={
+              <>
+                <AppText style={styles.summaryIcon}>{chore.icon}</AppText>
+                <AppText variant="body" style={styles.summaryName} numberOfLines={1}>
+                  {chore.name}
+                </AppText>
+                <AppText variant="caption" color={colors.primaryDark}>
+                  +{chore.pointValue}pt
+                </AppText>
+              </>
+            }
+          >
             <View style={styles.row}>
               <TextInput
                 value={chore.icon}
@@ -71,8 +85,8 @@ export default function ChoresSettings() {
                 keyboardType="number-pad"
               />
             </View>
-            <Button label="削除" variant="danger" onPress={() => deleteChore(chore.id)} />
-          </Card>
+            <Button label="削除" variant="danger" size="md" onPress={() => deleteChore(chore.id)} />
+          </ExpandableCard>
         ))}
 
         <Card style={styles.addCard}>
@@ -121,6 +135,12 @@ function createStyles(colors: ColorPalette) {
     },
     card: {
       gap: spacing.sm,
+    },
+    summaryIcon: {
+      fontSize: 20,
+    },
+    summaryName: {
+      flex: 1,
     },
     row: {
       flexDirection: 'row',

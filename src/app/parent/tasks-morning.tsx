@@ -4,8 +4,8 @@ import { router } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { AppText } from '@/components/AppText';
-import { Card } from '@/components/Card';
 import { Button } from '@/components/Button';
+import { ExpandableCard } from '@/components/ExpandableCard';
 import { WeekdayChips } from '@/features/parent/components/WeekdayChips';
 import { useActiveChild } from '@/features/child/store';
 import {
@@ -41,7 +41,46 @@ export default function MorningTasksSettings() {
 
       <View style={styles.section}>
         {morningTasks.map((task, index) => (
-          <Card key={task.id} style={styles.card}>
+          <ExpandableCard
+            key={task.id}
+            summary={
+              <>
+                <AppText style={styles.summaryIcon}>{task.icon}</AppText>
+                <AppText variant="body" style={styles.summaryLabel} numberOfLines={1}>
+                  {task.label}
+                </AppText>
+                <View style={styles.reorderCol}>
+                  <Pressable
+                    onPress={(e) => {
+                      e.stopPropagation();
+                      moveMorningTask(child.id, task.id, 'up').then(() => reload(child.id));
+                    }}
+                    disabled={index === 0}
+                    hitSlop={4}
+                  >
+                    <AppText style={[styles.reorderArrow, index === 0 ? styles.reorderDisabled : null]}>▲</AppText>
+                  </Pressable>
+                  <Pressable
+                    onPress={(e) => {
+                      e.stopPropagation();
+                      moveMorningTask(child.id, task.id, 'down').then(() => reload(child.id));
+                    }}
+                    disabled={index === morningTasks.length - 1}
+                    hitSlop={4}
+                  >
+                    <AppText
+                      style={[
+                        styles.reorderArrow,
+                        index === morningTasks.length - 1 ? styles.reorderDisabled : null,
+                      ]}
+                    >
+                      ▼
+                    </AppText>
+                  </Pressable>
+                </View>
+              </>
+            }
+          >
             <View style={styles.row}>
               <TextInput
                 value={task.icon}
@@ -54,36 +93,13 @@ export default function MorningTasksSettings() {
                 onChangeText={(v) => updateMorningTask(task.id, { label: v }).then(() => reload(child.id))}
                 style={styles.labelInput}
               />
-              <View style={styles.reorderCol}>
-                <Pressable
-                  onPress={() => moveMorningTask(child.id, task.id, 'up').then(() => reload(child.id))}
-                  disabled={index === 0}
-                  hitSlop={4}
-                >
-                  <AppText style={[styles.reorderArrow, index === 0 ? styles.reorderDisabled : null]}>▲</AppText>
-                </Pressable>
-                <Pressable
-                  onPress={() => moveMorningTask(child.id, task.id, 'down').then(() => reload(child.id))}
-                  disabled={index === morningTasks.length - 1}
-                  hitSlop={4}
-                >
-                  <AppText
-                    style={[
-                      styles.reorderArrow,
-                      index === morningTasks.length - 1 ? styles.reorderDisabled : null,
-                    ]}
-                  >
-                    ▼
-                  </AppText>
-                </Pressable>
-              </View>
             </View>
             <WeekdayChips
               value={task.daysOfWeek}
               onChange={(days) => updateMorningTask(task.id, { daysOfWeek: days }).then(() => reload(child.id))}
             />
-            <Button label="削除" variant="danger" onPress={() => deleteMorningTask(task.id).then(() => reload(child.id))} />
-          </Card>
+            <Button label="削除" variant="danger" size="md" onPress={() => deleteMorningTask(task.id).then(() => reload(child.id))} />
+          </ExpandableCard>
         ))}
         <View style={styles.row}>
           <TextInput
@@ -116,6 +132,12 @@ function createStyles(colors: ColorPalette) {
     },
     card: {
       gap: spacing.sm,
+    },
+    summaryIcon: {
+      fontSize: 20,
+    },
+    summaryLabel: {
+      flex: 1,
     },
     row: {
       flexDirection: 'row',

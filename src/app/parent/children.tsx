@@ -69,7 +69,7 @@ export default function ChildrenSettings() {
               ) : null}
             </View>
 
-            <AppText variant="caption">なまえ</AppText>
+            <AppText variant="caption">名前</AppText>
             <TextInput
               value={child.name}
               onChangeText={(v) => updateChild(child.id, { name: v })}
@@ -101,7 +101,7 @@ export default function ChildrenSettings() {
         <TextInput
           value={name}
           onChangeText={setName}
-          placeholder="なまえ"
+          placeholder="名前"
           placeholderTextColor={colors.textMuted}
           style={styles.input}
           maxLength={12}

@@ -64,7 +64,7 @@ export default function ItemsSettings() {
           <TextInput
             value={name}
             onChangeText={setName}
-            placeholder="もちものの名前"
+            placeholder="持ち物の名前"
             placeholderTextColor={colors.textMuted}
             style={styles.nameInput}
           />

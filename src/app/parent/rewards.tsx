@@ -8,6 +8,7 @@ import { Card } from '@/components/Card';
 import { Button } from '@/components/Button';
 import { SectionHeader } from '@/components/SectionHeader';
 import { EmptyState } from '@/components/EmptyState';
+import { ExpandableCard } from '@/components/ExpandableCard';
 import { useActiveChild } from '@/features/child/store';
 import { useRewardsStore } from '@/features/rewards/store';
 import { usePointsStore } from '@/features/points/store';
@@ -67,7 +68,26 @@ export default function RewardsSettings() {
       <View style={styles.section}>
         <SectionHeader title="ごほうび一覧" icon="🎁" />
         {rewards.map((reward) => (
-          <Card key={reward.id} style={styles.card}>
+          <ExpandableCard
+            key={reward.id}
+            summary={
+              <>
+                <View style={styles.summaryImageBox}>
+                  {reward.imageUri ? (
+                    <Image source={{ uri: reward.imageUri }} style={styles.image} resizeMode="cover" />
+                  ) : (
+                    <AppText style={styles.summaryImagePlaceholder}>{reward.icon}</AppText>
+                  )}
+                </View>
+                <AppText variant="body" style={styles.summaryName} numberOfLines={1}>
+                  {reward.name}
+                </AppText>
+                <AppText variant="caption" color={colors.primaryDark}>
+                  {reward.pointCost}pt
+                </AppText>
+              </>
+            }
+          >
             <View style={styles.row}>
               <Pressable onPress={() => handlePickImageForExisting(reward.id)} style={styles.imageBox}>
                 {reward.imageUri ? (
@@ -97,12 +117,12 @@ export default function RewardsSettings() {
             <TextInput
               value={reward.description}
               onChangeText={(v) => updateReward(reward.id, { description: v })}
-              placeholder="せつめい（にんい）"
+              placeholder="説明（任意）"
               placeholderTextColor={colors.textMuted}
               style={styles.descriptionInput}
             />
-            <Button label="削除" variant="danger" onPress={() => deleteReward(reward.id)} />
-          </Card>
+            <Button label="削除" variant="danger" size="md" onPress={() => deleteReward(reward.id)} />
+          </ExpandableCard>
         ))}
 
         <Card style={styles.addCard}>
@@ -133,7 +153,7 @@ export default function RewardsSettings() {
           <TextInput
             value={description}
             onChangeText={setDescription}
-            placeholder="せつめい（にんい）"
+            placeholder="説明（任意）"
             placeholderTextColor={colors.textMuted}
             style={styles.descriptionInput}
           />
@@ -165,6 +185,21 @@ function createStyles(colors: ColorPalette) {
     },
     card: {
       gap: spacing.sm,
+    },
+    summaryImageBox: {
+      width: 32,
+      height: 32,
+      borderRadius: radius.sm,
+      backgroundColor: colors.surfaceAlt,
+      alignItems: 'center',
+      justifyContent: 'center',
+      overflow: 'hidden',
+    },
+    summaryImagePlaceholder: {
+      fontSize: 16,
+    },
+    summaryName: {
+      flex: 1,
     },
     row: {
       flexDirection: 'row',
