@@ -39,6 +39,7 @@ export default function RewardsScreen() {
           label="こうかんりれき"
           color={colors.surfaceAlt}
           onPress={() => router.push('/child/reward-history')}
+          valueVariant="subtitle"
         />
       </View>
 

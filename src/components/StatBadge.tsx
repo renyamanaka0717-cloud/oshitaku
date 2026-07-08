@@ -9,16 +9,17 @@ type Props = {
   label: string;
   color?: string;
   onPress?: () => void;
+  valueVariant?: 'title' | 'subtitle';
 };
 
-export function StatBadge({ icon, value, label, color, onPress }: Props) {
+export function StatBadge({ icon, value, label, color, onPress, valueVariant = 'title' }: Props) {
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const Container = onPress ? Pressable : View;
   return (
     <Container style={[styles.badge, { backgroundColor: color ?? colors.accent }]} onPress={onPress}>
       <AppText style={styles.icon}>{icon}</AppText>
-      <AppText variant="title" style={styles.value}>
+      <AppText variant={valueVariant} style={styles.value} numberOfLines={1}>
         {value}
       </AppText>
       <AppText variant="caption" style={styles.label}>

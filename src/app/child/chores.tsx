@@ -38,7 +38,7 @@ export default function ChoresScreen() {
         {chores.length === 0 ? (
           <EmptyState icon="🧹" message="おてつだいがまだ登録されていません" />
         ) : (
-          <View style={styles.grid}>
+          <View style={styles.list}>
             {chores.map((chore) => (
               <ChoreCard key={chore.id} chore={chore} onPress={() => setSelectedChore(chore)} />
             ))}
@@ -62,9 +62,7 @@ const styles = StyleSheet.create({
   section: {
     gap: spacing.sm,
   },
-  grid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+  list: {
     gap: spacing.sm,
   },
 });

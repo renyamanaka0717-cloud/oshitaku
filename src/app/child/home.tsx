@@ -107,6 +107,7 @@ export default function ChildHome() {
           label="やってみる"
           color={colors.pink}
           onPress={() => router.push('/child/chores')}
+          valueVariant="subtitle"
         />
       </View>
 

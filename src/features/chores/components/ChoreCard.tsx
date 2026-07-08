@@ -15,7 +15,7 @@ export function ChoreCard({ chore, onPress }: Props) {
   const styles = useMemo(() => createStyles(colors), [colors]);
 
   return (
-    <Pressable onPress={onPress} style={styles.pressable}>
+    <Pressable onPress={onPress}>
       <Card style={styles.card}>
         <View style={styles.iconBox}>
           <AppText style={styles.icon}>{chore.icon}</AppText>
@@ -37,17 +37,15 @@ export function ChoreCard({ chore, onPress }: Props) {
 
 function createStyles(colors: ColorPalette) {
   return StyleSheet.create({
-    pressable: {
-      width: '47%',
-    },
     card: {
-      gap: spacing.xs,
+      flexDirection: 'row',
       alignItems: 'center',
+      gap: spacing.md,
       padding: spacing.sm,
     },
     iconBox: {
-      width: '100%',
-      aspectRatio: 1,
+      width: 56,
+      height: 56,
       borderRadius: radius.md,
       backgroundColor: colors.green,
       alignItems: 'center',
@@ -57,12 +55,12 @@ function createStyles(colors: ColorPalette) {
       fontSize: 32,
     },
     name: {
-      alignSelf: 'stretch',
+      flex: 1,
     },
     pointBadge: {
       backgroundColor: colors.surfaceAlt,
       borderRadius: radius.round,
-      paddingVertical: 2,
+      paddingVertical: 4,
       paddingHorizontal: spacing.sm,
     },
   });
