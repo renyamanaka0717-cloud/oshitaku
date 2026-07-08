@@ -8,12 +8,12 @@ type Props = {
   message: string;
 };
 
-export function EmptyState({ icon = '📭', message }: Props) {
+export function EmptyState({ icon, message }: Props) {
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <View style={styles.container}>
-      <AppText style={styles.icon}>{icon}</AppText>
+      {icon ? <AppText style={styles.icon}>{icon}</AppText> : null}
       <AppText variant="body" color={colors.textMuted} style={styles.message}>
         {message}
       </AppText>

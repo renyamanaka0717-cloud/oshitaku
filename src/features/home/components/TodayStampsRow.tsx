@@ -16,7 +16,7 @@ export function TodayStampsRow({ stamps }: Props) {
     <Card>
       <SectionHeader title="今日のスタンプ" icon="🏅" />
       {stamps.length === 0 ? (
-        <EmptyState icon="🏅" message="おしたくをがんばってスタンプをゲットしよう" />
+        <EmptyState message="おしたくをがんばってスタンプをゲットしよう" />
       ) : (
         <View style={styles.row}>
           {stamps.map((stamp) => (
