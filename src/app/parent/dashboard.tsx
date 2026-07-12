@@ -21,6 +21,7 @@ const MENU: Array<{ href: string; icon: string; label: string; description: stri
   { href: '/parent/chores', icon: '🧹', label: 'おてつだい設定', description: 'おてつだいと完了履歴' },
   { href: '/parent/notifications', icon: '🔔', label: '通知設定', description: '通知する時間' },
   { href: '/parent/appearance', icon: '🎨', label: '表示設定', description: 'ライト・ダークモード' },
+  { href: '/parent/account', icon: '☁️', label: 'クラウド同期', description: 'アカウント作成・ログイン' },
 ];
 
 export default function ParentDashboard() {

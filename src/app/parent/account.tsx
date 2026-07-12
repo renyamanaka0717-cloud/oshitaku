@@ -1,0 +1,137 @@
+import { useEffect, useMemo, useState } from 'react';
+import { StyleSheet, TextInput, View } from 'react-native';
+import { router } from 'expo-router';
+import { Screen } from '@/components/Screen';
+import { HeaderBar } from '@/components/HeaderBar';
+import { AppText } from '@/components/AppText';
+import { Card } from '@/components/Card';
+import { Button } from '@/components/Button';
+import { useAuthStore } from '@/features/auth/store';
+import { ColorPalette, radius, spacing, useTheme } from '@/theme';
+
+export default function AccountSettings() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
+  const session = useAuthStore((s) => s.session);
+  const loaded = useAuthStore((s) => s.loaded);
+  const error = useAuthStore((s) => s.error);
+  const load = useAuthStore((s) => s.load);
+  const signUp = useAuthStore((s) => s.signUp);
+  const signIn = useAuthStore((s) => s.signIn);
+  const signOut = useAuthStore((s) => s.signOut);
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [mode, setMode] = useState<'signIn' | 'signUp'>('signIn');
+  const [submitting, setSubmitting] = useState(false);
+  const [info, setInfo] = useState<string | null>(null);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  if (!loaded) return null;
+
+  const handleSubmit = async () => {
+    if (!email.trim() || !password) return;
+    setSubmitting(true);
+    setInfo(null);
+    const ok = mode === 'signUp' ? await signUp(email.trim(), password) : await signIn(email.trim(), password);
+    setSubmitting(false);
+    if (ok && mode === 'signUp') {
+      setInfo('登録できました。確認メールが届いていれば認証してください。');
+    }
+  };
+
+  return (
+    <Screen>
+      <HeaderBar title="クラウド同期" onBack={() => router.back()} />
+
+      {session ? (
+        <Card style={styles.card}>
+          <AppText variant="caption" color={colors.textMuted}>
+            ログイン中
+          </AppText>
+          <AppText variant="subtitle">{session.user.email}</AppText>
+          <Button label="ログアウト" variant="danger" onPress={signOut} />
+        </Card>
+      ) : (
+        <Card style={styles.card}>
+          <View style={styles.tabRow}>
+            <Button
+              label="ログイン"
+              variant={mode === 'signIn' ? 'primary' : 'ghost'}
+              size="md"
+              onPress={() => setMode('signIn')}
+              style={styles.tabButton}
+            />
+            <Button
+              label="新規登録"
+              variant={mode === 'signUp' ? 'primary' : 'ghost'}
+              size="md"
+              onPress={() => setMode('signUp')}
+              style={styles.tabButton}
+            />
+          </View>
+
+          <TextInput
+            value={email}
+            onChangeText={setEmail}
+            placeholder="メールアドレス"
+            placeholderTextColor={colors.textMuted}
+            autoCapitalize="none"
+            keyboardType="email-address"
+            style={styles.input}
+          />
+          <TextInput
+            value={password}
+            onChangeText={setPassword}
+            placeholder="パスワード"
+            placeholderTextColor={colors.textMuted}
+            secureTextEntry
+            style={styles.input}
+          />
+
+          {error ? (
+            <AppText variant="caption" color={colors.danger}>
+              {error}
+            </AppText>
+          ) : null}
+          {info ? (
+            <AppText variant="caption" color={colors.primaryDark}>
+              {info}
+            </AppText>
+          ) : null}
+
+          <Button
+            label={mode === 'signUp' ? '登録する' : 'ログインする'}
+            onPress={handleSubmit}
+            disabled={!email.trim() || !password || submitting}
+          />
+        </Card>
+      )}
+    </Screen>
+  );
+}
+
+function createStyles(colors: ColorPalette) {
+  return StyleSheet.create({
+    card: {
+      gap: spacing.sm,
+    },
+    tabRow: {
+      flexDirection: 'row',
+      gap: spacing.sm,
+    },
+    tabButton: {
+      flex: 1,
+    },
+    input: {
+      backgroundColor: colors.surfaceAlt,
+      borderRadius: radius.md,
+      padding: spacing.md,
+      fontSize: 16,
+      color: colors.text,
+    },
+  });
+}
