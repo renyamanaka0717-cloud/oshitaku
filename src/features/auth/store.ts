@@ -26,6 +26,8 @@ function describeAuthError(error: unknown): string {
   }
 }
 
+let authListenerRegistered = false;
+
 export const useAuthStore = create<AuthState>((set) => ({
   session: null,
   loaded: false,
@@ -34,9 +36,12 @@ export const useAuthStore = create<AuthState>((set) => ({
   load: async () => {
     const { data } = await supabase.auth.getSession();
     set({ session: data.session, loaded: true });
-    supabase.auth.onAuthStateChange((_event, session) => {
-      set({ session });
-    });
+    if (!authListenerRegistered) {
+      authListenerRegistered = true;
+      supabase.auth.onAuthStateChange((_event, session) => {
+        set({ session });
+      });
+    }
   },
 
   signUp: async (email: string, password: string) => {

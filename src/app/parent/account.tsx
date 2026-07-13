@@ -104,7 +104,10 @@ export default function AccountSettings() {
 
           <AppText variant="subtitle">バックアップ</AppText>
           <AppText variant="caption" color={colors.textMuted}>
-            {child ? `${child.name}のデータをクラウドに保存します` : 'お子さまが選択されていません'}
+            ログイン中は自動でクラウドに保存されます。すぐに反映したいときは下のボタンを押してください。
+          </AppText>
+          <AppText variant="caption" color={colors.textMuted}>
+            {child ? `${child.name}のデータを同期します` : 'お子さまが選択されていません'}
           </AppText>
 
           {syncing && syncProgress ? (
