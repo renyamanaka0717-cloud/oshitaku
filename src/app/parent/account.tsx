@@ -8,7 +8,7 @@ import { Card } from '@/components/Card';
 import { Button } from '@/components/Button';
 import { useAuthStore } from '@/features/auth/store';
 import { useActiveChild } from '@/features/child/store';
-import { pushChildToCloud, SyncProgress } from '@/features/sync/syncService';
+import { pullChildrenFromCloud, pushChildToCloud, SyncProgress } from '@/features/sync/syncService';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 export default function AccountSettings() {
@@ -32,6 +32,10 @@ export default function AccountSettings() {
   const [syncProgress, setSyncProgress] = useState<SyncProgress | null>(null);
   const [syncError, setSyncError] = useState<string | null>(null);
   const [syncedAt, setSyncedAt] = useState<Date | null>(null);
+  const [restoring, setRestoring] = useState(false);
+  const [restoreProgress, setRestoreProgress] = useState<SyncProgress | null>(null);
+  const [restoreError, setRestoreError] = useState<string | null>(null);
+  const [restoreInfo, setRestoreInfo] = useState<string | null>(null);
 
   useEffect(() => {
     load();
@@ -62,6 +66,25 @@ export default function AccountSettings() {
       setSyncError(err instanceof Error ? err.message : String(err));
     } finally {
       setSyncing(false);
+    }
+  };
+
+  const handleRestore = async () => {
+    setRestoring(true);
+    setRestoreError(null);
+    setRestoreInfo(null);
+    setRestoreProgress(null);
+    try {
+      const result = await pullChildrenFromCloud(setRestoreProgress);
+      setRestoreInfo(
+        result.childCount > 0
+          ? `${result.childCount}人分のお子さまのデータを復元しました`
+          : 'クラウドに保存されたデータが見つかりませんでした'
+      );
+    } catch (err) {
+      setRestoreError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setRestoring(false);
     }
   };
 
@@ -105,6 +128,36 @@ export default function AccountSettings() {
             onPress={handleSync}
             disabled={!child || syncing}
             variant="secondary"
+          />
+
+          <View style={styles.divider} />
+
+          <AppText variant="subtitle">復元</AppText>
+          <AppText variant="caption" color={colors.textMuted}>
+            クラウドに保存されたお子さまのデータをこの端末に読み込みます
+          </AppText>
+
+          {restoring && restoreProgress ? (
+            <AppText variant="caption" color={colors.textMuted}>
+              復元中… ({restoreProgress.done}/{restoreProgress.total})
+            </AppText>
+          ) : null}
+          {restoreError ? (
+            <AppText variant="caption" color={colors.danger}>
+              {restoreError}
+            </AppText>
+          ) : null}
+          {restoreInfo && !restoring ? (
+            <AppText variant="caption" color={colors.primaryDark}>
+              {restoreInfo}
+            </AppText>
+          ) : null}
+
+          <Button
+            label="クラウドから復元"
+            onPress={handleRestore}
+            disabled={restoring}
+            variant="ghost"
           />
         </Card>
       ) : (
