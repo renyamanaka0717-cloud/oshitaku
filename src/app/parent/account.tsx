@@ -7,6 +7,8 @@ import { AppText } from '@/components/AppText';
 import { Card } from '@/components/Card';
 import { Button } from '@/components/Button';
 import { useAuthStore } from '@/features/auth/store';
+import { useActiveChild } from '@/features/child/store';
+import { pushChildToCloud, SyncProgress } from '@/features/sync/syncService';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 export default function AccountSettings() {
@@ -19,12 +21,17 @@ export default function AccountSettings() {
   const signUp = useAuthStore((s) => s.signUp);
   const signIn = useAuthStore((s) => s.signIn);
   const signOut = useAuthStore((s) => s.signOut);
+  const child = useActiveChild();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [mode, setMode] = useState<'signIn' | 'signUp'>('signIn');
   const [submitting, setSubmitting] = useState(false);
   const [info, setInfo] = useState<string | null>(null);
+  const [syncing, setSyncing] = useState(false);
+  const [syncProgress, setSyncProgress] = useState<SyncProgress | null>(null);
+  const [syncError, setSyncError] = useState<string | null>(null);
+  const [syncedAt, setSyncedAt] = useState<Date | null>(null);
 
   useEffect(() => {
     load();
@@ -43,6 +50,21 @@ export default function AccountSettings() {
     }
   };
 
+  const handleSync = async () => {
+    if (!child) return;
+    setSyncing(true);
+    setSyncError(null);
+    setSyncProgress(null);
+    try {
+      await pushChildToCloud(child.id, setSyncProgress);
+      setSyncedAt(new Date());
+    } catch (err) {
+      setSyncError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setSyncing(false);
+    }
+  };
+
   return (
     <Screen>
       <HeaderBar title="クラウド同期" onBack={() => router.back()} />
@@ -54,6 +76,36 @@ export default function AccountSettings() {
           </AppText>
           <AppText variant="subtitle">{session.user.email}</AppText>
           <Button label="ログアウト" variant="danger" onPress={signOut} />
+
+          <View style={styles.divider} />
+
+          <AppText variant="subtitle">バックアップ</AppText>
+          <AppText variant="caption" color={colors.textMuted}>
+            {child ? `${child.name}のデータをクラウドに保存します` : 'お子さまが選択されていません'}
+          </AppText>
+
+          {syncing && syncProgress ? (
+            <AppText variant="caption" color={colors.textMuted}>
+              同期中… ({syncProgress.done}/{syncProgress.total})
+            </AppText>
+          ) : null}
+          {syncError ? (
+            <AppText variant="caption" color={colors.danger}>
+              {syncError}
+            </AppText>
+          ) : null}
+          {syncedAt && !syncing ? (
+            <AppText variant="caption" color={colors.primaryDark}>
+              {syncedAt.toLocaleTimeString('ja-JP')} に同期しました
+            </AppText>
+          ) : null}
+
+          <Button
+            label="今すぐ同期"
+            onPress={handleSync}
+            disabled={!child || syncing}
+            variant="secondary"
+          />
         </Card>
       ) : (
         <Card style={styles.card}>
@@ -118,6 +170,11 @@ function createStyles(colors: ColorPalette) {
   return StyleSheet.create({
     card: {
       gap: spacing.sm,
+    },
+    divider: {
+      height: 1,
+      backgroundColor: colors.surfaceAlt,
+      marginVertical: spacing.xs,
     },
     tabRow: {
       flexDirection: 'row',
