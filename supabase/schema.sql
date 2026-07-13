@@ -376,15 +376,20 @@ create policy "parent manages own notification_setting" on notification_setting
 alter table notification_setting enable row level security;
 
 -- ── Auto-create parent_profile row on signup ─────────────────────────────
-create or replace function handle_new_user()
-returns trigger as $$
+create or replace function public.handle_new_user()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
 begin
-  insert into parent_profile (id, display_name)
-  values (new.id, new.raw_user_meta_data->>'display_name');
+  insert into public.parent_profile (id, display_name)
+  values (new.id, new.raw_user_meta_data->>'display_name')
+  on conflict (id) do nothing;
   return new;
 end;
-$$ language plpgsql security definer;
+$$;
 
 create trigger on_auth_user_created
   after insert on auth.users
-  for each row execute function handle_new_user();
+  for each row execute function public.handle_new_user();
