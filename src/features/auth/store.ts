@@ -12,6 +12,20 @@ type AuthState = {
   signOut: () => Promise<void>;
 };
 
+function describeAuthError(error: unknown): string {
+  if (error && typeof error === 'object') {
+    const e = error as { message?: string; status?: number; code?: string; name?: string };
+    const parts = [e.message, e.code, e.status ? `status ${e.status}` : null].filter(Boolean);
+    if (parts.length > 0) return parts.join(' / ');
+  }
+  if (error instanceof Error) return error.message || error.name || 'unknown error';
+  try {
+    return JSON.stringify(error);
+  } catch {
+    return String(error);
+  }
+}
+
 export const useAuthStore = create<AuthState>((set) => ({
   session: null,
   loaded: false,
@@ -27,24 +41,34 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   signUp: async (email: string, password: string) => {
     set({ error: null });
-    const { data, error } = await supabase.auth.signUp({ email, password });
-    if (error) {
-      set({ error: error.message });
+    try {
+      const { data, error } = await supabase.auth.signUp({ email, password });
+      if (error) {
+        set({ error: describeAuthError(error) });
+        return false;
+      }
+      set({ session: data.session });
+      return true;
+    } catch (err) {
+      set({ error: describeAuthError(err) });
       return false;
     }
-    set({ session: data.session });
-    return true;
   },
 
   signIn: async (email: string, password: string) => {
     set({ error: null });
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      set({ error: error.message });
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) {
+        set({ error: describeAuthError(error) });
+        return false;
+      }
+      set({ session: data.session });
+      return true;
+    } catch (err) {
+      set({ error: describeAuthError(err) });
       return false;
     }
-    set({ session: data.session });
-    return true;
   },
 
   signOut: async () => {
