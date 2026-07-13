@@ -133,7 +133,7 @@ export default function ChildHome() {
         </Pressable>
       </View>
 
-      <Pressable onPress={() => router.push('/parent')} style={styles.parentLink}>
+      <Pressable onPress={() => router.push('/parent/dashboard')} style={styles.parentLink}>
         <AppText variant="caption">保護者の方はこちら</AppText>
       </Pressable>
 
