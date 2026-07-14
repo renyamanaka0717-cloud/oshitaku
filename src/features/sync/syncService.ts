@@ -1,6 +1,7 @@
 import { getDb } from '@/db/client';
 import { supabase } from '@/lib/supabase';
 import { useChildStore } from '@/features/child/store';
+import { deleteChild } from '@/db/repositories/childRepository';
 
 // Two directions:
 //  - pushChildToCloud: local SQLite -> Supabase (backup)
@@ -64,6 +65,13 @@ async function upsertLocalRows(table: string, columns: string[], rows: Record<st
       await db.runAsync(sql, columns.map((c) => row[c] as string | number | null));
     }
   });
+}
+
+async function deleteLocalRowsByIds(table: string, ids: string[]) {
+  if (ids.length === 0) return;
+  const db = await getDb();
+  const placeholders = ids.map(() => '?').join(', ');
+  await db.runAsync(`DELETE FROM ${table} WHERE id IN (${placeholders})`, ids);
 }
 
 type TableSync = {
@@ -211,6 +219,33 @@ export async function pushChildToCloud(
   onProgress?.({ table: 'subject_item', done, total });
 }
 
+// Flushes locally recorded deletions (see src/db/tombstone.ts) to Supabase as
+// soft deletes (deleted_at). Not scoped to a single child, since a whole
+// child's own tombstone must still be pushed even after it no longer exists
+// locally to read its data from.
+export async function pushPendingDeletes(): Promise<void> {
+  const { data: sessionData } = await supabase.auth.getSession();
+  if (!sessionData.session) return;
+
+  const db = await getDb();
+  const tombstones = await db.getAllAsync<{ tableName: string; recordId: string }>(
+    'SELECT tableName, recordId FROM sync_tombstone'
+  );
+
+  for (const { tableName, recordId } of tombstones) {
+    const { error } = await supabase
+      .from(tableName)
+      .update({ deleted_at: new Date().toISOString() })
+      .eq('id', recordId);
+    if (!error) {
+      await db.runAsync('DELETE FROM sync_tombstone WHERE tableName = ? AND recordId = ?', [
+        tableName,
+        recordId,
+      ]);
+    }
+  }
+}
+
 export async function pullChildrenFromCloud(
   onProgress?: (progress: SyncProgress) => void
 ): Promise<{ childCount: number }> {
@@ -229,6 +264,18 @@ export async function pullChildrenFromCloud(
   let done = 0;
 
   for (const remoteChild of remoteChildren) {
+    const childId = remoteChild.id as string;
+
+    if (remoteChild.deleted_at) {
+      // Deleted on another device: mirror that deletion here if we have it locally.
+      const db = await getDb();
+      const existsLocally = await db.getFirstAsync('SELECT id FROM child WHERE id = ?', [childId]);
+      if (existsLocally) await deleteChild(childId);
+      done += CHILD_SCOPED_TABLES.length + 2;
+      onProgress?.({ table: 'child', done, total });
+      continue;
+    }
+
     const localChild = toLocalRow(remoteChild, CHILD_COLUMNS, ['schoolArrivalTimes']);
     let arrivalTimes: Record<string, string> = {};
     try {
@@ -260,14 +307,19 @@ export async function pullChildrenFromCloud(
     done += 1;
     onProgress?.({ table: 'child', done, total });
 
-    const childId = remoteChild.id as string;
-
     for (const spec of CHILD_SCOPED_TABLES) {
       const { data, error } = await supabase.from(spec.table).select('*').eq('child_id', childId);
       if (error) throw error;
       if (data && data.length > 0) {
-        const localRows = data.map((r) => toLocalRow(r, spec.columns, spec.jsonFields, spec.boolFields));
-        await upsertLocalRows(spec.table, spec.columns, localRows);
+        const activeRows = data.filter((r) => !r.deleted_at);
+        const deletedIds = data.filter((r) => r.deleted_at).map((r) => r.id as string);
+        if (activeRows.length > 0) {
+          const localRows = activeRows.map((r) => toLocalRow(r, spec.columns, spec.jsonFields, spec.boolFields));
+          await upsertLocalRows(spec.table, spec.columns, localRows);
+        }
+        if (spec.onConflict === 'id' && deletedIds.length > 0) {
+          await deleteLocalRowsByIds(spec.table, deletedIds);
+        }
       }
       done += 1;
       onProgress?.({ table: spec.table, done, total });
@@ -280,14 +332,21 @@ export async function pullChildrenFromCloud(
     if (localSubjectIds.length > 0) {
       const { data: subjectItemRows, error: siError } = await supabase
         .from('subject_item')
-        .select('id, subject_id, item_id')
+        .select('id, subject_id, item_id, deleted_at')
         .in('subject_id', localSubjectIds.map((s) => s.id));
       if (siError) throw siError;
       if (subjectItemRows && subjectItemRows.length > 0) {
-        const localRows = subjectItemRows.map((r) =>
-          toLocalRow(r as unknown as Record<string, unknown>, SUBJECT_ITEM_SYNC.columns)
-        );
-        await upsertLocalRows(SUBJECT_ITEM_SYNC.table, SUBJECT_ITEM_SYNC.columns, localRows);
+        const activeRows = subjectItemRows.filter((r) => !r.deleted_at);
+        const deletedIds = subjectItemRows.filter((r) => r.deleted_at).map((r) => r.id as string);
+        if (activeRows.length > 0) {
+          const localRows = activeRows.map((r) =>
+            toLocalRow(r as unknown as Record<string, unknown>, SUBJECT_ITEM_SYNC.columns)
+          );
+          await upsertLocalRows(SUBJECT_ITEM_SYNC.table, SUBJECT_ITEM_SYNC.columns, localRows);
+        }
+        if (deletedIds.length > 0) {
+          await deleteLocalRowsByIds(SUBJECT_ITEM_SYNC.table, deletedIds);
+        }
       }
     }
     done += 1;

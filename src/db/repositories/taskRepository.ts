@@ -1,6 +1,7 @@
 import { getDb } from '../client';
 import { EveningTask, MorningTask } from '../models';
 import { generateId } from '@/utils/id';
+import { recordTombstone } from '../tombstone';
 
 type Table = 'morning_task' | 'evening_task';
 
@@ -71,6 +72,7 @@ async function updateTask(
 async function deleteTask(table: Table, id: string): Promise<void> {
   const db = await getDb();
   await db.runAsync(`DELETE FROM ${table} WHERE id = ?`, [id]);
+  await recordTombstone(table, id);
 }
 
 async function moveTask(table: Table, childId: string, id: string, direction: 'up' | 'down'): Promise<void> {

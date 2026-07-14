@@ -1,6 +1,7 @@
 import { getDb } from '../client';
 import { Reward } from '../models';
 import { generateId } from '@/utils/id';
+import { recordTombstone } from '../tombstone';
 
 type Row = Omit<Reward, 'isActive'> & { isActive: number };
 function toModel(row: Row): Reward {
@@ -77,4 +78,5 @@ export async function updateReward(
 export async function deleteReward(id: string): Promise<void> {
   const db = await getDb();
   await db.runAsync('DELETE FROM reward WHERE id = ?', [id]);
+  await recordTombstone('reward', id);
 }

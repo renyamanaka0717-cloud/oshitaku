@@ -1,6 +1,7 @@
 import { getDb } from '../client';
 import { Subject } from '../models';
 import { generateId } from '@/utils/id';
+import { recordTombstone } from '../tombstone';
 
 export async function listSubjects(childId: string): Promise<Subject[]> {
   const db = await getDb();
@@ -44,11 +45,22 @@ export async function updateSubject(
 
 export async function deleteSubject(id: string): Promise<void> {
   const db = await getDb();
+  const subjectItemRows = await db.getAllAsync<{ id: string }>(
+    'SELECT id FROM subject_item WHERE subjectId = ?',
+    [id]
+  );
+  const entryRows = await db.getAllAsync<{ id: string }>(
+    'SELECT id FROM timetable_entry WHERE subjectId = ?',
+    [id]
+  );
   await db.withTransactionAsync(async () => {
     await db.runAsync('DELETE FROM subject_item WHERE subjectId = ?', [id]);
     await db.runAsync('DELETE FROM timetable_entry WHERE subjectId = ?', [id]);
     await db.runAsync('DELETE FROM subject WHERE id = ?', [id]);
   });
+  await recordTombstone('subject', id);
+  for (const row of subjectItemRows) await recordTombstone('subject_item', row.id);
+  for (const row of entryRows) await recordTombstone('timetable_entry', row.id);
 }
 
 export async function getSubjectItemIds(subjectId: string): Promise<string[]> {
@@ -62,6 +74,10 @@ export async function getSubjectItemIds(subjectId: string): Promise<string[]> {
 
 export async function setSubjectItems(subjectId: string, itemIds: string[]): Promise<void> {
   const db = await getDb();
+  const oldRows = await db.getAllAsync<{ id: string }>(
+    'SELECT id FROM subject_item WHERE subjectId = ?',
+    [subjectId]
+  );
   await db.withTransactionAsync(async () => {
     await db.runAsync('DELETE FROM subject_item WHERE subjectId = ?', [subjectId]);
     for (const itemId of itemIds) {
@@ -71,6 +87,9 @@ export async function setSubjectItems(subjectId: string, itemIds: string[]): Pro
       );
     }
   });
+  // Every pairing is replaced with a freshly generated id, so the previous
+  // rows must be tombstoned even for items that are still linked.
+  for (const row of oldRows) await recordTombstone('subject_item', row.id);
 }
 
 export async function getItemIdsForSubjects(subjectIds: string[]): Promise<Map<string, string[]>> {

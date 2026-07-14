@@ -8,7 +8,7 @@ import { Card } from '@/components/Card';
 import { Button } from '@/components/Button';
 import { useAuthStore } from '@/features/auth/store';
 import { useActiveChild } from '@/features/child/store';
-import { pullChildrenFromCloud, pushChildToCloud, SyncProgress } from '@/features/sync/syncService';
+import { pullChildrenFromCloud, pushChildToCloud, pushPendingDeletes, SyncProgress } from '@/features/sync/syncService';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 export default function AccountSettings() {
@@ -60,6 +60,7 @@ export default function AccountSettings() {
     setSyncError(null);
     setSyncProgress(null);
     try {
+      await pushPendingDeletes();
       await pushChildToCloud(child.id, setSyncProgress);
       setSyncedAt(new Date());
     } catch (err) {

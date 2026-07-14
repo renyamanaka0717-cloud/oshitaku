@@ -250,6 +250,18 @@ async function migrate(db: SQLite.SQLiteDatabase) {
     version = 8;
   }
 
+  if (version < 9) {
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS sync_tombstone (
+        tableName TEXT NOT NULL,
+        recordId TEXT NOT NULL,
+        deletedAt TEXT NOT NULL,
+        PRIMARY KEY (tableName, recordId)
+      );
+    `);
+    version = 9;
+  }
+
   await db.execAsync(`PRAGMA user_version = ${version}`);
 }
 

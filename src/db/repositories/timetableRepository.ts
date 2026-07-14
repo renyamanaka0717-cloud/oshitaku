@@ -1,6 +1,7 @@
 import { getDb } from '../client';
 import { TimetableEntry, TimetableSet } from '../models';
 import { generateId } from '@/utils/id';
+import { recordTombstone } from '../tombstone';
 
 export async function listTimetableSets(childId: string): Promise<TimetableSet[]> {
   const db = await getDb();
@@ -54,10 +55,16 @@ export async function renameTimetableSet(id: string, name: string): Promise<void
 
 export async function deleteTimetableSet(id: string): Promise<void> {
   const db = await getDb();
+  const entryRows = await db.getAllAsync<{ id: string }>(
+    'SELECT id FROM timetable_entry WHERE timetableSetId = ?',
+    [id]
+  );
   await db.withTransactionAsync(async () => {
     await db.runAsync('DELETE FROM timetable_entry WHERE timetableSetId = ?', [id]);
     await db.runAsync('DELETE FROM timetable_set WHERE id = ?', [id]);
   });
+  await recordTombstone('timetable_set', id);
+  for (const row of entryRows) await recordTombstone('timetable_entry', row.id);
 }
 
 export async function listTimetable(timetableSetId: string): Promise<TimetableEntry[]> {
@@ -95,6 +102,7 @@ export async function setTimetableSlot(input: {
   if (!input.subjectId) {
     if (existing) {
       await db.runAsync('DELETE FROM timetable_entry WHERE id = ?', [existing.id]);
+      await recordTombstone('timetable_entry', existing.id);
     }
     return;
   }

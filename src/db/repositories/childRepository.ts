@@ -1,6 +1,7 @@
 import { getDb } from '../client';
 import { Child } from '../models';
 import { generateId } from '@/utils/id';
+import { recordTombstone } from '../tombstone';
 
 type Row = Omit<Child, 'schoolArrivalTimes'> & { schoolArrivalTimes: string };
 
@@ -111,4 +112,5 @@ export async function deleteChild(id: string): Promise<void> {
     await db.runAsync('DELETE FROM notification_setting WHERE childId = ?', [id]);
     await db.runAsync('DELETE FROM point_rule WHERE childId = ?', [id]);
   });
+  await recordTombstone('child', id);
 }

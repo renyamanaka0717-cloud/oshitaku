@@ -1,6 +1,7 @@
 import { getDb } from '../client';
 import { Chore } from '../models';
 import { generateId } from '@/utils/id';
+import { recordTombstone } from '../tombstone';
 
 type Row = Omit<Chore, 'isActive'> & { isActive: number };
 function toModel(row: Row): Chore {
@@ -63,4 +64,5 @@ export async function updateChore(
 export async function deleteChore(id: string): Promise<void> {
   const db = await getDb();
   await db.runAsync('DELETE FROM chore WHERE id = ?', [id]);
+  await recordTombstone('chore', id);
 }

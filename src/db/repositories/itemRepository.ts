@@ -1,6 +1,7 @@
 import { getDb } from '../client';
 import { Item } from '../models';
 import { generateId } from '@/utils/id';
+import { recordTombstone } from '../tombstone';
 
 export async function listItems(childId: string): Promise<Item[]> {
   const db = await getDb();
@@ -51,8 +52,14 @@ export async function updateItem(
 
 export async function deleteItem(id: string): Promise<void> {
   const db = await getDb();
+  const subjectItemRows = await db.getAllAsync<{ id: string }>(
+    'SELECT id FROM subject_item WHERE itemId = ?',
+    [id]
+  );
   await db.withTransactionAsync(async () => {
     await db.runAsync('DELETE FROM subject_item WHERE itemId = ?', [id]);
     await db.runAsync('DELETE FROM item WHERE id = ?', [id]);
   });
+  await recordTombstone('item', id);
+  for (const row of subjectItemRows) await recordTombstone('subject_item', row.id);
 }

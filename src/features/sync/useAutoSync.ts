@@ -2,11 +2,16 @@ import { useEffect, useRef } from 'react';
 import { AppState } from 'react-native';
 import { useAuthStore } from '@/features/auth/store';
 import { useChildStore } from '@/features/child/store';
-import { pullChildrenFromCloud, pushChildToCloud } from './syncService';
+import { pullChildrenFromCloud, pushChildToCloud, pushPendingDeletes } from './syncService';
 
 const AUTO_PUSH_INTERVAL_MS = 3 * 60 * 1000;
 
 async function pushAllChildren() {
+  try {
+    await pushPendingDeletes();
+  } catch {
+    // silent, same as below
+  }
   for (const child of useChildStore.getState().children) {
     try {
       await pushChildToCloud(child.id);
@@ -35,6 +40,7 @@ export function useAutoSync() {
       if (lastSyncedUserId.current === session.user.id) return;
       lastSyncedUserId.current = session.user.id;
       try {
+        await pushPendingDeletes();
         if (useChildStore.getState().children.length === 0) {
           await pullChildrenFromCloud();
         } else {
