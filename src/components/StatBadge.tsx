@@ -4,7 +4,7 @@ import { AppText } from './AppText';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 type Props = {
-  icon: string;
+  icon: string | React.ReactNode;
   value: string | number;
   label: string;
   color?: string;
@@ -18,7 +18,7 @@ export function StatBadge({ icon, value, label, color, onPress, valueVariant = '
   const Container = onPress ? Pressable : View;
   return (
     <Container style={[styles.badge, { backgroundColor: color ?? colors.accent }]} onPress={onPress}>
-      <AppText style={styles.icon}>{icon}</AppText>
+      {typeof icon === 'string' ? <AppText style={styles.icon}>{icon}</AppText> : icon}
       <AppText variant={valueVariant} style={styles.value} numberOfLines={1}>
         {value}
       </AppText>

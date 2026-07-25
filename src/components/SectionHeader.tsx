@@ -4,7 +4,7 @@ import { spacing } from '@/theme';
 
 type Props = {
   title: string;
-  icon?: string;
+  icon?: string | React.ReactNode;
   right?: React.ReactNode;
 };
 
@@ -12,7 +12,7 @@ export function SectionHeader({ title, icon, right }: Props) {
   return (
     <View style={styles.row}>
       <View style={styles.left}>
-        {icon ? <AppText style={styles.icon}>{icon}</AppText> : null}
+        {typeof icon === 'string' ? <AppText style={styles.icon}>{icon}</AppText> : icon}
         <AppText variant="subtitle">{title}</AppText>
       </View>
       {right}

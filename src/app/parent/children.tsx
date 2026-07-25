@@ -7,18 +7,18 @@ import { AppText } from '@/components/AppText';
 import { Card } from '@/components/Card';
 import { Button } from '@/components/Button';
 import { ChildAvatar } from '@/features/child/components/ChildAvatar';
+import { AvatarPicker } from '@/features/child/components/AvatarPicker';
 import { useChildStore } from '@/features/child/store';
 import { pickChildAvatarImage } from '@/features/child/imagePicker';
+import { AVATAR_EMOJIS } from '@/features/child/avatars';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
-
-const AVATARS = ['🐣', '🐻', '🐰', '🐱', '🦊', '🐶', '🐼', '🦁'];
 
 export default function ChildrenSettings() {
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const { children, activeChildId, setActiveChild, addChild, updateChild, removeChild } = useChildStore();
   const [name, setName] = useState('');
-  const [avatar, setAvatar] = useState(AVATARS[0]);
+  const [avatar, setAvatar] = useState(AVATAR_EMOJIS[0]);
   const [photoUri, setPhotoUri] = useState<string | null>(null);
 
   const handleAdd = async () => {
@@ -78,20 +78,10 @@ export default function ChildrenSettings() {
             />
 
             <AppText variant="caption">アイコン</AppText>
-            <View style={styles.avatarRow}>
-              {AVATARS.map((a) => (
-                <AppText
-                  key={a}
-                  onPress={() => updateChild(child.id, { avatarEmoji: a, avatarImageUri: null })}
-                  style={[
-                    styles.avatar,
-                    !child.avatarImageUri && child.avatarEmoji === a ? styles.avatarSelected : null,
-                  ]}
-                >
-                  {a}
-                </AppText>
-              ))}
-            </View>
+            <AvatarPicker
+              value={child.avatarImageUri ? '' : child.avatarEmoji}
+              onSelect={(a) => updateChild(child.id, { avatarEmoji: a, avatarImageUri: null })}
+            />
           </Card>
         ))}
       </View>
@@ -119,20 +109,13 @@ export default function ChildrenSettings() {
           </Pressable>
           <ChildAvatar avatarImageUri={photoUri} avatarEmoji={avatar} avatarColor={colors.accent} size={48} />
         </View>
-        <View style={styles.avatarRow}>
-          {AVATARS.map((a) => (
-            <AppText
-              key={a}
-              onPress={() => {
-                setAvatar(a);
-                setPhotoUri(null);
-              }}
-              style={[styles.avatar, !photoUri && avatar === a ? styles.avatarSelected : null]}
-            >
-              {a}
-            </AppText>
-          ))}
-        </View>
+        <AvatarPicker
+          value={photoUri ? '' : avatar}
+          onSelect={(a) => {
+            setAvatar(a);
+            setPhotoUri(null);
+          }}
+        />
         <Button label="追加する" onPress={handleAdd} disabled={!name.trim()} />
       </Card>
     </Screen>
@@ -186,21 +169,6 @@ function createStyles(colors: ColorPalette) {
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing.md,
-    },
-    avatarRow: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      gap: spacing.sm,
-    },
-    avatar: {
-      fontSize: 28,
-      padding: spacing.sm,
-      borderRadius: radius.round,
-      backgroundColor: colors.surfaceAlt,
-      overflow: 'hidden',
-    },
-    avatarSelected: {
-      backgroundColor: colors.accent,
     },
   });
 }

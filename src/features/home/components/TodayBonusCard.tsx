@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Card } from '@/components/Card';
 import { AppText } from '@/components/AppText';
+import { Icon } from '@/theme/icons';
 import { ColorPalette, spacing, useTheme } from '@/theme';
 
 type Props = {
@@ -15,7 +16,7 @@ export function TodayBonusCard({ bonusPoints }: Props) {
   if (bonusPoints <= 0) {
     return (
       <Card style={styles.card}>
-        <AppText style={styles.icon}>🎉</AppText>
+        <Icon name="party" size={32} />
         <View style={styles.textCol}>
           <AppText variant="subtitle">今日のボーナス達成！</AppText>
           <AppText variant="caption" color={colors.textMuted}>
@@ -28,7 +29,7 @@ export function TodayBonusCard({ bonusPoints }: Props) {
 
   return (
     <Card style={styles.card}>
-      <AppText style={styles.icon}>✨</AppText>
+      <Icon name="sparkles" size={32} />
       <View style={styles.textCol}>
         <AppText variant="subtitle">今日のボーナス</AppText>
         <AppText variant="caption" color={colors.textMuted}>
@@ -45,9 +46,6 @@ function createStyles(colors: ColorPalette) {
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing.md,
-    },
-    icon: {
-      fontSize: 32,
     },
     textCol: {
       flex: 1,
