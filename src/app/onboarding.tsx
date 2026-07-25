@@ -6,18 +6,18 @@ import { AppText } from '@/components/AppText';
 import { Card } from '@/components/Card';
 import { Button } from '@/components/Button';
 import { ChildAvatar } from '@/features/child/components/ChildAvatar';
+import { AvatarPicker } from '@/features/child/components/AvatarPicker';
 import { useChildStore } from '@/features/child/store';
 import { pickChildAvatarImage } from '@/features/child/imagePicker';
+import { AVATAR_EMOJIS } from '@/features/child/avatars';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
-
-const AVATARS = ['🐣', '🐻', '🐰', '🐱', '🦊', '🐶', '🐼', '🦁'];
 
 export default function Onboarding() {
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const addChild = useChildStore((s) => s.addChild);
   const [name, setName] = useState('');
-  const [avatar, setAvatar] = useState(AVATARS[0]);
+  const [avatar, setAvatar] = useState(AVATAR_EMOJIS[0]);
   const [photoUri, setPhotoUri] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -77,20 +77,7 @@ export default function Onboarding() {
             </Pressable>
           ) : null}
         </View>
-        <View style={styles.avatarRow}>
-          {AVATARS.map((a) => (
-            <AppText
-              key={a}
-              onPress={() => handleSelectEmoji(a)}
-              style={[
-                styles.avatar,
-                !photoUri && avatar === a ? styles.avatarSelected : null,
-              ]}
-            >
-              {a}
-            </AppText>
-          ))}
-        </View>
+        <AvatarPicker value={photoUri ? '' : avatar} onSelect={handleSelectEmoji} />
       </Card>
 
       <Button label="はじめる" onPress={handleStart} disabled={!name.trim() || saving} size="lg" />
@@ -116,21 +103,6 @@ function createStyles(colors: ColorPalette) {
       alignItems: 'center',
       gap: spacing.md,
       marginBottom: spacing.md,
-    },
-    avatarRow: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      gap: spacing.sm,
-    },
-    avatar: {
-      fontSize: 32,
-      padding: spacing.sm,
-      borderRadius: radius.round,
-      backgroundColor: colors.surfaceAlt,
-      overflow: 'hidden',
-    },
-    avatarSelected: {
-      backgroundColor: colors.accent,
     },
   });
 }

@@ -12,6 +12,7 @@ import { RewardCelebration } from '@/features/rewards/components/RewardCelebrati
 import { useRewardsStore } from '@/features/rewards/store';
 import { usePointsStore } from '@/features/points/store';
 import { Reward } from '@/db/models';
+import { Icon } from '@/theme/icons';
 import { colors, spacing } from '@/theme';
 
 export default function RewardsScreen() {
@@ -32,7 +33,7 @@ export default function RewardsScreen() {
       <HeaderBar title="ごほうび" onBack={() => router.back()} />
 
       <View style={styles.statsRow}>
-        <StatBadge icon="⭐" value={totalPoints} label="いまのポイント" color={colors.accent} />
+        <StatBadge icon={<Icon name="star" size={26} />} value={totalPoints} label="いまのポイント" color={colors.accent} />
         <StatBadge
           icon="🧾"
           value="りれき"

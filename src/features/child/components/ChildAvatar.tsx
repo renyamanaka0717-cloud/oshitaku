@@ -1,5 +1,7 @@
 import { Image, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
+import { Icon } from '@/theme/icons';
+import { avatarIconFor } from '@/features/child/avatars';
 
 type Props = {
   avatarImageUri?: string | null;
@@ -17,9 +19,15 @@ export function ChildAvatar({ avatarImageUri, avatarEmoji, avatarColor, size = 6
     );
   }
 
+  const iconName = avatarIconFor(avatarEmoji);
+
   return (
     <View style={[styles.emojiCircle, dimension, { backgroundColor: avatarColor }]}>
-      <AppText style={{ fontSize: size * 0.5 }}>{avatarEmoji}</AppText>
+      {iconName ? (
+        <Icon name={iconName} size={size * 0.56} />
+      ) : (
+        <AppText style={{ fontSize: size * 0.5 }}>{avatarEmoji}</AppText>
+      )}
     </View>
   );
 }

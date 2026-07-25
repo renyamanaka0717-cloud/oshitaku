@@ -12,6 +12,7 @@ import { ChoreCelebration } from '@/features/chores/components/ChoreCelebration'
 import { useChoresStore } from '@/features/chores/store';
 import { usePointsStore } from '@/features/points/store';
 import { Chore } from '@/db/models';
+import { Icon } from '@/theme/icons';
 import { colors, spacing } from '@/theme';
 
 export default function ChoresScreen() {
@@ -31,7 +32,7 @@ export default function ChoresScreen() {
     <Screen>
       <HeaderBar title="おてつだい" onBack={() => router.back()} />
 
-      <StatBadge icon="⭐" value={totalPoints} label="いまのポイント" color={colors.accent} />
+      <StatBadge icon={<Icon name="star" size={26} />} value={totalPoints} label="いまのポイント" color={colors.accent} />
 
       <View style={styles.section}>
         <SectionHeader title="おてつだいをする" icon="🧹" />

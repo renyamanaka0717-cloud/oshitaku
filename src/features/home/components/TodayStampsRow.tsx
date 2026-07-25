@@ -5,6 +5,7 @@ import { StampCard } from '@/components/StampCard';
 import { EmptyState } from '@/components/EmptyState';
 import { Stamp } from '@/db/models';
 import { STAMP_EMOJI } from '@/features/stamps/store';
+import { Icon } from '@/theme/icons';
 import { spacing } from '@/theme';
 
 type Props = {
@@ -14,7 +15,7 @@ type Props = {
 export function TodayStampsRow({ stamps }: Props) {
   return (
     <Card>
-      <SectionHeader title="今日のスタンプ" icon="🏅" />
+      <SectionHeader title="今日のスタンプ" icon={<Icon name="medal" size={20} />} />
       {stamps.length === 0 ? (
         <EmptyState message="おしたくをがんばってスタンプをゲットしよう" />
       ) : (

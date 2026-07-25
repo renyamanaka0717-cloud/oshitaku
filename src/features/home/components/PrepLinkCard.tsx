@@ -5,7 +5,7 @@ import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 type Props = {
   title: string;
-  icon: string;
+  icon: string | React.ReactNode;
   done: number;
   total: number;
   complete: boolean;
@@ -29,7 +29,7 @@ export function PrepLinkCard({ title, icon, done, total, complete, tint, active,
           </AppText>
         </View>
       ) : null}
-      <AppText style={styles.icon}>{icon}</AppText>
+      <View style={styles.icon}>{typeof icon === 'string' ? <AppText style={styles.iconText}>{icon}</AppText> : icon}</View>
       <View style={styles.textCol}>
         <AppText variant="subtitle" color={colors.black}>
           {title}
@@ -69,6 +69,11 @@ function createStyles(colors: ColorPalette) {
       paddingVertical: 2,
     },
     icon: {
+      height: 36,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    iconText: {
       fontSize: 36,
     },
     textCol: {

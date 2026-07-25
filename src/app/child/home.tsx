@@ -17,6 +17,7 @@ import { useEveningStore } from '@/features/evening/store';
 import { usePointsStore } from '@/features/points/store';
 import { useStampsStore } from '@/features/stamps/store';
 import { getSuggestedMode } from '@/features/home/timeMode';
+import { Icon } from '@/theme/icons';
 import { ColorPalette, spacing, useTheme } from '@/theme';
 import { todayKey } from '@/utils/date';
 
@@ -79,7 +80,7 @@ export default function ChildHome() {
       <View style={styles.prepRow}>
         <PrepLinkCard
           title="朝のおしたく"
-          icon="☀️"
+          icon={<Icon name="sun" size={36} />}
           done={morningTasks.filter((t) => morningChecked[t.id]).length}
           total={morningTasks.length}
           complete={morningComplete}
@@ -89,7 +90,7 @@ export default function ChildHome() {
         />
         <PrepLinkCard
           title="夜のおしたく"
-          icon="🌙"
+          icon={<Icon name="moon" size={36} />}
           done={eveningTasks.filter((t) => eveningChecked[t.id]).length}
           total={eveningTasks.length}
           complete={eveningComplete}
@@ -100,9 +101,9 @@ export default function ChildHome() {
       </View>
 
       <View style={styles.statsRow}>
-        <StatBadge icon="⭐" value={totalPoints} label="ポイント" color={colors.accent} />
+        <StatBadge icon={<Icon name="star" size={26} />} value={totalPoints} label="ポイント" color={colors.accent} />
         <StatBadge
-          icon="🧹"
+          icon={<Icon name="broom" size={26} />}
           value="おてつだい"
           label="やってみる"
           color={colors.pink}
@@ -116,19 +117,19 @@ export default function ChildHome() {
 
       <View style={styles.linkRow}>
         <Pressable style={styles.linkItem} onPress={() => router.push('/child/rewards')}>
-          <AppText style={styles.linkIcon}>🎁</AppText>
+          <Icon name="gift" size={28} />
           <AppText variant="caption">ごほうび</AppText>
         </Pressable>
         <Pressable style={styles.linkItem} onPress={() => router.push('/child/chores')}>
-          <AppText style={styles.linkIcon}>🧹</AppText>
+          <Icon name="broom" size={28} />
           <AppText variant="caption">おてつだい</AppText>
         </Pressable>
         <Pressable style={styles.linkItem} onPress={() => router.push('/child/stampbook')}>
-          <AppText style={styles.linkIcon}>📔</AppText>
+          <Icon name="notebook" size={28} />
           <AppText variant="caption">スタンプ図鑑</AppText>
         </Pressable>
         <Pressable style={styles.linkItem} onPress={() => router.push('/child/stats')}>
-          <AppText style={styles.linkIcon}>📊</AppText>
+          <Icon name="chart" size={28} />
           <AppText variant="caption">とうけい</AppText>
         </Pressable>
       </View>
@@ -168,9 +169,6 @@ function createStyles(colors: ColorPalette) {
     linkItem: {
       alignItems: 'center',
       gap: 4,
-    },
-    linkIcon: {
-      fontSize: 28,
     },
     parentLink: {
       alignItems: 'center',
