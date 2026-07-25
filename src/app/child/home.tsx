@@ -101,7 +101,7 @@ export default function ChildHome() {
       </View>
 
       <View style={styles.statsRow}>
-        <StatBadge icon={<Icon name="star" size={26} />} value={totalPoints} label="ポイント" color={colors.accent} />
+        <StatBadge icon={<Icon name="coin" size={26} />} value={totalPoints} label="ポイント" color={colors.accent} />
         <StatBadge
           icon={<Icon name="broom" size={26} />}
           value="おてつだい"
