@@ -18,7 +18,7 @@ import { usePointsStore } from '@/features/points/store';
 import { useStampsStore } from '@/features/stamps/store';
 import { getSuggestedMode } from '@/features/home/timeMode';
 import { Icon } from '@/theme/icons';
-import { ColorPalette, spacing, useTheme } from '@/theme';
+import { ColorPalette, hardShadow, outlineWidth, spacing, useTheme } from '@/theme';
 import { todayKey } from '@/utils/date';
 
 export default function ChildHome() {
@@ -164,6 +164,10 @@ function createStyles(colors: ColorPalette) {
       justifyContent: 'space-around',
       backgroundColor: colors.surface,
       borderRadius: 20,
+      borderWidth: outlineWidth,
+      borderColor: colors.black,
+      borderBottomWidth: outlineWidth + hardShadow.offset,
+      borderRightWidth: outlineWidth + hardShadow.offset,
       paddingVertical: spacing.md,
     },
     linkItem: {

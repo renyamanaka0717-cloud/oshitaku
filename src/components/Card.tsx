@@ -1,6 +1,6 @@
 import { PropsWithChildren, useMemo } from 'react';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
-import { ColorPalette, radius, spacing, useTheme } from '@/theme';
+import { ColorPalette, hardShadow, outlineWidth, radius, spacing, useTheme } from '@/theme';
 
 type Props = PropsWithChildren<{
   style?: StyleProp<ViewStyle>;
@@ -21,11 +21,10 @@ function createStyles(colors: ColorPalette) {
       backgroundColor: colors.surface,
       borderRadius: radius.lg,
       padding: spacing.lg,
-      shadowColor: colors.shadow,
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.12,
-      shadowRadius: 10,
-      elevation: 3,
+      borderWidth: outlineWidth,
+      borderColor: colors.black,
+      borderBottomWidth: outlineWidth + hardShadow.offset,
+      borderRightWidth: outlineWidth + hardShadow.offset,
     },
   });
 }

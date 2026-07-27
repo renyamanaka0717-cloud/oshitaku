@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { router } from 'expo-router';
 import { AppText } from './AppText';
-import { ColorPalette, radius, spacing, useTheme } from '@/theme';
+import { ColorPalette, hardShadow, outlineWidth, radius, spacing, useTheme } from '@/theme';
 
 type Props = {
   title: string;
@@ -42,7 +42,11 @@ function createStyles(colors: ColorPalette) {
       width: 44,
       height: 44,
       borderRadius: radius.round,
-      backgroundColor: colors.surfaceAlt,
+      backgroundColor: colors.surface,
+      borderWidth: outlineWidth,
+      borderColor: colors.black,
+      borderBottomWidth: outlineWidth + hardShadow.offsetSm,
+      borderRightWidth: outlineWidth + hardShadow.offsetSm,
       alignItems: 'center',
       justifyContent: 'center',
     },

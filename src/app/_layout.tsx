@@ -3,6 +3,9 @@ import { View } from 'react-native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
+import { useFonts } from 'expo-font';
+import { MochiyPopOne_400Regular } from '@expo-google-fonts/mochiy-pop-one';
+import { ZenMaruGothic_700Bold, ZenMaruGothic_900Black } from '@expo-google-fonts/zen-maru-gothic';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useChildStore } from '@/features/child/store';
 import { useAuthStore } from '@/features/auth/store';
@@ -26,6 +29,11 @@ function RootLayoutInner() {
 
 export default function RootLayout() {
   const [ready, setReady] = useState(false);
+  const [fontsLoaded] = useFonts({
+    MochiyPopOne_400Regular,
+    ZenMaruGothic_700Bold,
+    ZenMaruGothic_900Black,
+  });
 
   useEffect(() => {
     // Load the child list here (not just in index.tsx) so it's populated
@@ -35,11 +43,16 @@ export default function RootLayout() {
     useChildStore
       .getState()
       .load()
-      .then(() => setReady(true))
-      .finally(() => SplashScreen.hideAsync().catch(() => {}));
+      .then(() => setReady(true));
   }, []);
 
-  if (!ready) {
+  useEffect(() => {
+    if (ready && fontsLoaded) {
+      SplashScreen.hideAsync().catch(() => {});
+    }
+  }, [ready, fontsLoaded]);
+
+  if (!ready || !fontsLoaded) {
     return <View style={{ flex: 1, backgroundColor: lightColors.background }} />;
   }
 
