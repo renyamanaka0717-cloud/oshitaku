@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react';
+import { useMemo } from 'react';
 import {
   Animated,
   Pressable,
@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { AppText } from './AppText';
-import { ColorPalette, hardShadow, outlineWidth, radius, spacing, useTheme } from '@/theme';
+import { ColorPalette, outlineWidth, radius, spacing, useTheme, usePressLedge } from '@/theme';
 
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
 type Size = 'md' | 'lg';
@@ -35,12 +35,7 @@ function getVariantStyles(colors: ColorPalette): Record<Variant, { bg: string; t
   };
 }
 
-// Buttons get a thick bottom/right ink border standing in for a hard
-// (non-blurred) drop shadow — a chunky "sticker" ledge rather than a
-// soft platform shadow. Pressing flattens that ledge and nudges the
-// button down into it, like a real button being pushed.
-const BASE_BORDER = outlineWidth;
-const LEDGE = outlineWidth + hardShadow.offset;
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export function Button({
   label,
@@ -55,14 +50,7 @@ export function Button({
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(), []);
   const v = useMemo(() => getVariantStyles(colors), [colors])[variant];
-  const press = useRef(new Animated.Value(0)).current;
-
-  const pressIn = () => {
-    Animated.timing(press, { toValue: 1, duration: 80, useNativeDriver: false }).start();
-  };
-  const pressOut = () => {
-    Animated.timing(press, { toValue: 0, duration: 120, useNativeDriver: false }).start();
-  };
+  const { pressIn, pressOut, translate, ledge, scale } = usePressLedge();
 
   const handlePress = (e: GestureResponderEvent) => {
     if (disabled) return;
@@ -70,11 +58,8 @@ export function Button({
     onPress(e);
   };
 
-  const translate = press.interpolate({ inputRange: [0, 1], outputRange: [0, hardShadow.offset] });
-  const ledge = press.interpolate({ inputRange: [0, 1], outputRange: [LEDGE, BASE_BORDER] });
-
   return (
-    <Animated.View style={{ transform: [{ translateX: translate }, { translateY: translate }] }}>
+    <Animated.View style={{ transform: [{ translateX: translate }, { translateY: translate }, { scale }] }}>
       <AnimatedPressable
         onPress={handlePress}
         onPressIn={pressIn}
@@ -102,13 +87,11 @@ export function Button({
   );
 }
 
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-
 function createStyles() {
   return StyleSheet.create({
     base: {
       borderRadius: radius.round,
-      borderWidth: BASE_BORDER,
+      borderWidth: outlineWidth,
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',

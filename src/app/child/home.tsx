@@ -1,10 +1,13 @@
 import { useCallback, useMemo, useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { Redirect } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { AppText } from '@/components/AppText';
 import { StatBadge } from '@/components/StatBadge';
+import { PointsBadge } from '@/components/PointsBadge';
+import { NavIconLink } from '@/components/NavIconLink';
+import { FadeInUp } from '@/components/FadeInUp';
 import { useChildStore, useActiveChild } from '@/features/child/store';
 import { ChildSwitcherModal } from '@/features/child/components/ChildSwitcherModal';
 import { GreetingHeader } from '@/features/home/components/GreetingHeader';
@@ -18,7 +21,7 @@ import { usePointsStore } from '@/features/points/store';
 import { useStampsStore } from '@/features/stamps/store';
 import { getSuggestedMode } from '@/features/home/timeMode';
 import { Icon } from '@/theme/icons';
-import { ColorPalette, hardShadow, outlineWidth, spacing, useTheme } from '@/theme';
+import { ColorPalette, spacing, useTheme } from '@/theme';
 import { todayKey } from '@/utils/date';
 
 export default function ChildHome() {
@@ -77,66 +80,71 @@ export default function ChildHome() {
     <Screen>
       <GreetingHeader child={child} onPressAvatar={() => setSwitcherVisible(true)} />
 
-      <View style={styles.prepRow}>
-        <PrepLinkCard
-          title="朝のおしたく"
-          icon={<Icon name="sun" size={36} />}
-          done={morningTasks.filter((t) => morningChecked[t.id]).length}
-          total={morningTasks.length}
-          complete={morningComplete}
-          tint={colors.yellow}
-          active={suggestedMode === 'morning'}
-          onPress={() => router.push('/child/morning')}
-        />
-        <PrepLinkCard
-          title="夜のおしたく"
-          icon={<Icon name="moon" size={36} />}
-          done={eveningTasks.filter((t) => eveningChecked[t.id]).length}
-          total={eveningTasks.length}
-          complete={eveningComplete}
-          tint={colors.purple}
-          active={suggestedMode === 'evening'}
-          onPress={() => router.push('/child/evening')}
-        />
+      <FadeInUp delay={40}>
+        <View style={styles.prepRow}>
+          <PrepLinkCard
+            title="朝のおしたく"
+            icon={<Icon name="sun" size={52} />}
+            done={morningTasks.filter((t) => morningChecked[t.id]).length}
+            total={morningTasks.length}
+            complete={morningComplete}
+            tint={colors.yellow}
+            active={suggestedMode === 'morning'}
+            onPress={() => router.push('/child/morning')}
+          />
+          <PrepLinkCard
+            title="夜のおしたく"
+            icon={<Icon name="moon" size={52} />}
+            done={eveningTasks.filter((t) => eveningChecked[t.id]).length}
+            total={eveningTasks.length}
+            complete={eveningComplete}
+            tint={colors.purple}
+            active={suggestedMode === 'evening'}
+            onPress={() => router.push('/child/evening')}
+          />
+        </View>
+      </FadeInUp>
+
+      <FadeInUp delay={100}>
+        <View style={styles.statsRow}>
+          <PointsBadge points={totalPoints} label="ポイント" color={colors.accent} />
+          <StatBadge
+            icon={<Icon name="broom" size={34} />}
+            value="おてつだい"
+            label="やってみる"
+            color={colors.pink}
+            onPress={() => router.push('/child/chores')}
+            valueVariant="subtitle"
+          />
+        </View>
+      </FadeInUp>
+
+      <FadeInUp delay={160}>
+        <TodayBonusCard bonusPoints={bonusPoints} />
+      </FadeInUp>
+
+      <FadeInUp delay={220}>
+        <TodayStampsRow stamps={todayStamps} allStamps={stamps} />
+      </FadeInUp>
+
+      <FadeInUp delay={280}>
+        <View style={styles.linkRow}>
+          <NavIconLink icon="gift" label="ごほうび" tint={colors.pink} onPress={() => router.push('/child/rewards')} />
+          <NavIconLink icon="broom" label="おてつだい" tint={colors.blue} onPress={() => router.push('/child/chores')} />
+          <NavIconLink icon="notebook" label="スタンプ図鑑" tint={colors.yellow} onPress={() => router.push('/child/stampbook')} />
+          <NavIconLink icon="chart" label="とうけい" tint={colors.secondary} onPress={() => router.push('/child/stats')} />
+        </View>
+      </FadeInUp>
+
+      <View style={styles.parentLink}>
+        <AppText
+          variant="caption"
+          color={colors.textMuted}
+          onPress={() => router.push('/parent/dashboard')}
+        >
+          保護者の方はこちら
+        </AppText>
       </View>
-
-      <View style={styles.statsRow}>
-        <StatBadge icon={<Icon name="coin" size={26} />} value={totalPoints} label="ポイント" color={colors.accent} />
-        <StatBadge
-          icon={<Icon name="broom" size={26} />}
-          value="おてつだい"
-          label="やってみる"
-          color={colors.pink}
-          onPress={() => router.push('/child/chores')}
-          valueVariant="subtitle"
-        />
-      </View>
-
-      <TodayBonusCard bonusPoints={bonusPoints} />
-      <TodayStampsRow stamps={todayStamps} />
-
-      <View style={styles.linkRow}>
-        <Pressable style={styles.linkItem} onPress={() => router.push('/child/rewards')}>
-          <Icon name="gift" size={28} />
-          <AppText variant="caption">ごほうび</AppText>
-        </Pressable>
-        <Pressable style={styles.linkItem} onPress={() => router.push('/child/chores')}>
-          <Icon name="broom" size={28} />
-          <AppText variant="caption">おてつだい</AppText>
-        </Pressable>
-        <Pressable style={styles.linkItem} onPress={() => router.push('/child/stampbook')}>
-          <Icon name="notebook" size={28} />
-          <AppText variant="caption">スタンプ図鑑</AppText>
-        </Pressable>
-        <Pressable style={styles.linkItem} onPress={() => router.push('/child/stats')}>
-          <Icon name="chart" size={28} />
-          <AppText variant="caption">とうけい</AppText>
-        </Pressable>
-      </View>
-
-      <Pressable onPress={() => router.push('/parent/dashboard')} style={styles.parentLink}>
-        <AppText variant="caption">保護者の方はこちら</AppText>
-      </Pressable>
 
       <ChildSwitcherModal
         visible={switcherVisible}
@@ -162,17 +170,7 @@ function createStyles(colors: ColorPalette) {
     linkRow: {
       flexDirection: 'row',
       justifyContent: 'space-around',
-      backgroundColor: colors.surface,
-      borderRadius: 20,
-      borderWidth: outlineWidth,
-      borderColor: colors.black,
-      borderBottomWidth: outlineWidth + hardShadow.offset,
-      borderRightWidth: outlineWidth + hardShadow.offset,
-      paddingVertical: spacing.md,
-    },
-    linkItem: {
-      alignItems: 'center',
-      gap: 4,
+      paddingVertical: spacing.sm,
     },
     parentLink: {
       alignItems: 'center',

@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
-import { ColorPalette, hardShadow, outlineWidth, radius, spacing, useTheme } from '@/theme';
+import { PressableCard } from '@/components/PressableCard';
+import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 type Props = {
   title: string;
@@ -18,69 +19,74 @@ export function PrepLinkCard({ title, icon, done, total, complete, tint, active,
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
   return (
-    <Pressable
-      style={[styles.card, { backgroundColor: tint }, active ? styles.cardActive : null]}
-      onPress={onPress}
-    >
+    <View style={styles.wrap}>
       {active ? (
         <View style={styles.activeBadge}>
-          <AppText variant="caption" color={colors.white}>
-            いまだよ！
-          </AppText>
+          <View style={styles.activeChip}>
+            <AppText variant="caption" color={colors.white}>
+              いまだよ！
+            </AppText>
+          </View>
         </View>
       ) : null}
-      <View style={styles.icon}>{typeof icon === 'string' ? <AppText style={styles.iconText}>{icon}</AppText> : icon}</View>
-      <View style={styles.textCol}>
-        <AppText variant="subtitle" color={colors.black}>
-          {title}
-        </AppText>
-        <AppText variant="caption" color={colors.black}>
-          {complete ? 'できた！✨' : `${done}/${total} できた`}
-        </AppText>
-      </View>
-      {complete ? <AppText style={styles.check}>✓</AppText> : null}
-    </Pressable>
+      <PressableCard backgroundColor={tint} onPress={onPress} style={styles.card}>
+        <View style={styles.iconBadge}>
+          {typeof icon === 'string' ? <AppText style={styles.iconText}>{icon}</AppText> : icon}
+        </View>
+        <View style={styles.textCol}>
+          <AppText variant="subtitle" color={colors.black}>
+            {title}
+          </AppText>
+          <AppText variant="caption" color={colors.black}>
+            {complete ? 'できた！✨' : `${done}/${total} できた`}
+          </AppText>
+        </View>
+        {complete ? <AppText style={styles.check}>✓</AppText> : null}
+      </PressableCard>
+    </View>
   );
 }
 
 function createStyles(colors: ColorPalette) {
   return StyleSheet.create({
-    card: {
+    wrap: {
       flex: 1,
-      borderRadius: radius.lg,
+    },
+    card: {
       padding: spacing.md,
       alignItems: 'center',
-      gap: spacing.xs,
-      minHeight: 120,
+      gap: spacing.sm,
+      minHeight: 148,
       justifyContent: 'center',
-      borderWidth: outlineWidth,
-      borderColor: colors.black,
-      borderBottomWidth: outlineWidth + hardShadow.offset,
-      borderRightWidth: outlineWidth + hardShadow.offset,
-    },
-    cardActive: {
-      borderBottomWidth: outlineWidth + hardShadow.offset + 2,
-      borderRightWidth: outlineWidth + hardShadow.offset + 2,
     },
     activeBadge: {
       position: 'absolute',
       top: -14,
-      alignSelf: 'center',
+      left: 0,
+      right: 0,
+      alignItems: 'center',
+      zIndex: 2,
+    },
+    activeChip: {
       backgroundColor: colors.primaryDark,
       borderRadius: radius.round,
       borderWidth: 2,
       borderColor: colors.black,
       paddingHorizontal: spacing.sm,
       paddingVertical: 2,
-      zIndex: 1,
     },
-    icon: {
-      height: 36,
+    iconBadge: {
+      width: 64,
+      height: 64,
+      borderRadius: 999,
+      backgroundColor: 'rgba(255,255,255,0.55)',
+      borderWidth: 2,
+      borderColor: colors.black,
       alignItems: 'center',
       justifyContent: 'center',
     },
     iconText: {
-      fontSize: 36,
+      fontSize: 44,
     },
     textCol: {
       alignItems: 'center',
