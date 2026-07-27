@@ -5,6 +5,7 @@ import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { SectionHeader } from '@/components/SectionHeader';
 import { StatBadge } from '@/components/StatBadge';
+import { PointsBadge } from '@/components/PointsBadge';
 import { EmptyState } from '@/components/EmptyState';
 import { RewardCard } from '@/features/rewards/components/RewardCard';
 import { RewardDetailModal } from '@/features/rewards/components/RewardDetailModal';
@@ -12,7 +13,6 @@ import { RewardCelebration } from '@/features/rewards/components/RewardCelebrati
 import { useRewardsStore } from '@/features/rewards/store';
 import { usePointsStore } from '@/features/points/store';
 import { Reward } from '@/db/models';
-import { Icon } from '@/theme/icons';
 import { colors, spacing } from '@/theme';
 
 export default function RewardsScreen() {
@@ -33,7 +33,7 @@ export default function RewardsScreen() {
       <HeaderBar title="ごほうび" onBack={() => router.back()} />
 
       <View style={styles.statsRow}>
-        <StatBadge icon={<Icon name="coin" size={26} />} value={totalPoints} label="いまのポイント" color={colors.accent} />
+        <PointsBadge points={totalPoints} label="いまのポイント" color={colors.accent} />
         <StatBadge
           icon="🧾"
           value="りれき"

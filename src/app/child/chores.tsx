@@ -4,7 +4,7 @@ import { router } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { SectionHeader } from '@/components/SectionHeader';
-import { StatBadge } from '@/components/StatBadge';
+import { PointsBadge } from '@/components/PointsBadge';
 import { EmptyState } from '@/components/EmptyState';
 import { ChoreCard } from '@/features/chores/components/ChoreCard';
 import { ChoreDetailModal } from '@/features/chores/components/ChoreDetailModal';
@@ -12,7 +12,6 @@ import { ChoreCelebration } from '@/features/chores/components/ChoreCelebration'
 import { useChoresStore } from '@/features/chores/store';
 import { usePointsStore } from '@/features/points/store';
 import { Chore } from '@/db/models';
-import { Icon } from '@/theme/icons';
 import { colors, spacing } from '@/theme';
 
 export default function ChoresScreen() {
@@ -32,7 +31,7 @@ export default function ChoresScreen() {
     <Screen>
       <HeaderBar title="おてつだい" onBack={() => router.back()} />
 
-      <StatBadge icon={<Icon name="coin" size={26} />} value={totalPoints} label="いまのポイント" color={colors.accent} />
+      <PointsBadge points={totalPoints} label="いまのポイント" color={colors.accent} />
 
       <View style={styles.section}>
         <SectionHeader title="おてつだいをする" icon="🧹" />

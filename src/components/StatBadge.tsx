@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { AppText } from './AppText';
+import { PressableCard } from './PressableCard';
 import { ColorPalette, hardShadow, outlineWidth, radius, spacing, useTheme } from '@/theme';
 
 type Props = {
@@ -15,9 +16,10 @@ type Props = {
 export function StatBadge({ icon, value, label, color, onPress, valueVariant = 'title' }: Props) {
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
-  const Container = onPress ? Pressable : View;
-  return (
-    <Container style={[styles.badge, { backgroundColor: color ?? colors.accent }]} onPress={onPress}>
+  const bg = color ?? colors.accent;
+
+  const content = (
+    <>
       {typeof icon === 'string' ? <AppText style={styles.icon}>{icon}</AppText> : icon}
       <AppText variant={valueVariant} style={styles.value} numberOfLines={1}>
         {value}
@@ -25,8 +27,18 @@ export function StatBadge({ icon, value, label, color, onPress, valueVariant = '
       <AppText variant="caption" style={styles.label}>
         {label}
       </AppText>
-    </Container>
+    </>
   );
+
+  if (onPress) {
+    return (
+      <PressableCard backgroundColor={bg} onPress={onPress} style={styles.badge}>
+        {content}
+      </PressableCard>
+    );
+  }
+
+  return <View style={[styles.badge, styles.staticBadge, { backgroundColor: bg }]}>{content}</View>;
 }
 
 function createStyles(colors: ColorPalette) {
@@ -35,12 +47,14 @@ function createStyles(colors: ColorPalette) {
       flex: 1,
       borderRadius: radius.lg,
       paddingVertical: spacing.md,
+      alignItems: 'center',
+      gap: 2,
+    },
+    staticBadge: {
       borderWidth: outlineWidth,
       borderColor: colors.black,
       borderBottomWidth: outlineWidth + hardShadow.offset,
       borderRightWidth: outlineWidth + hardShadow.offset,
-      alignItems: 'center',
-      gap: 2,
     },
     icon: {
       fontSize: 26,
