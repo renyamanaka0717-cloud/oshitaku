@@ -13,7 +13,7 @@ export function EveningStatusRow({ eveningPoints, prepComplete }: Props) {
   const { colors } = useTheme();
   return (
     <View style={styles.row}>
-      <StatBadge icon={<Icon name="star" size={26} />} value={eveningPoints} label="夜のポイント" color={colors.purple} />
+      <StatBadge icon={<Icon name="coin" size={26} />} value={eveningPoints} label="夜のポイント" color={colors.purple} />
       <StatBadge
         icon={prepComplete ? '✅' : '🎒'}
         value={prepComplete ? '完了' : '準備中'}

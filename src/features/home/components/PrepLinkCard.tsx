@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
-import { ColorPalette, radius, spacing, useTheme } from '@/theme';
+import { ColorPalette, hardShadow, outlineWidth, radius, spacing, useTheme } from '@/theme';
 
 type Props = {
   title: string;
@@ -53,20 +53,26 @@ function createStyles(colors: ColorPalette) {
       gap: spacing.xs,
       minHeight: 120,
       justifyContent: 'center',
-      borderWidth: 3,
-      borderColor: 'transparent',
+      borderWidth: outlineWidth,
+      borderColor: colors.black,
+      borderBottomWidth: outlineWidth + hardShadow.offset,
+      borderRightWidth: outlineWidth + hardShadow.offset,
     },
     cardActive: {
-      borderColor: colors.primaryDark,
+      borderBottomWidth: outlineWidth + hardShadow.offset + 2,
+      borderRightWidth: outlineWidth + hardShadow.offset + 2,
     },
     activeBadge: {
       position: 'absolute',
-      top: -10,
+      top: -14,
       alignSelf: 'center',
       backgroundColor: colors.primaryDark,
       borderRadius: radius.round,
+      borderWidth: 2,
+      borderColor: colors.black,
       paddingHorizontal: spacing.sm,
       paddingVertical: 2,
+      zIndex: 1,
     },
     icon: {
       height: 36,

@@ -12,7 +12,7 @@ import { TimetableSwitcherModal } from '@/features/timetable/components/Timetabl
 import { useActiveChild } from '@/features/child/store';
 import { useTimetableStore } from '@/features/timetable/store';
 import { LESSON_PERIOD } from '@/features/timetable/constants';
-import { ColorPalette, radius, spacing, useTheme } from '@/theme';
+import { ColorPalette, hardShadow, outlineWidth, radius, spacing, useTheme } from '@/theme';
 import { WEEKDAY_LABELS_JA } from '@/utils/date';
 
 const DAYS = [1, 2, 3, 4, 5, 6, 0]; // 月-日
@@ -291,6 +291,10 @@ function createStyles(colors: ColorPalette) {
       paddingHorizontal: spacing.md,
       borderRadius: radius.round,
       backgroundColor: colors.surfaceAlt,
+      borderWidth: outlineWidth - 1,
+      borderColor: colors.black,
+      borderBottomWidth: outlineWidth + hardShadow.offsetSm,
+      borderRightWidth: outlineWidth + hardShadow.offsetSm,
     },
     editToggleActive: {
       backgroundColor: colors.primary,
@@ -306,6 +310,10 @@ function createStyles(colors: ColorPalette) {
       paddingVertical: spacing.md,
       paddingHorizontal: spacing.lg,
       backgroundColor: colors.primary,
+      borderWidth: outlineWidth,
+      borderColor: colors.black,
+      borderBottomWidth: outlineWidth + hardShadow.offset,
+      borderRightWidth: outlineWidth + hardShadow.offset,
     },
     dayTabs: {
       flexDirection: 'row',
@@ -318,9 +326,13 @@ function createStyles(colors: ColorPalette) {
       paddingHorizontal: 2,
       borderRadius: radius.md,
       backgroundColor: colors.surfaceAlt,
+      borderWidth: outlineWidth - 1,
+      borderColor: colors.black,
     },
     dayTabActive: {
       backgroundColor: colors.primary,
+      borderBottomWidth: outlineWidth + hardShadow.offsetSm,
+      borderRightWidth: outlineWidth + hardShadow.offsetSm,
     },
     periodList: {
       gap: spacing.sm,
@@ -349,24 +361,23 @@ function createStyles(colors: ColorPalette) {
       flex: 1,
       borderRadius: radius.md,
       padding: spacing.md,
+      borderWidth: outlineWidth - 1,
+      borderColor: colors.black,
     },
     subjectSlotActive: {
-      borderWidth: 2,
-      borderColor: colors.primary,
+      borderColor: colors.black,
+      borderBottomWidth: outlineWidth + hardShadow.offsetSm,
+      borderRightWidth: outlineWidth + hardShadow.offsetSm,
     },
     editPanel: {
       backgroundColor: colors.surface,
       borderTopLeftRadius: radius.xl,
       borderTopRightRadius: radius.xl,
-      borderWidth: 1,
-      borderColor: colors.border,
+      borderWidth: outlineWidth,
+      borderColor: colors.black,
+      borderBottomWidth: 0,
       padding: spacing.md,
       gap: spacing.sm,
-      shadowColor: colors.shadow,
-      shadowOpacity: 0.12,
-      shadowRadius: 10,
-      shadowOffset: { width: 0, height: -2 },
-      elevation: 4,
     },
     editPanelLabel: {
       textAlign: 'center',
@@ -380,6 +391,10 @@ function createStyles(colors: ColorPalette) {
       borderRadius: radius.round,
       paddingVertical: spacing.sm,
       paddingHorizontal: spacing.md,
+      borderWidth: outlineWidth - 1,
+      borderColor: colors.black,
+      borderBottomWidth: outlineWidth + hardShadow.offsetSm,
+      borderRightWidth: outlineWidth + hardShadow.offsetSm,
     },
   });
 }

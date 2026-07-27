@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from './AppText';
-import { ColorPalette, radius, spacing, useTheme } from '@/theme';
+import { ColorPalette, hardShadow, outlineWidth, radius, spacing, useTheme } from '@/theme';
 
 type Props = {
   icon: string | React.ReactNode;
@@ -35,6 +35,10 @@ function createStyles(colors: ColorPalette) {
       flex: 1,
       borderRadius: radius.lg,
       paddingVertical: spacing.md,
+      borderWidth: outlineWidth,
+      borderColor: colors.black,
+      borderBottomWidth: outlineWidth + hardShadow.offset,
+      borderRightWidth: outlineWidth + hardShadow.offset,
       alignItems: 'center',
       gap: 2,
     },

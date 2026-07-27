@@ -36,81 +36,87 @@ export type ColorPalette = {
   black: string;
 };
 
+// "black" doubles as the bold comic-outline / hard-shadow ink used by the
+// pop-art component style (Button, Card, chips). It intentionally stays
+// the same near-black in both themes — the vivid accent colors it outlines
+// don't invert either, so the ink needs to keep working against both.
+const INK = '#2B1B14';
+
 export const lightColors: ColorPalette = {
-  background: '#FFF6E9',
+  background: '#FFF3E1',
   surface: '#FFFFFF',
-  surfaceAlt: '#FFF0DD',
+  surfaceAlt: '#FFEAD2',
 
-  primary: '#FF9F6B',
-  primaryDark: '#F5794A',
-  secondary: '#7FD8C6',
-  secondaryDark: '#4FC3AC',
-  accent: '#FFD166',
-  accentDark: '#F0B429',
+  primary: '#FF7A5C',
+  primaryDark: '#E3573B',
+  secondary: '#2FD9C4',
+  secondaryDark: '#17B39F',
+  accent: '#FFC94A',
+  accentDark: '#E8A61E',
 
-  pink: '#FFB6C9',
-  purple: '#C6B8FF',
-  blue: '#9AD1FF',
-  green: '#B7E8A8',
-  yellow: '#FFE38A',
+  pink: '#FF8FC4',
+  purple: '#B49CFF',
+  blue: '#6FB4FF',
+  green: '#8DDB6E',
+  yellow: '#FFDD6B',
 
-  text: '#5A4A42',
-  textMuted: '#9C8A80',
+  text: '#3A2A1F',
+  textMuted: '#8C7A6E',
   textOnPrimary: '#FFFFFF',
 
   border: '#F0E2D0',
 
-  success: '#6FCF97',
-  warning: '#FFC24B',
-  danger: '#FF6F6F',
+  success: '#3DC47E',
+  warning: '#FFB43D',
+  danger: '#FF5C5C',
 
   // school countdown traffic light
-  timeSafe: '#6FCF97',
-  timeWarn: '#FFC24B',
-  timeDanger: '#FF6F6F',
+  timeSafe: '#3DC47E',
+  timeWarn: '#FFB43D',
+  timeDanger: '#FF5C5C',
 
   shadow: '#D9A066',
 
   white: '#FFFFFF',
-  black: '#3A2E28',
+  black: INK,
 };
 
 export const darkColors: ColorPalette = {
-  background: '#221A17',
-  surface: '#2E2420',
-  surfaceAlt: '#3A2E28',
+  background: '#191410',
+  surface: '#241C16',
+  surfaceAlt: '#332720',
 
-  primary: '#FFA97A',
-  primaryDark: '#FF8A50',
-  secondary: '#7FD8C6',
-  secondaryDark: '#5CC9B4',
-  accent: '#FFD166',
-  accentDark: '#FFC24B',
+  primary: '#FF8B70',
+  primaryDark: '#FF6A4D',
+  secondary: '#2FD9C4',
+  secondaryDark: '#17B39F',
+  accent: '#FFC94A',
+  accentDark: '#E8A61E',
 
-  pink: '#E8A2B8',
-  purple: '#B3A2E8',
-  blue: '#8FC2EE',
-  green: '#9ED690',
-  yellow: '#F0D172',
+  pink: '#FF8FC4',
+  purple: '#B49CFF',
+  blue: '#6FB4FF',
+  green: '#8DDB6E',
+  yellow: '#FFDD6B',
 
-  text: '#F5E9E0',
-  textMuted: '#B8A79C',
-  textOnPrimary: '#2B1E18',
+  text: '#F3E9DE',
+  textMuted: '#B5A395',
+  textOnPrimary: '#FFFFFF',
 
-  border: '#4A3B34',
+  border: '#332720',
 
-  success: '#6FCF97',
-  warning: '#FFC24B',
-  danger: '#FF7F7F',
+  success: '#3DC47E',
+  warning: '#FFB43D',
+  danger: '#FF5C5C',
 
-  timeSafe: '#6FCF97',
-  timeWarn: '#FFC24B',
-  timeDanger: '#FF7F7F',
+  timeSafe: '#3DC47E',
+  timeWarn: '#FFB43D',
+  timeDanger: '#FF5C5C',
 
   shadow: '#000000',
 
   white: '#FFFFFF',
-  black: '#120D0B',
+  black: INK,
 };
 
 // Backwards-compatible static export (light palette) for call sites that
@@ -118,12 +124,12 @@ export const darkColors: ColorPalette = {
 export const colors = lightColors;
 
 export const subjectPalette = [
-  '#FFB6C9',
-  '#9AD1FF',
-  '#B7E8A8',
-  '#FFE38A',
-  '#C6B8FF',
-  '#7FD8C6',
-  '#FF9F6B',
-  '#FFD166',
+  '#FF8FC4',
+  '#6FB4FF',
+  '#8DDB6E',
+  '#FFDD6B',
+  '#B49CFF',
+  '#2FD9C4',
+  '#FF7A5C',
+  '#FFC94A',
 ];
