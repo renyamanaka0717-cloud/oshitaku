@@ -88,7 +88,7 @@ export default function ChildHome() {
             done={morningTasks.filter((t) => morningChecked[t.id]).length}
             total={morningTasks.length}
             complete={morningComplete}
-            tint={colors.yellow}
+            tint={colors.primary}
             active={suggestedMode === 'morning'}
             onPress={() => router.push('/child/morning')}
           />
