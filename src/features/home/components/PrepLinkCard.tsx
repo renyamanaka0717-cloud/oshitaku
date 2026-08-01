@@ -5,49 +5,49 @@ import { PressableCard } from '@/components/PressableCard';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 type Props = {
-  title: string;
-  icon: string | React.ReactNode;
-  done: number;
-  total: number;
-  complete: boolean;
+  title: React.ReactNode;
+  subtitle: React.ReactNode;
+  icon: React.ReactNode;
   tint: string;
-  active?: boolean;
+  topBadge?: React.ReactNode;
+  cornerBadge?: React.ReactNode;
   onPress: () => void;
 };
 
-export function PrepLinkCard({ title, icon, done, total, complete, tint, active, onPress }: Props) {
+// The shared square tile shape used for all four top-of-home cards
+// (morning/evening + points/chores) so they read as one family — only
+// the fill color and content change.
+export function PrepLinkCard({ title, subtitle, icon, tint, topBadge, cornerBadge, onPress }: Props) {
   const { colors } = useTheme();
-  const styles = useMemo(() => createStyles(colors), [colors]);
+  const isNeutral = tint === colors.surface || tint === colors.surfaceAlt || tint === colors.background;
+  const styles = useMemo(() => createStyles(colors, isNeutral), [colors, isNeutral]);
+  const titleColor = isNeutral ? colors.text : colors.black;
+  const subtitleColor = isNeutral ? colors.textMuted : colors.black;
+
   return (
     <View style={styles.wrap}>
-      {active ? (
-        <View style={styles.activeBadge}>
-          <View style={styles.activeChip}>
-            <AppText variant="caption" color={colors.white}>
-              いまだよ！
-            </AppText>
-          </View>
+      {topBadge ? (
+        <View style={styles.topBadgeWrap}>
+          <View style={styles.topBadgeChip}>{topBadge}</View>
         </View>
       ) : null}
       <PressableCard backgroundColor={tint} onPress={onPress} style={styles.card}>
-        <View style={styles.iconBadge}>
-          {typeof icon === 'string' ? <AppText style={styles.iconText}>{icon}</AppText> : icon}
-        </View>
+        <View style={styles.iconBadge}>{icon}</View>
         <View style={styles.textCol}>
-          <AppText variant="subtitle" color={colors.black}>
+          <AppText variant="subtitle" color={titleColor}>
             {title}
           </AppText>
-          <AppText variant="caption" color={colors.black}>
-            {complete ? 'できた！✨' : `${done}/${total} できた`}
+          <AppText variant="caption" color={subtitleColor}>
+            {subtitle}
           </AppText>
         </View>
-        {complete ? <AppText style={styles.check}>✓</AppText> : null}
+        {cornerBadge ? <View style={styles.cornerBadgeWrap}>{cornerBadge}</View> : null}
       </PressableCard>
     </View>
   );
 }
 
-function createStyles(colors: ColorPalette) {
+function createStyles(colors: ColorPalette, isNeutral: boolean) {
   return StyleSheet.create({
     wrap: {
       flex: 1,
@@ -59,7 +59,7 @@ function createStyles(colors: ColorPalette) {
       aspectRatio: 1,
       justifyContent: 'center',
     },
-    activeBadge: {
+    topBadgeWrap: {
       position: 'absolute',
       top: -14,
       left: 0,
@@ -67,7 +67,7 @@ function createStyles(colors: ColorPalette) {
       alignItems: 'center',
       zIndex: 2,
     },
-    activeChip: {
+    topBadgeChip: {
       backgroundColor: colors.primaryDark,
       borderRadius: radius.round,
       borderWidth: 2,
@@ -79,25 +79,19 @@ function createStyles(colors: ColorPalette) {
       width: 64,
       height: 64,
       borderRadius: 999,
-      backgroundColor: 'rgba(255,255,255,0.55)',
+      backgroundColor: isNeutral ? colors.surfaceAlt : 'rgba(255,255,255,0.55)',
       borderWidth: 2,
       borderColor: colors.black,
       alignItems: 'center',
       justifyContent: 'center',
     },
-    iconText: {
-      fontSize: 44,
-    },
     textCol: {
       alignItems: 'center',
     },
-    check: {
+    cornerBadgeWrap: {
       position: 'absolute',
       top: spacing.sm,
       right: spacing.sm,
-      fontSize: 20,
-      color: colors.success,
-      fontWeight: '900',
     },
   });
 }
