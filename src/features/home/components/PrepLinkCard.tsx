@@ -6,7 +6,7 @@ import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 type Props = {
   title: React.ReactNode;
-  subtitle: React.ReactNode;
+  subtitle?: React.ReactNode;
   icon: React.ReactNode;
   tint: string;
   topBadge?: React.ReactNode;
@@ -37,9 +37,11 @@ export function PrepLinkCard({ title, subtitle, icon, tint, topBadge, cornerBadg
           <AppText variant="subtitle" color={titleColor}>
             {title}
           </AppText>
-          <AppText variant="caption" color={subtitleColor}>
-            {subtitle}
-          </AppText>
+          {subtitle ? (
+            <AppText variant="caption" color={subtitleColor}>
+              {subtitle}
+            </AppText>
+          ) : null}
         </View>
         {cornerBadge ? <View style={styles.cornerBadgeWrap}>{cornerBadge}</View> : null}
       </PressableCard>
