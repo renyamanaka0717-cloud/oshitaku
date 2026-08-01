@@ -13,20 +13,21 @@ type Props = {
   onPress?: () => void;
 };
 
-// The points display gets extra star treatment vs a plain StatBadge: a
-// big coin with a sparkle accent and a big number that hops when the
-// total goes up, since points are the thing kids are meant to want.
+// Points are an "info" card, not an "action" card: a quiet white face
+// that lets the number do the talking, with just a small coin + sparkle
+// accent and a hop animation when the total goes up.
 export function PointsBadge({ points, label = 'ポイント', color, onPress }: Props) {
   const { colors } = useTheme();
-  const styles = useMemo(() => createStyles(colors), [colors]);
-  const bg = color ?? colors.accent;
+  const bg = color ?? colors.surface;
+  const isNeutral = bg === colors.surface || bg === colors.surfaceAlt || bg === colors.background;
+  const styles = useMemo(() => createStyles(colors, isNeutral), [colors, isNeutral]);
 
   const inner = (
     <BounceOnChange watch={points}>
       <View style={styles.coinWrap}>
-        <Icon name="coin" size={46} />
+        <Icon name="coin" size={30} />
         <View style={styles.sparkle}>
-          <Icon name="sparkles" size={16} />
+          <Icon name="sparkles" size={11} />
         </View>
       </View>
     </BounceOnChange>
@@ -55,12 +56,12 @@ export function PointsBadge({ points, label = 'ポイント', color, onPress }: 
   return <View style={[styles.card, styles.staticCard, { backgroundColor: bg }]}>{content}</View>;
 }
 
-function createStyles(colors: ColorPalette) {
+function createStyles(colors: ColorPalette, isNeutral: boolean) {
   return StyleSheet.create({
     card: {
       flex: 1,
       borderRadius: radius.lg,
-      paddingVertical: 14,
+      paddingVertical: 20,
     },
     staticCard: {
       borderWidth: outlineWidth,
@@ -70,7 +71,7 @@ function createStyles(colors: ColorPalette) {
     },
     inner: {
       alignItems: 'center',
-      gap: 2,
+      gap: 3,
     },
     coinWrap: {
       position: 'relative',
@@ -78,16 +79,17 @@ function createStyles(colors: ColorPalette) {
     },
     sparkle: {
       position: 'absolute',
-      top: -8,
-      right: -10,
+      top: -6,
+      right: -8,
     },
     value: {
-      color: colors.black,
-      fontSize: 26,
+      color: isNeutral ? colors.text : colors.black,
+      fontSize: 34,
     },
     label: {
-      color: colors.black,
-      opacity: 0.7,
+      color: isNeutral ? colors.textMuted : colors.black,
+      fontSize: 11,
+      opacity: isNeutral ? 1 : 0.7,
     },
   });
 }
