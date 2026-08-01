@@ -1,11 +1,11 @@
 // Shape language for the bold-outline / sticker-shadow visual style:
 // thick comic ink borders, hard (non-blurred) offset shadows, and a
 // bottom "bevel" ledge on buttons for a chunky, pressable feel.
-export const outlineWidth = 3;
+export const outlineWidth = 2;
 
 export const hardShadow = {
-  offset: 5,
-  offsetSm: 3,
+  offset: 3,
+  offsetSm: 2,
 };
 
 // Darkens a hex color by mixing it toward black, used to derive a

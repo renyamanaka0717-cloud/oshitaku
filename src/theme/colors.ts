@@ -15,6 +15,8 @@ export type ColorPalette = {
   blue: string;
   green: string;
   yellow: string;
+  cream: string;
+  mint: string;
 
   text: string;
   textMuted: string;
@@ -40,10 +42,10 @@ export type ColorPalette = {
 // pop-art component style (Button, Card, chips). It intentionally stays
 // the same near-black in both themes — the vivid accent colors it outlines
 // don't invert either, so the ink needs to keep working against both.
-const INK = '#4A362A';
+const INK = '#8A6A55';
 
 export const lightColors: ColorPalette = {
-  background: '#FFF3E1',
+  background: '#FFF8EA',
   surface: '#FFFFFF',
   surfaceAlt: '#FFEAD2',
 
@@ -55,13 +57,15 @@ export const lightColors: ColorPalette = {
   accentDark: '#C99A4E',
 
   pink: '#FFAB91',
-  purple: '#AD9EDD',
+  purple: '#D6CBF2',
   blue: '#9AC7EE',
   green: '#8DDB6E',
   yellow: '#F6C445',
+  cream: '#F7E8C4',
+  mint: '#D9F0E3',
 
-  text: '#3A2A1F',
-  textMuted: '#8C7A6E',
+  text: '#4B443D',
+  textMuted: '#8F8880',
   textOnPrimary: '#FFFFFF',
 
   border: '#F0E2D0',
@@ -94,10 +98,12 @@ export const darkColors: ColorPalette = {
   accentDark: '#C99A4E',
 
   pink: '#FFAB91',
-  purple: '#AD9EDD',
+  purple: '#D6CBF2',
   blue: '#9AC7EE',
   green: '#8DDB6E',
   yellow: '#F6C445',
+  cream: '#F7E8C4',
+  mint: '#D9F0E3',
 
   text: '#F3E9DE',
   textMuted: '#B5A395',
