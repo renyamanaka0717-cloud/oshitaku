@@ -8,15 +8,16 @@ import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 type Props = {
   chore: Chore;
   onPress: () => void;
+  pending?: boolean;
 };
 
-export function ChoreCard({ chore, onPress }: Props) {
+export function ChoreCard({ chore, onPress, pending }: Props) {
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
 
   return (
     <Pressable onPress={onPress}>
-      <Card style={styles.card}>
+      <Card style={[styles.card, pending ? styles.cardPending : null]}>
         <View style={styles.iconBox}>
           <AppText style={styles.icon}>{chore.icon}</AppText>
         </View>
@@ -25,11 +26,19 @@ export function ChoreCard({ chore, onPress }: Props) {
           {chore.name}
         </AppText>
 
-        <View style={styles.pointBadge}>
-          <AppText variant="caption" color={colors.primaryDark}>
-            ⭐ +{chore.pointValue}pt
-          </AppText>
-        </View>
+        {pending ? (
+          <View style={styles.pendingBadge}>
+            <AppText variant="caption" color={colors.textMuted}>
+              申請中
+            </AppText>
+          </View>
+        ) : (
+          <View style={styles.pointBadge}>
+            <AppText variant="caption" color={colors.primaryDark}>
+              ⭐ +{chore.pointValue}pt
+            </AppText>
+          </View>
+        )}
       </Card>
     </Pressable>
   );
@@ -42,6 +51,15 @@ function createStyles(colors: ColorPalette) {
       alignItems: 'center',
       gap: spacing.md,
       padding: spacing.sm,
+    },
+    cardPending: {
+      opacity: 0.6,
+    },
+    pendingBadge: {
+      backgroundColor: colors.surfaceAlt,
+      borderRadius: radius.round,
+      paddingVertical: 4,
+      paddingHorizontal: spacing.sm,
     },
     iconBox: {
       width: 56,

@@ -7,6 +7,7 @@ export * as dailyTaskLogRepository from './dailyTaskLogRepository';
 export * as dayCompletionRepository from './dayCompletionRepository';
 export * as rewardRepository from './rewardRepository';
 export * as choreRepository from './choreRepository';
+export * as choreRequestRepository from './choreRequestRepository';
 export * as pointHistoryRepository from './pointHistoryRepository';
 export * as stampRepository from './stampRepository';
 export * as notificationSettingRepository from './notificationSettingRepository';

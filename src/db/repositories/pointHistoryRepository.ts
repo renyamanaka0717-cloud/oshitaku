@@ -27,6 +27,15 @@ export async function addPointHistory(input: {
   return entry;
 }
 
+export async function upsertPointHistoryLocal(entry: PointHistory): Promise<void> {
+  const db = await getDb();
+  await db.runAsync(
+    `INSERT OR REPLACE INTO point_history (id, childId, date, type, amount, note, createdAt)
+     VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    [entry.id, entry.childId, entry.date, entry.type, entry.amount, entry.note, entry.createdAt]
+  );
+}
+
 export async function getTotalPoints(childId: string): Promise<number> {
   const db = await getDb();
   const row = await db.getFirstAsync<{ total: number | null }>(

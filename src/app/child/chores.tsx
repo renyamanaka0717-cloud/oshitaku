@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { SectionHeader } from '@/components/SectionHeader';
@@ -9,22 +9,51 @@ import { EmptyState } from '@/components/EmptyState';
 import { ChoreCard } from '@/features/chores/components/ChoreCard';
 import { ChoreDetailModal } from '@/features/chores/components/ChoreDetailModal';
 import { ChoreCelebration } from '@/features/chores/components/ChoreCelebration';
+import { ChoreRequestSentModal } from '@/features/chores/components/ChoreRequestSentModal';
 import { useChoresStore } from '@/features/chores/store';
+import { useChoreRequestsStore } from '@/features/chores/requestsStore';
 import { usePointsStore } from '@/features/points/store';
+import { useActiveChild } from '@/features/child/store';
 import { Chore } from '@/db/models';
 import { spacing } from '@/theme';
 
+const POLL_INTERVAL_MS = 8000;
+
 export default function ChoresScreen() {
+  const child = useActiveChild();
   const allChores = useChoresStore((s) => s.chores);
   const chores = useMemo(() => allChores.filter((c) => c.isActive), [allChores]);
-  const complete = useChoresStore((s) => s.complete);
   const totalPoints = usePointsStore((s) => s.total);
-  const [selectedChore, setSelectedChore] = useState<Chore | null>(null);
-  const [doneChore, setDoneChore] = useState<Chore | null>(null);
 
-  const handleComplete = async (chore: Chore) => {
-    await complete(chore);
-    setDoneChore(chore);
+  const requests = useChoreRequestsStore((s) => s.requests);
+  const requestChore = useChoreRequestsStore((s) => s.requestChore);
+  const pollRemote = useChoreRequestsStore((s) => s.pollRemote);
+  const justApproved = useChoreRequestsStore((s) => s.justApproved);
+  const clearJustApproved = useChoreRequestsStore((s) => s.clearJustApproved);
+
+  const pendingChoreIds = useMemo(
+    () => new Set(requests.filter((r) => r.status === 'pending').map((r) => r.choreId)),
+    [requests]
+  );
+
+  const [selectedChore, setSelectedChore] = useState<Chore | null>(null);
+  const [sentChoreName, setSentChoreName] = useState<string | null>(null);
+  const pollTimer = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!child) return;
+      pollRemote([child.id]);
+      pollTimer.current = setInterval(() => pollRemote([child.id]), POLL_INTERVAL_MS);
+      return () => {
+        if (pollTimer.current) clearInterval(pollTimer.current);
+      };
+    }, [child, pollRemote])
+  );
+
+  const handleRequest = async (chore: Chore) => {
+    await requestChore(chore);
+    setSentChoreName(chore.name);
   };
 
   return (
@@ -40,7 +69,12 @@ export default function ChoresScreen() {
         ) : (
           <View style={styles.list}>
             {chores.map((chore) => (
-              <ChoreCard key={chore.id} chore={chore} onPress={() => setSelectedChore(chore)} />
+              <ChoreCard
+                key={chore.id}
+                chore={chore}
+                pending={pendingChoreIds.has(chore.id)}
+                onPress={() => setSelectedChore(chore)}
+              />
             ))}
           </View>
         )}
@@ -49,11 +83,25 @@ export default function ChoresScreen() {
       <ChoreDetailModal
         visible={!!selectedChore}
         chore={selectedChore}
-        onComplete={() => selectedChore && handleComplete(selectedChore)}
+        onComplete={() => selectedChore && handleRequest(selectedChore)}
         onClose={() => setSelectedChore(null)}
       />
 
-      <ChoreCelebration visible={!!doneChore} chore={doneChore} onClose={() => setDoneChore(null)} />
+      <ChoreRequestSentModal
+        visible={!!sentChoreName}
+        choreName={sentChoreName}
+        onClose={() => setSentChoreName(null)}
+      />
+
+      <ChoreCelebration
+        visible={!!justApproved}
+        chore={
+          justApproved
+            ? { icon: justApproved.choreIcon, name: justApproved.choreName, pointValue: justApproved.pointValue }
+            : null
+        }
+        onClose={clearJustApproved}
+      />
     </Screen>
   );
 }

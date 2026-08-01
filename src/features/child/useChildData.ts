@@ -7,6 +7,7 @@ import { usePointsStore } from '@/features/points/store';
 import { useStampsStore } from '@/features/stamps/store';
 import { useRewardsStore } from '@/features/rewards/store';
 import { useChoresStore } from '@/features/chores/store';
+import { useChoreRequestsStore } from '@/features/chores/requestsStore';
 import { useStreakStore } from '@/features/home/streakStore';
 import { useChildStore } from '@/features/child/store';
 import { notificationSettingRepository } from '@/db/repositories';
@@ -21,6 +22,7 @@ export function useChildData(childId: string | null | undefined) {
   const loadStamps = useStampsStore((s) => s.load);
   const loadRewards = useRewardsStore((s) => s.load);
   const loadChores = useChoresStore((s) => s.load);
+  const loadChoreRequests = useChoreRequestsStore((s) => s.load);
   const loadStreak = useStreakStore((s) => s.load);
 
   useEffect(() => {
@@ -35,6 +37,7 @@ export function useChildData(childId: string | null | undefined) {
         loadStamps(childId),
         loadRewards(childId),
         loadChores(childId),
+        loadChoreRequests(childId),
         loadStreak(childId),
       ]);
 
@@ -44,5 +47,5 @@ export function useChildData(childId: string | null | undefined) {
         syncNotificationSchedule(childId, child.name, setting).catch(() => {});
       }
     })();
-  }, [childId, loadTimetable, loadItems, loadMorning, loadEvening, loadPoints, loadStamps, loadRewards, loadChores, loadStreak]);
+  }, [childId, loadTimetable, loadItems, loadMorning, loadEvening, loadPoints, loadStamps, loadRewards, loadChores, loadChoreRequests, loadStreak]);
 }

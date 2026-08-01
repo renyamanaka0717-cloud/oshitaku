@@ -12,7 +12,7 @@ function camelToSnake(key: string): string {
   return key.replace(/[A-Z]/g, (m) => `_${m.toLowerCase()}`);
 }
 
-function toRemoteRow(
+export function toRemoteRow(
   row: Record<string, unknown>,
   jsonFields: string[] = [],
   boolFields: string[] = []
@@ -35,7 +35,7 @@ function toRemoteRow(
   return out;
 }
 
-function toLocalRow(
+export function toLocalRow(
   row: Record<string, unknown>,
   columns: string[],
   jsonFields: string[] = [],
@@ -129,6 +129,14 @@ const CHILD_SCOPED_TABLES: TableSync[] = [
     table: 'point_history',
     onConflict: 'id',
     columns: ['id', 'childId', 'date', 'type', 'amount', 'note', 'createdAt'],
+  },
+  {
+    table: 'chore_request',
+    onConflict: 'id',
+    columns: [
+      'id', 'childId', 'choreId', 'choreName', 'choreIcon', 'pointValue', 'status',
+      'createdAt', 'resolvedAt', 'pointHistoryId', 'notifiedAt',
+    ],
   },
   {
     table: 'stamp',

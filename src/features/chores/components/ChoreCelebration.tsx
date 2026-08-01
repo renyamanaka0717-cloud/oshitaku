@@ -3,13 +3,18 @@ import { Animated, Modal, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { ConfettiBurst } from '@/components/ConfettiBurst';
-import { Chore } from '@/db/models';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 import { playSound } from '@/features/sound/soundService';
 
+type ChoreSnapshot = {
+  icon: string;
+  name: string;
+  pointValue: number;
+};
+
 type Props = {
   visible: boolean;
-  chore: Chore | null;
+  chore: ChoreSnapshot | null;
   onClose: () => void;
 };
 

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { router } from 'expo-router';
 import { Screen } from '@/components/Screen';
@@ -8,6 +8,7 @@ import { Card } from '@/components/Card';
 import { useActiveChild, useChildStore } from '@/features/child/store';
 import { ChildAvatar } from '@/features/child/components/ChildAvatar';
 import { useParentAuthStore } from '@/features/parent/store';
+import { useChoreRequestsStore } from '@/features/chores/requestsStore';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 const MENU: Array<{ href: string; icon: string; label: string; description: string }> = [
@@ -19,6 +20,7 @@ const MENU: Array<{ href: string; icon: string; label: string; description: stri
   { href: '/parent/points', icon: '⭐', label: 'ポイント設定', description: 'もらえるポイント数' },
   { href: '/parent/rewards', icon: '🎁', label: 'ごほうび設定', description: 'ごほうびと交換履歴' },
   { href: '/parent/chores', icon: '🧹', label: 'おてつだい設定', description: 'おてつだいと完了履歴' },
+  { href: '/parent/chore-requests', icon: '✅', label: 'おてつだい申請', description: '承認待ちの確認' },
   { href: '/parent/notifications', icon: '🔔', label: '通知設定', description: '通知する時間' },
   { href: '/parent/appearance', icon: '🎨', label: '表示設定', description: 'ライト・ダークモード' },
   { href: '/parent/account', icon: '☁️', label: 'クラウド同期', description: 'アカウント作成・ログイン' },
@@ -29,6 +31,15 @@ export default function ParentDashboard() {
   const styles = useMemo(() => createStyles(colors), [colors]);
   const child = useActiveChild();
   const lock = useParentAuthStore((s) => s.lock);
+  const children = useChildStore((s) => s.children);
+  const requests = useChoreRequestsStore((s) => s.requests);
+  const pollRemote = useChoreRequestsStore((s) => s.pollRemote);
+  const pendingCount = requests.filter((r) => r.status === 'pending').length;
+
+  useEffect(() => {
+    if (children.length > 0) pollRemote(children.map((c) => c.id));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [children.length]);
 
   const handleBack = () => {
     lock();
@@ -62,6 +73,13 @@ export default function ParentDashboard() {
               <AppText variant="subtitle">{item.label}</AppText>
               <AppText variant="caption">{item.description}</AppText>
             </View>
+            {item.href === '/parent/chore-requests' && pendingCount > 0 ? (
+              <View style={styles.badge}>
+                <AppText variant="caption" color={colors.white}>
+                  {pendingCount}
+                </AppText>
+              </View>
+            ) : null}
             <AppText style={styles.chevron}>›</AppText>
           </Pressable>
         ))}
@@ -93,6 +111,15 @@ function createStyles(colors: ColorPalette) {
     },
     menuText: {
       flex: 1,
+    },
+    badge: {
+      minWidth: 22,
+      height: 22,
+      borderRadius: radius.round,
+      backgroundColor: colors.danger,
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingHorizontal: 6,
     },
     chevron: {
       fontSize: 24,

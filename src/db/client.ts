@@ -262,6 +262,27 @@ async function migrate(db: SQLite.SQLiteDatabase) {
     version = 9;
   }
 
+  if (version < 10) {
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS chore_request (
+        id TEXT PRIMARY KEY NOT NULL,
+        childId TEXT NOT NULL,
+        choreId TEXT NOT NULL,
+        choreName TEXT NOT NULL,
+        choreIcon TEXT NOT NULL,
+        pointValue INTEGER NOT NULL,
+        status TEXT NOT NULL DEFAULT 'pending',
+        createdAt TEXT NOT NULL,
+        resolvedAt TEXT,
+        pointHistoryId TEXT,
+        notifiedAt TEXT
+      );
+      CREATE INDEX IF NOT EXISTS idx_chore_request_child_status
+        ON chore_request (childId, status);
+    `);
+    version = 10;
+  }
+
   await db.execAsync(`PRAGMA user_version = ${version}`);
 }
 
