@@ -50,8 +50,10 @@ function createStyles(colors: ColorPalette, isNeutral: boolean) {
     badge: {
       flex: 1,
       borderRadius: radius.lg,
+      aspectRatio: 1,
       paddingVertical: spacing.sm,
       alignItems: 'center',
+      justifyContent: 'center',
       gap: 2,
     },
     staticBadge: {
