@@ -40,7 +40,7 @@ export type ColorPalette = {
 // pop-art component style (Button, Card, chips). It intentionally stays
 // the same near-black in both themes — the vivid accent colors it outlines
 // don't invert either, so the ink needs to keep working against both.
-const INK = '#2B1B14';
+const INK = '#4A362A';
 
 export const lightColors: ColorPalette = {
   background: '#FFF3E1',
