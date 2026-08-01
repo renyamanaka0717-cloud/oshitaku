@@ -120,6 +120,12 @@ export default function ChildHome() {
       <FadeInUp delay={100}>
         <View style={styles.statsRow}>
           <PrepLinkCard
+            title="おてつだい"
+            icon={<Icon name="broom" size={52} />}
+            tint={colors.mint}
+            onPress={() => router.push('/child/chores')}
+          />
+          <PrepLinkCard
             title={
               <BounceOnChange watch={totalPoints}>
                 <AppText variant="subtitle" color={colors.black}>
@@ -129,12 +135,6 @@ export default function ChildHome() {
             }
             icon={<Icon name="coin" size={52} />}
             tint={colors.cream}
-            onPress={() => router.push('/child/chores')}
-          />
-          <PrepLinkCard
-            title="おてつだい"
-            icon={<Icon name="broom" size={52} />}
-            tint={colors.mint}
             onPress={() => router.push('/child/chores')}
           />
         </View>
