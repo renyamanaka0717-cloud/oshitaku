@@ -55,10 +55,10 @@ export const lightColors: ColorPalette = {
   accentDark: '#C99A4E',
 
   pink: '#FFAB91',
-  purple: '#C7BCE6',
+  purple: '#AD9EDD',
   blue: '#9AC7EE',
   green: '#8DDB6E',
-  yellow: '#FFDD6B',
+  yellow: '#F6C445',
 
   text: '#3A2A1F',
   textMuted: '#8C7A6E',
@@ -94,10 +94,10 @@ export const darkColors: ColorPalette = {
   accentDark: '#C99A4E',
 
   pink: '#FFAB91',
-  purple: '#C7BCE6',
+  purple: '#AD9EDD',
   blue: '#9AC7EE',
   green: '#8DDB6E',
-  yellow: '#FFDD6B',
+  yellow: '#F6C445',
 
   text: '#F3E9DE',
   textMuted: '#B5A395',
