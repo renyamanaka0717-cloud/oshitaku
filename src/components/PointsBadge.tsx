@@ -61,7 +61,9 @@ function createStyles(colors: ColorPalette, isNeutral: boolean) {
     card: {
       flex: 1,
       borderRadius: radius.lg,
-      paddingVertical: 20,
+      aspectRatio: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     staticCard: {
       borderWidth: outlineWidth,
