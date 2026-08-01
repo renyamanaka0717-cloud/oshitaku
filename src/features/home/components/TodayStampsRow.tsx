@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Card } from '@/components/Card';
+import { PressableCard } from '@/components/PressableCard';
 import { SectionHeader } from '@/components/SectionHeader';
 import { AppText } from '@/components/AppText';
 import { StampCard } from '@/components/StampCard';
@@ -14,11 +14,12 @@ import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 type Props = {
   stamps: Stamp[];
   allStamps: Stamp[];
+  onPress: () => void;
 };
 
 const MYSTERY_SLOTS = 3;
 
-export function TodayStampsRow({ stamps, allStamps }: Props) {
+export function TodayStampsRow({ stamps, allStamps, onPress }: Props) {
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
 
@@ -31,7 +32,7 @@ export function TodayStampsRow({ stamps, allStamps }: Props) {
   const completionRate = Math.round((ownedCount / STAMP_CATALOG.length) * 100);
 
   return (
-    <Card>
+    <PressableCard onPress={onPress} style={styles.card}>
       <SectionHeader
         title="今日のスタンプ"
         icon={<Icon name="medal" size={20} />}
@@ -65,12 +66,15 @@ export function TodayStampsRow({ stamps, allStamps }: Props) {
             ? `あと${remaining}しゅるいで図鑑コンプリート！`
             : '図鑑コンプリート達成！'}
       </AppText>
-    </Card>
+    </PressableCard>
   );
 }
 
 function createStyles(colors: ColorPalette) {
   return StyleSheet.create({
+    card: {
+      padding: spacing.lg,
+    },
     row: {
       flexDirection: 'row',
       flexWrap: 'wrap',
