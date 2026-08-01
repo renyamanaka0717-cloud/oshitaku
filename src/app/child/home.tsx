@@ -151,9 +151,9 @@ export default function ChildHome() {
       <FadeInUp delay={280}>
         <View style={styles.linkRow}>
           <NavIconLink icon="gift" label="ごほうび" tint={colors.pink} onPress={() => router.push('/child/rewards')} />
-          <NavIconLink icon="broom" label="おてつだい" tint={colors.blue} onPress={() => router.push('/child/chores')} />
           <NavIconLink icon="notebook" label="スタンプ図鑑" tint={colors.yellow} onPress={() => router.push('/child/stampbook')} />
           <NavIconLink icon="chart" label="とうけい" tint={colors.secondary} onPress={() => router.push('/child/stats')} />
+          <NavIconLink icon="gear" label="設定" tint={colors.blue} onPress={() => router.push('/parent/dashboard')} />
         </View>
       </FadeInUp>
 
