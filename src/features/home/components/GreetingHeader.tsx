@@ -20,7 +20,7 @@ function greetingForHour(hour: number): string {
 // of the design system's shapes or components.
 const MODE_THEME = {
   morning: {
-    gradient: ['#FFE49A', '#FFF3E1'] as const,
+    gradient: ['#FFF0CC', '#FFF6EA'] as const,
     textColor: undefined as string | undefined,
     subColor: undefined as string | undefined,
     decor: 'sun' as IconName,

@@ -49,14 +49,14 @@ export const lightColors: ColorPalette = {
 
   primary: '#FF7A5C',
   primaryDark: '#E3573B',
-  secondary: '#2FD9C4',
-  secondaryDark: '#17B39F',
-  accent: '#FFC94A',
-  accentDark: '#E8A61E',
+  secondary: '#7FCFC2',
+  secondaryDark: '#4FA396',
+  accent: '#E7BE7A',
+  accentDark: '#C99A4E',
 
-  pink: '#FF8FC4',
-  purple: '#B49CFF',
-  blue: '#6FB4FF',
+  pink: '#FFAB91',
+  purple: '#C7BCE6',
+  blue: '#9AC7EE',
   green: '#8DDB6E',
   yellow: '#FFDD6B',
 
@@ -68,12 +68,12 @@ export const lightColors: ColorPalette = {
 
   success: '#3DC47E',
   warning: '#FFB43D',
-  danger: '#FF5C5C',
+  danger: '#E8613B',
 
   // school countdown traffic light
   timeSafe: '#3DC47E',
   timeWarn: '#FFB43D',
-  timeDanger: '#FF5C5C',
+  timeDanger: '#E8613B',
 
   shadow: '#D9A066',
 
@@ -88,14 +88,14 @@ export const darkColors: ColorPalette = {
 
   primary: '#FF8B70',
   primaryDark: '#FF6A4D',
-  secondary: '#2FD9C4',
-  secondaryDark: '#17B39F',
-  accent: '#FFC94A',
-  accentDark: '#E8A61E',
+  secondary: '#7FCFC2',
+  secondaryDark: '#4FA396',
+  accent: '#E7BE7A',
+  accentDark: '#C99A4E',
 
-  pink: '#FF8FC4',
-  purple: '#B49CFF',
-  blue: '#6FB4FF',
+  pink: '#FFAB91',
+  purple: '#C7BCE6',
+  blue: '#9AC7EE',
   green: '#8DDB6E',
   yellow: '#FFDD6B',
 
@@ -107,11 +107,11 @@ export const darkColors: ColorPalette = {
 
   success: '#3DC47E',
   warning: '#FFB43D',
-  danger: '#FF5C5C',
+  danger: '#E8613B',
 
   timeSafe: '#3DC47E',
   timeWarn: '#FFB43D',
-  timeDanger: '#FF5C5C',
+  timeDanger: '#E8613B',
 
   shadow: '#000000',
 
@@ -124,12 +124,12 @@ export const darkColors: ColorPalette = {
 export const colors = lightColors;
 
 export const subjectPalette = [
-  '#FF8FC4',
-  '#6FB4FF',
+  '#FFAB91',
+  '#9AC7EE',
   '#8DDB6E',
   '#FFDD6B',
-  '#B49CFF',
-  '#2FD9C4',
+  '#C7BCE6',
+  '#7FCFC2',
   '#FF7A5C',
-  '#FFC94A',
+  '#E7BE7A',
 ];
