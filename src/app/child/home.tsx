@@ -4,8 +4,7 @@ import { router, useFocusEffect } from 'expo-router';
 import { Redirect } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { AppText } from '@/components/AppText';
-import { StatBadge } from '@/components/StatBadge';
-import { PointsBadge } from '@/components/PointsBadge';
+import { BounceOnChange } from '@/components/BounceOnChange';
 import { NavIconLink } from '@/components/NavIconLink';
 import { FadeInUp } from '@/components/FadeInUp';
 import { useChildStore, useActiveChild } from '@/features/child/store';
@@ -76,6 +75,9 @@ export default function ChildHome() {
     return null;
   }
 
+  const morningDone = morningTasks.filter((t) => morningChecked[t.id]).length;
+  const eveningDone = eveningTasks.filter((t) => eveningChecked[t.id]).length;
+
   return (
     <Screen>
       <GreetingHeader child={child} onPressAvatar={() => setSwitcherVisible(true)} />
@@ -84,22 +86,32 @@ export default function ChildHome() {
         <View style={styles.prepRow}>
           <PrepLinkCard
             title="朝のおしたく"
+            subtitle={morningComplete ? 'できた！✨' : `${morningDone}/${morningTasks.length} できた`}
             icon={<Icon name="sun" size={52} />}
-            done={morningTasks.filter((t) => morningChecked[t.id]).length}
-            total={morningTasks.length}
-            complete={morningComplete}
             tint={colors.yellow}
-            active={suggestedMode === 'morning'}
+            topBadge={
+              suggestedMode === 'morning' ? (
+                <AppText variant="caption" color={colors.white}>
+                  いまだよ！
+                </AppText>
+              ) : undefined
+            }
+            cornerBadge={morningComplete ? <AppText style={styles.check}>✓</AppText> : undefined}
             onPress={() => router.push('/child/morning')}
           />
           <PrepLinkCard
             title="夜のおしたく"
+            subtitle={eveningComplete ? 'できた！✨' : `${eveningDone}/${eveningTasks.length} できた`}
             icon={<Icon name="moon" size={52} />}
-            done={eveningTasks.filter((t) => eveningChecked[t.id]).length}
-            total={eveningTasks.length}
-            complete={eveningComplete}
             tint={colors.purple}
-            active={suggestedMode === 'evening'}
+            topBadge={
+              suggestedMode === 'evening' ? (
+                <AppText variant="caption" color={colors.white}>
+                  いまだよ！
+                </AppText>
+              ) : undefined
+            }
+            cornerBadge={eveningComplete ? <AppText style={styles.check}>✓</AppText> : undefined}
             onPress={() => router.push('/child/evening')}
           />
         </View>
@@ -107,14 +119,23 @@ export default function ChildHome() {
 
       <FadeInUp delay={100}>
         <View style={styles.statsRow}>
-          <PointsBadge points={totalPoints} label="ポイント" />
-          <StatBadge
-            icon={<Icon name="broom" size={26} />}
-            value="おてつだい"
-            label="やってみる"
-            color={colors.surface}
+          <PrepLinkCard
+            title={
+              <BounceOnChange watch={totalPoints}>
+                <AppText variant="subtitle">{totalPoints}</AppText>
+              </BounceOnChange>
+            }
+            subtitle="ポイント"
+            icon={<Icon name="coin" size={52} />}
+            tint={colors.surface}
             onPress={() => router.push('/child/chores')}
-            valueVariant="subtitle"
+          />
+          <PrepLinkCard
+            title="おてつだい"
+            subtitle="やってみる"
+            icon={<Icon name="broom" size={52} />}
+            tint={colors.surface}
+            onPress={() => router.push('/child/chores')}
           />
         </View>
       </FadeInUp>
@@ -175,6 +196,11 @@ function createStyles(colors: ColorPalette) {
     parentLink: {
       alignItems: 'center',
       paddingVertical: spacing.md,
+    },
+    check: {
+      fontSize: 20,
+      color: colors.success,
+      fontWeight: '900',
     },
   });
 }
