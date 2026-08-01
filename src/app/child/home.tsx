@@ -145,7 +145,11 @@ export default function ChildHome() {
       </FadeInUp>
 
       <FadeInUp delay={220}>
-        <TodayStampsRow stamps={todayStamps} allStamps={stamps} />
+        <TodayStampsRow
+          stamps={todayStamps}
+          allStamps={stamps}
+          onPress={() => router.push('/child/stampbook')}
+        />
       </FadeInUp>
 
       <FadeInUp delay={280}>
