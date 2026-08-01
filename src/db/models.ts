@@ -116,6 +116,22 @@ export type Chore = {
   createdAt: string;
 };
 
+export type ChoreRequestStatus = 'pending' | 'approved' | 'rejected';
+
+export type ChoreRequest = {
+  id: string;
+  childId: string;
+  choreId: string;
+  choreName: string;
+  choreIcon: string;
+  pointValue: number;
+  status: ChoreRequestStatus;
+  createdAt: string;
+  resolvedAt: string | null;
+  pointHistoryId: string | null;
+  notifiedAt: string | null;
+};
+
 export type PointHistoryType =
   | 'morning_complete'
   | 'evening_complete'

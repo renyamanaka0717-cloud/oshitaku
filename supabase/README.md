@@ -27,6 +27,7 @@ erDiagram
     child ||--o| day_completion : ""
     child ||--o{ reward : ""
     child ||--o{ chore : ""
+    child ||--o{ chore_request : ""
     child ||--o| point_rule : ""
     child ||--o{ point_history : ""
     child ||--o{ stamp : ""
@@ -46,6 +47,11 @@ erDiagram
   - 家族共有（パパ・ママ招待）→ `family_member(parent_id, invited_email, role)` テーブルを追加し、RLSポリシーを「自分がparent_id、または招待されているfamily_member」に拡張するだけで対応可能
   - 写真付き持ち物・添付画像 → 現状 `image_uri` はテキストで保持しているため、Supabase Storageの署名付きURLに差し替えるだけでスキーマ変更不要
   - Firebaseへの切り替え → Repositoryパターンにより、`db/repositories/*` の実装を差し替えるだけで画面側のコードは無変更
+
+## スキーマ変更の反映方法
+
+`schema.sql` は新規プロジェクト作成時に一括実行する想定のファイルで、`create table if not exists` ではなく `create table` を使っているため、既存プロジェクトに対して全体を再実行するとテーブルが既にあるエラーになる。
+機能追加でテーブルが増えた場合は、`schema.sql` の該当セクション（差分）だけをコピーしてSQL Editorで実行すること。
 
 ## Repositoryパターンの方針
 
