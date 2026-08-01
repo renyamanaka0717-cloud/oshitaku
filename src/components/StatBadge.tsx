@@ -15,8 +15,12 @@ type Props = {
 
 export function StatBadge({ icon, value, label, color, onPress, valueVariant = 'title' }: Props) {
   const { colors } = useTheme();
-  const styles = useMemo(() => createStyles(colors), [colors]);
   const bg = color ?? colors.accent;
+  // Neutral surfaces (white/cream) invert with the theme, so their text
+  // must too; the vivid accent colors intentionally don't invert, so
+  // their text stays fixed ink for contrast either way.
+  const isNeutral = bg === colors.surface || bg === colors.surfaceAlt || bg === colors.background;
+  const styles = useMemo(() => createStyles(colors, isNeutral), [colors, isNeutral]);
 
   const content = (
     <>
@@ -41,12 +45,12 @@ export function StatBadge({ icon, value, label, color, onPress, valueVariant = '
   return <View style={[styles.badge, styles.staticBadge, { backgroundColor: bg }]}>{content}</View>;
 }
 
-function createStyles(colors: ColorPalette) {
+function createStyles(colors: ColorPalette, isNeutral: boolean) {
   return StyleSheet.create({
     badge: {
       flex: 1,
       borderRadius: radius.lg,
-      paddingVertical: spacing.md,
+      paddingVertical: spacing.sm,
       alignItems: 'center',
       gap: 2,
     },
@@ -60,11 +64,11 @@ function createStyles(colors: ColorPalette) {
       fontSize: 26,
     },
     value: {
-      color: colors.black,
+      color: isNeutral ? colors.text : colors.black,
     },
     label: {
-      color: colors.black,
-      opacity: 0.7,
+      color: isNeutral ? colors.textMuted : colors.black,
+      opacity: isNeutral ? 1 : 0.7,
     },
   });
 }

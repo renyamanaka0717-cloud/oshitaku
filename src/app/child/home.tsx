@@ -107,12 +107,12 @@ export default function ChildHome() {
 
       <FadeInUp delay={100}>
         <View style={styles.statsRow}>
-          <PointsBadge points={totalPoints} label="ポイント" color={colors.accent} />
+          <PointsBadge points={totalPoints} label="ポイント" />
           <StatBadge
-            icon={<Icon name="broom" size={34} />}
+            icon={<Icon name="broom" size={26} />}
             value="おてつだい"
             label="やってみる"
-            color={colors.pink}
+            color={colors.surface}
             onPress={() => router.push('/child/chores')}
             valueVariant="subtitle"
           />

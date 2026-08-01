@@ -12,7 +12,7 @@ import { ChoreCelebration } from '@/features/chores/components/ChoreCelebration'
 import { useChoresStore } from '@/features/chores/store';
 import { usePointsStore } from '@/features/points/store';
 import { Chore } from '@/db/models';
-import { colors, spacing } from '@/theme';
+import { spacing } from '@/theme';
 
 export default function ChoresScreen() {
   const allChores = useChoresStore((s) => s.chores);
@@ -31,7 +31,7 @@ export default function ChoresScreen() {
     <Screen>
       <HeaderBar title="おてつだい" onBack={() => router.back()} />
 
-      <PointsBadge points={totalPoints} label="いまのポイント" color={colors.accent} />
+      <PointsBadge points={totalPoints} label="いまのポイント" />
 
       <View style={styles.section}>
         <SectionHeader title="おてつだいをする" icon="🧹" />

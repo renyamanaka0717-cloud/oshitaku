@@ -56,7 +56,7 @@ function createStyles(colors: ColorPalette) {
       padding: spacing.md,
       alignItems: 'center',
       gap: spacing.sm,
-      minHeight: 148,
+      aspectRatio: 1,
       justifyContent: 'center',
     },
     activeBadge: {
