@@ -122,9 +122,7 @@ export default function ChildHome() {
           <PrepLinkCard
             title={
               <BounceOnChange watch={totalPoints}>
-                <AppText variant="subtitle" style={styles.pointsValue}>
-                  {totalPoints} ポイント
-                </AppText>
+                <AppText variant="subtitle">{totalPoints} ポイント</AppText>
               </BounceOnChange>
             }
             icon={<Icon name="coin" size={52} />}
@@ -133,7 +131,6 @@ export default function ChildHome() {
           />
           <PrepLinkCard
             title="おてつだい"
-            subtitle="やってみる"
             icon={<Icon name="broom" size={52} />}
             tint={colors.surface}
             onPress={() => router.push('/child/chores')}
@@ -202,9 +199,6 @@ function createStyles(colors: ColorPalette) {
       fontSize: 20,
       color: colors.success,
       fontWeight: '900',
-    },
-    pointsValue: {
-      fontSize: 22,
     },
   });
 }
