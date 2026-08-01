@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Child } from '@/db/models';
@@ -6,7 +5,7 @@ import { AppText } from '@/components/AppText';
 import { ChildAvatar } from '@/features/child/components/ChildAvatar';
 import { getSuggestedMode } from '@/features/home/timeMode';
 import { Icon, IconName } from '@/theme/icons';
-import { ColorPalette, hardShadow, outlineWidth, radius, spacing, useTheme } from '@/theme';
+import { radius, spacing, useTheme } from '@/theme';
 import { formatJapaneseDate } from '@/utils/date';
 
 function greetingForHour(hour: number): string {
@@ -40,7 +39,6 @@ type Props = {
 
 export function GreetingHeader({ child, onPressAvatar }: Props) {
   const { colors } = useTheme();
-  const styles = useMemo(() => createStyles(colors), [colors]);
   const now = new Date();
   const mode = getSuggestedMode(now);
   const theme = mode ? MODE_THEME[mode] : null;
@@ -78,28 +76,23 @@ export function GreetingHeader({ child, onPressAvatar }: Props) {
   );
 }
 
-function createStyles(colors: ColorPalette) {
-  return StyleSheet.create({
-    banner: {
-      borderRadius: radius.lg,
-      padding: spacing.md,
-      borderWidth: outlineWidth,
-      borderColor: colors.black,
-      borderBottomWidth: outlineWidth + hardShadow.offset,
-      borderRightWidth: outlineWidth + hardShadow.offset,
-    },
-    row: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-    },
-    textCol: {
-      gap: 2,
-    },
-    greetLine: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing.xs,
-    },
-  });
-}
+const styles = StyleSheet.create({
+  banner: {
+    borderRadius: radius.lg,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.xs,
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  textCol: {
+    gap: 2,
+  },
+  greetLine: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+  },
+});
