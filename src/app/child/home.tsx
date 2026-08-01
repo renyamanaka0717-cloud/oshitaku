@@ -122,17 +122,19 @@ export default function ChildHome() {
           <PrepLinkCard
             title={
               <BounceOnChange watch={totalPoints}>
-                <AppText variant="subtitle">{totalPoints} ポイント</AppText>
+                <AppText variant="subtitle" color={colors.black}>
+                  {totalPoints} ポイント
+                </AppText>
               </BounceOnChange>
             }
             icon={<Icon name="coin" size={52} />}
-            tint={colors.surface}
+            tint={colors.cream}
             onPress={() => router.push('/child/chores')}
           />
           <PrepLinkCard
             title="おてつだい"
             icon={<Icon name="broom" size={52} />}
-            tint={colors.surface}
+            tint={colors.mint}
             onPress={() => router.push('/child/chores')}
           />
         </View>
