@@ -60,7 +60,7 @@ export default function ChoresScreen() {
     <Screen>
       <HeaderBar title="おてつだい" onBack={() => router.back()} />
 
-      <PointsBadge points={totalPoints} label="いまのポイント" />
+      <PointsBadge points={totalPoints} label="いまのポイント" variant="wide" />
 
       <View style={styles.section}>
         <SectionHeader title="おてつだいをする" icon="🧹" />
