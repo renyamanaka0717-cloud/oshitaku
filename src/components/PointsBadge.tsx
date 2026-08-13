@@ -11,21 +11,29 @@ type Props = {
   label?: string;
   color?: string;
   onPress?: () => void;
+  variant?: 'square' | 'wide';
 };
 
 // Points are an "info" card, not an "action" card: a quiet white face
 // that lets the number do the talking, with just a small coin + sparkle
 // accent and a hop animation when the total goes up.
-export function PointsBadge({ points, label = 'ポイント', color, onPress }: Props) {
+//
+// "square" (default) is a flex:1 aspect-ratio tile meant to sit next to
+// another square badge in a 2-up row (home/rewards/evening screens).
+// "wide" is a compact horizontal card for screens where PointsBadge is
+// the only tile on the row, so it isn't forced to stretch into a huge
+// square at full screen width (e.g. the chores screen).
+export function PointsBadge({ points, label = 'ポイント', color, onPress, variant = 'square' }: Props) {
   const { colors } = useTheme();
   const bg = color ?? colors.surface;
   const isNeutral = bg === colors.surface || bg === colors.surfaceAlt || bg === colors.background;
   const styles = useMemo(() => createStyles(colors, isNeutral), [colors, isNeutral]);
+  const wide = variant === 'wide';
 
-  const inner = (
+  const coin = (
     <BounceOnChange watch={points}>
       <View style={styles.coinWrap}>
-        <Icon name="coin" size={30} />
+        <Icon name="coin" size={wide ? 26 : 30} />
         <View style={styles.sparkle}>
           <Icon name="sparkles" size={11} />
         </View>
@@ -33,9 +41,21 @@ export function PointsBadge({ points, label = 'ポイント', color, onPress }: 
     </BounceOnChange>
   );
 
-  const content = (
+  const content = wide ? (
+    <View style={styles.innerWide}>
+      {coin}
+      <View style={styles.textColWide}>
+        <AppText variant="hero" style={styles.value} numberOfLines={1}>
+          {points}
+        </AppText>
+        <AppText variant="caption" style={styles.label}>
+          {label}
+        </AppText>
+      </View>
+    </View>
+  ) : (
     <View style={styles.inner}>
-      {inner}
+      {coin}
       <AppText variant="hero" style={styles.value} numberOfLines={1}>
         {points}
       </AppText>
@@ -45,15 +65,17 @@ export function PointsBadge({ points, label = 'ポイント', color, onPress }: 
     </View>
   );
 
+  const cardStyle = wide ? styles.cardWide : styles.card;
+
   if (onPress) {
     return (
-      <PressableCard backgroundColor={bg} onPress={onPress} style={styles.card}>
+      <PressableCard backgroundColor={bg} onPress={onPress} style={cardStyle}>
         {content}
       </PressableCard>
     );
   }
 
-  return <View style={[styles.card, styles.staticCard, { backgroundColor: bg }]}>{content}</View>;
+  return <View style={[cardStyle, styles.staticCard, { backgroundColor: bg }]}>{content}</View>;
 }
 
 function createStyles(colors: ColorPalette, isNeutral: boolean) {
@@ -62,6 +84,13 @@ function createStyles(colors: ColorPalette, isNeutral: boolean) {
       flex: 1,
       borderRadius: radius.lg,
       aspectRatio: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    cardWide: {
+      borderRadius: radius.lg,
+      paddingVertical: 14,
+      paddingHorizontal: 20,
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -74,6 +103,14 @@ function createStyles(colors: ColorPalette, isNeutral: boolean) {
     inner: {
       alignItems: 'center',
       gap: 3,
+    },
+    innerWide: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 14,
+    },
+    textColWide: {
+      alignItems: 'flex-start',
     },
     coinWrap: {
       position: 'relative',
