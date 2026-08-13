@@ -48,7 +48,26 @@ export default function ParentDashboard() {
 
   return (
     <Screen>
-      <HeaderBar title="保護者モード" onBack={handleBack} />
+      <HeaderBar
+        title="保護者モード"
+        onBack={handleBack}
+        right={
+          pendingCount > 0 ? (
+            <Pressable
+              style={styles.headerRequestButton}
+              onPress={() => router.push('/parent/chore-requests')}
+              hitSlop={8}
+            >
+              <AppText style={styles.headerRequestIcon}>✅</AppText>
+              <View style={styles.badge}>
+                <AppText variant="caption" color={colors.white}>
+                  {pendingCount}
+                </AppText>
+              </View>
+            </Pressable>
+          ) : null
+        }
+      />
 
       {child ? (
         <Card style={styles.childCard}>
@@ -111,6 +130,18 @@ function createStyles(colors: ColorPalette) {
     },
     menuText: {
       flex: 1,
+    },
+    headerRequestButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
+      backgroundColor: colors.surface,
+      borderRadius: radius.round,
+      paddingVertical: 6,
+      paddingHorizontal: spacing.sm,
+    },
+    headerRequestIcon: {
+      fontSize: 18,
     },
     badge: {
       minWidth: 22,
