@@ -11,17 +11,14 @@ import { useChildStore, useActiveChild } from '@/features/child/store';
 import { ChildSwitcherModal } from '@/features/child/components/ChildSwitcherModal';
 import { GreetingHeader } from '@/features/home/components/GreetingHeader';
 import { TodayBonusCard } from '@/features/home/components/TodayBonusCard';
-import { TodayStampsRow } from '@/features/home/components/TodayStampsRow';
 import { PrepLinkCard } from '@/features/home/components/PrepLinkCard';
 import { useItemsStore } from '@/features/items/store';
 import { useMorningStore } from '@/features/morning/store';
 import { useEveningStore } from '@/features/evening/store';
 import { usePointsStore } from '@/features/points/store';
-import { useStampsStore } from '@/features/stamps/store';
 import { getSuggestedMode } from '@/features/home/timeMode';
 import { Icon } from '@/theme/icons';
 import { ColorPalette, spacing, useTheme } from '@/theme';
-import { todayKey } from '@/utils/date';
 
 export default function ChildHome() {
   const { colors } = useTheme();
@@ -57,9 +54,6 @@ export default function ChildHome() {
 
   const totalPoints = usePointsStore((s) => s.total);
   const rule = usePointsStore((s) => s.rule);
-
-  const stamps = useStampsStore((s) => s.stamps);
-  const todayStamps = useMemo(() => stamps.filter((s) => s.date === todayKey()), [stamps]);
 
   const bonusPoints = useMemo(() => {
     if (!rule) return 0;
@@ -145,17 +139,8 @@ export default function ChildHome() {
       </FadeInUp>
 
       <FadeInUp delay={220}>
-        <TodayStampsRow
-          stamps={todayStamps}
-          allStamps={stamps}
-          onPress={() => router.push('/child/stampbook')}
-        />
-      </FadeInUp>
-
-      <FadeInUp delay={280}>
         <View style={styles.linkRow}>
           <NavIconLink icon="gift" label="ごほうび" tint={colors.pink} onPress={() => router.push('/child/rewards')} />
-          <NavIconLink icon="notebook" label="スタンプ図鑑" tint={colors.yellow} onPress={() => router.push('/child/stampbook')} />
           <NavIconLink icon="chart" label="とうけい" tint={colors.secondary} onPress={() => router.push('/child/stats')} />
           <NavIconLink icon="gear" label="設定" tint={colors.blue} onPress={() => router.push('/parent/dashboard')} />
         </View>

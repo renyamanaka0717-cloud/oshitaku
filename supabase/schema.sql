@@ -256,21 +256,6 @@ create table point_history (
 create index idx_point_history_child on point_history(child_id);
 create index idx_point_history_child_date on point_history(child_id, date);
 
--- ── stamp ─────────────────────────────────────────────────────────────────
-create table stamp (
-  id text primary key,
-  child_id text not null references child(id) on delete cascade,
-  date text not null,
-  kind text not null,
-  stamp_type text not null,
-  source text not null,
-  created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now(),
-  deleted_at timestamptz
-);
-create index idx_stamp_child on stamp(child_id);
-create index idx_stamp_child_date on stamp(child_id, date);
-
 -- ── notification_setting ──────────────────────────────────────────────────
 create table notification_setting (
   child_id text primary key references child(id) on delete cascade,
@@ -291,7 +276,7 @@ begin
   for t in select unnest(array[
     'parent_profile','child','timetable_set','subject','item','subject_item',
     'timetable_entry','morning_task','evening_task','daily_task_log',
-    'day_completion','reward','chore','chore_request','point_rule','point_history','stamp',
+    'day_completion','reward','chore','chore_request','point_rule','point_history',
     'notification_setting'
   ])
   loop
@@ -394,11 +379,6 @@ create policy "parent manages own point_history" on point_history
   for all using (exists (select 1 from child c where c.id = point_history.child_id and c.parent_id = auth.uid()))
   with check (exists (select 1 from child c where c.id = point_history.child_id and c.parent_id = auth.uid()));
 alter table point_history enable row level security;
-
-create policy "parent manages own stamp" on stamp
-  for all using (exists (select 1 from child c where c.id = stamp.child_id and c.parent_id = auth.uid()))
-  with check (exists (select 1 from child c where c.id = stamp.child_id and c.parent_id = auth.uid()));
-alter table stamp enable row level security;
 
 create policy "parent manages own notification_setting" on notification_setting
   for all using (exists (select 1 from child c where c.id = notification_setting.child_id and c.parent_id = auth.uid()))

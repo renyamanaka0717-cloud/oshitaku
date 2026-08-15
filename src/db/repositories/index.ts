@@ -9,7 +9,6 @@ export * as rewardRepository from './rewardRepository';
 export * as choreRepository from './choreRepository';
 export * as choreRequestRepository from './choreRequestRepository';
 export * as pointHistoryRepository from './pointHistoryRepository';
-export * as stampRepository from './stampRepository';
 export * as notificationSettingRepository from './notificationSettingRepository';
 export * as pointRuleRepository from './pointRuleRepository';
 export * as appMetaRepository from './appMetaRepository';

@@ -152,18 +152,6 @@ export type PointHistory = {
   createdAt: string;
 };
 
-export type StampKind = 'normal' | 'rare' | 'special';
-
-export type Stamp = {
-  id: string;
-  childId: string;
-  date: string;
-  kind: StampKind;
-  stampType: string;
-  source: 'morning' | 'evening' | 'perfect';
-  createdAt: string;
-};
-
 export type NotificationSetting = {
   childId: string;
   morningEnabled: boolean;

@@ -44,9 +44,9 @@ export default function EveningMode() {
     [getItemsForDay, tomorrowDow, timetableEntries, subjectItemMap, timetableItems]
   );
 
-  const [celebration, setCelebration] = useState<{ points: number; stampKind: 'normal' | 'rare' | null; stampType?: string } | null>(null);
+  const [celebration, setCelebration] = useState<{ points: number } | null>(null);
   const [allComplete, setAllComplete] = useState(false);
-  const [perfectDay, setPerfectDay] = useState<{ bonusPoints: number; specialStampType: string } | null>(null);
+  const [perfectDay, setPerfectDay] = useState<{ bonusPoints: number } | null>(null);
   const [dayCompletion, setDayCompletion] = useState<DayCompletion | null>(null);
 
   const refreshDayCompletion = useCallback(async (childId: string) => {
@@ -71,11 +71,11 @@ export default function EveningMode() {
     if (result?.perfectDay) {
       setPerfectDay(result.perfectDay);
       setAllComplete(true);
-    } else if (result?.gotStamp) {
+    } else if (result?.completed) {
       if (isAllCompleteToday()) {
         setAllComplete(true);
       } else {
-        setCelebration({ points: result.pointsAwarded, stampKind: result.stampKind, stampType: result.stampType });
+        setCelebration({ points: result.pointsAwarded });
       }
     }
   };
@@ -108,8 +108,6 @@ export default function EveningMode() {
       <CelebrationModal
         visible={!!celebration}
         points={celebration?.points ?? 0}
-        stampKind={celebration?.stampKind ?? null}
-        stampType={celebration?.stampType}
         onClose={() => setCelebration(null)}
       />
 

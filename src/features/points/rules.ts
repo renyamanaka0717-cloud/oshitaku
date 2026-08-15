@@ -4,32 +4,23 @@ import {
   notificationSettingRepository,
   pointHistoryRepository,
   pointRuleRepository,
-  stampRepository,
 } from '@/db/repositories';
 import { Child } from '@/db/models';
 import { minutesUntil, todayArrivalTime } from '@/utils/date';
-import { computeStreak } from '@/utils/streak';
 import { notifyCompletionNow } from '@/features/notifications/service';
 import { usePointsStore } from '@/features/points/store';
-import { useStampsStore } from '@/features/stamps/store';
 import { useStreakStore } from '@/features/home/streakStore';
 
-const STREAK_MILESTONES = [3, 7, 14, 30, 60, 100];
-
-function refreshPointsAndStamps() {
+function refreshPoints() {
   usePointsStore.getState().refresh().catch(() => {});
-  useStampsStore.getState().refresh().catch(() => {});
   useStreakStore.getState().refresh().catch(() => {});
 }
 
 export type AwardResult = {
   pointsAwarded: number;
-  gotStamp: boolean;
-  stampKind: 'normal' | 'rare' | null;
-  stampType?: string;
+  completed: boolean;
   perfectDay?: {
     bonusPoints: number;
-    specialStampType: string;
   };
 };
 
@@ -40,12 +31,7 @@ async function isAllChecked(childId: string, date: string, kind: 'morning_task' 
   return taskIds.every((id) => checkedIds.has(id));
 }
 
-async function awardPerfectDayBonus(
-  child: Child,
-  date: string,
-  morningOnTime: boolean,
-  eveningOnTime: boolean
-): Promise<{ bonusPoints: number; specialStampType: string }> {
+async function awardPerfectDayBonus(child: Child, date: string): Promise<{ bonusPoints: number }> {
   const rule = await pointRuleRepository.getPointRule(child.id);
 
   await pointHistoryRepository.addPointHistory({
@@ -56,26 +42,9 @@ async function awardPerfectDayBonus(
     note: '朝＋夜パーフェクト達成',
   });
 
-  let specialStampType: string;
-  if (morningOnTime && eveningOnTime) {
-    specialStampType = 'ontime_crown';
-  } else {
-    const completions = await dayCompletionRepository.listRecentCompletions(child.id, 400);
-    const streak = computeStreak(completions);
-    specialStampType = STREAK_MILESTONES.includes(streak) ? 'streak' : 'perfect';
-  }
-
-  const stamp = await stampRepository.addStamp({
-    childId: child.id,
-    date,
-    kind: 'special',
-    source: 'perfect',
-    stampType: specialStampType,
-  });
-
   notifyCompletionNow('パーフェクトな一日！✨', `${child.name}さん、朝も夜もばっちりだったね！`).catch(() => {});
 
-  return { bonusPoints: rule.perfectDayBonus, specialStampType: stamp.stampType };
+  return { bonusPoints: rule.perfectDayBonus };
 }
 
 export async function evaluateMorning(
@@ -83,7 +52,7 @@ export async function evaluateMorning(
   date: string,
   morningTaskIds: string[]
 ): Promise<AwardResult> {
-  const result: AwardResult = { pointsAwarded: 0, gotStamp: false, stampKind: null };
+  const result: AwardResult = { pointsAwarded: 0, completed: false };
   const allChecked = await isAllChecked(child.id, date, 'morning_task', morningTaskIds);
   if (!allChecked) return result;
 
@@ -121,25 +90,16 @@ export async function evaluateMorning(
     result.pointsAwarded += rule.onTime;
   }
 
-  const morningStampKind = onTime ? 'rare' : 'normal';
-  const stamp = await stampRepository.addStamp({
-    childId: child.id,
-    date,
-    kind: morningStampKind,
-    source: 'morning',
-  });
-  result.gotStamp = true;
-  result.stampKind = morningStampKind;
-  result.stampType = stamp.stampType;
+  result.completed = true;
 
   if (completionBefore?.eveningCompleted) {
-    const bonus = await awardPerfectDayBonus(child, date, onTime, completionBefore.eveningOnTime);
+    const bonus = await awardPerfectDayBonus(child, date);
     result.perfectDay = bonus;
     result.pointsAwarded += bonus.bonusPoints;
   }
 
   notifyCompletionNow('朝のおしたく完了！☀️', `${child.name}さん、よくできました！`).catch(() => {});
-  refreshPointsAndStamps();
+  refreshPoints();
 
   return result;
 }
@@ -149,7 +109,7 @@ export async function evaluateEvening(
   date: string,
   eveningTaskIds: string[]
 ): Promise<AwardResult> {
-  const result: AwardResult = { pointsAwarded: 0, gotStamp: false, stampKind: null };
+  const result: AwardResult = { pointsAwarded: 0, completed: false };
   const allChecked = await isAllChecked(child.id, date, 'evening_task', eveningTaskIds);
   if (!allChecked) return result;
 
@@ -187,25 +147,16 @@ export async function evaluateEvening(
     result.pointsAwarded += rule.onTime;
   }
 
-  const eveningStampKind = onTime ? 'rare' : 'normal';
-  const stamp = await stampRepository.addStamp({
-    childId: child.id,
-    date,
-    kind: eveningStampKind,
-    source: 'evening',
-  });
-  result.gotStamp = true;
-  result.stampKind = eveningStampKind;
-  result.stampType = stamp.stampType;
+  result.completed = true;
 
   if (completionBefore?.morningCompleted) {
-    const bonus = await awardPerfectDayBonus(child, date, completionBefore.morningOnTime, onTime);
+    const bonus = await awardPerfectDayBonus(child, date);
     result.perfectDay = bonus;
     result.pointsAwarded += bonus.bonusPoints;
   }
 
   notifyCompletionNow('夜のおしたく完了！🌙', `${child.name}さん、よくできました！`).catch(() => {});
-  refreshPointsAndStamps();
+  refreshPoints();
 
   return result;
 }
@@ -215,7 +166,7 @@ export async function evaluateNoForgottenItems(
   date: string,
   itemIds: string[]
 ): Promise<AwardResult> {
-  const result: AwardResult = { pointsAwarded: 0, gotStamp: false, stampKind: null };
+  const result: AwardResult = { pointsAwarded: 0, completed: false };
   if (itemIds.length === 0) return result;
   const allChecked = await isAllChecked(child.id, date, 'item', itemIds);
   if (!allChecked) return result;
@@ -235,6 +186,6 @@ export async function evaluateNoForgottenItems(
     note: '忘れ物ゼロ',
   });
   result.pointsAwarded += rule.noForgottenItems;
-  refreshPointsAndStamps();
+  refreshPoints();
   return result;
 }
