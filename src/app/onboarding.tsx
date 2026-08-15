@@ -65,10 +65,10 @@ export default function Onboarding() {
           アイコンをえらぼう
         </AppText>
         <View style={styles.photoRow}>
-          <ChildAvatar avatarImageUri={photoUri} avatarEmoji={avatar} avatarColor={colors.accent} size={56} />
-          <Pressable onPress={handlePickPhoto}>
-            <AppText color={colors.primaryDark}>📷 写真を選ぶ</AppText>
+          <Pressable onPress={handlePickPhoto} style={styles.cameraButton} hitSlop={8}>
+            <AppText style={styles.cameraIcon}>📷</AppText>
           </Pressable>
+          <ChildAvatar avatarImageUri={photoUri} avatarEmoji={avatar} avatarColor={colors.accent} size={56} />
           {photoUri ? (
             <Pressable onPress={() => setPhotoUri(null)}>
               <AppText variant="caption" color={colors.textMuted}>
@@ -103,6 +103,17 @@ function createStyles(colors: ColorPalette) {
       alignItems: 'center',
       gap: spacing.md,
       marginBottom: spacing.md,
+    },
+    cameraButton: {
+      width: 36,
+      height: 36,
+      borderRadius: radius.round,
+      backgroundColor: colors.surfaceAlt,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    cameraIcon: {
+      fontSize: 18,
     },
   });
 }
