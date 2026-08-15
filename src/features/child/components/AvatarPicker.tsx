@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
+import { AppText } from '@/components/AppText';
 import { Icon } from '@/theme/icons';
 import { AVATAR_OPTIONS } from '@/features/child/avatars';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
@@ -7,14 +8,20 @@ import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 type Props = {
   value: string;
   onSelect: (emoji: string) => void;
+  onPickPhoto?: () => void;
 };
 
-export function AvatarPicker({ value, onSelect }: Props) {
+export function AvatarPicker({ value, onSelect, onPickPhoto }: Props) {
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
 
   return (
     <View style={styles.row}>
+      {onPickPhoto ? (
+        <Pressable onPress={onPickPhoto} style={styles.chip} hitSlop={4}>
+          <AppText style={styles.cameraIcon}>📷</AppText>
+        </Pressable>
+      ) : null}
       {AVATAR_OPTIONS.map((a) => (
         <Pressable
           key={a.emoji}
@@ -42,6 +49,9 @@ function createStyles(colors: ColorPalette) {
     },
     chipSelected: {
       backgroundColor: colors.accent,
+    },
+    cameraIcon: {
+      fontSize: 20,
     },
   });
 }

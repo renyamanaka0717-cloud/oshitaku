@@ -41,13 +41,6 @@ export default function ChildrenSettings() {
         {children.map((child) => (
           <Card key={child.id} style={styles.childCard}>
             <View style={styles.switchRow}>
-              <Pressable
-                onPress={() => handlePickExistingPhoto(child.id)}
-                style={styles.cameraButton}
-                hitSlop={8}
-              >
-                <AppText style={styles.cameraIcon}>📷</AppText>
-              </Pressable>
               <Pressable style={styles.switchTapArea} onPress={() => setActiveChild(child.id)}>
                 <ChildAvatar
                   avatarImageUri={child.avatarImageUri}
@@ -81,6 +74,7 @@ export default function ChildrenSettings() {
             <AvatarPicker
               value={child.avatarImageUri ? '' : child.avatarEmoji}
               onSelect={(a) => updateChild(child.id, { avatarEmoji: a, avatarImageUri: null })}
+              onPickPhoto={() => handlePickExistingPhoto(child.id)}
             />
           </Card>
         ))}
@@ -97,16 +91,6 @@ export default function ChildrenSettings() {
           maxLength={12}
         />
         <View style={styles.photoRow}>
-          <Pressable
-            onPress={async () => {
-              const uri = await pickChildAvatarImage();
-              if (uri) setPhotoUri(uri);
-            }}
-            style={styles.cameraButton}
-            hitSlop={8}
-          >
-            <AppText style={styles.cameraIcon}>📷</AppText>
-          </Pressable>
           <ChildAvatar avatarImageUri={photoUri} avatarEmoji={avatar} avatarColor={colors.accent} size={48} />
         </View>
         <AvatarPicker
@@ -114,6 +98,10 @@ export default function ChildrenSettings() {
           onSelect={(a) => {
             setAvatar(a);
             setPhotoUri(null);
+          }}
+          onPickPhoto={async () => {
+            const uri = await pickChildAvatarImage();
+            if (uri) setPhotoUri(uri);
           }}
         />
         <Button label="追加する" onPress={handleAdd} disabled={!name.trim()} />
@@ -143,17 +131,6 @@ function createStyles(colors: ColorPalette) {
     },
     switchLabel: {
       flex: 1,
-    },
-    cameraButton: {
-      width: 36,
-      height: 36,
-      borderRadius: radius.round,
-      backgroundColor: colors.surfaceAlt,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    cameraIcon: {
-      fontSize: 18,
     },
     input: {
       backgroundColor: colors.surfaceAlt,
