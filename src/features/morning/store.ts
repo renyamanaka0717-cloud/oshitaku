@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { Child, MorningTask } from '@/db/models';
 import { dailyTaskLogRepository, taskRepository } from '@/db/repositories';
 import { evaluateMorning, AwardResult } from '@/features/points/rules';
-import { todayKey } from '@/utils/date';
+import { effectiveDayOfWeek, todayKey } from '@/utils/date';
 
 type MorningState = {
   childId: string | null;
@@ -25,7 +25,7 @@ export const useMorningStore = create<MorningState>((set, get) => ({
   load: async (childId: string) => {
     set({ isLoading: true });
     const date = todayKey();
-    const dayOfWeek = new Date().getDay();
+    const dayOfWeek = effectiveDayOfWeek();
     const [allTasks, logs] = await Promise.all([
       taskRepository.listMorningTasks(childId),
       dailyTaskLogRepository.listLogsForDate(childId, date, 'morning_task'),

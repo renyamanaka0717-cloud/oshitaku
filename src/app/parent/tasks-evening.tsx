@@ -6,7 +6,7 @@ import { HeaderBar } from '@/components/HeaderBar';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { ExpandableCard } from '@/components/ExpandableCard';
-import { WeekdayChips } from '@/features/parent/components/WeekdayChips';
+import { DayTypePicker, WEEKDAY_DAYS } from '@/features/parent/components/DayTypePicker';
 import { useActiveChild } from '@/features/child/store';
 import {
   createEveningTask,
@@ -94,7 +94,7 @@ export default function EveningTasksSettings() {
                 style={styles.labelInput}
               />
             </View>
-            <WeekdayChips
+            <DayTypePicker
               value={task.daysOfWeek}
               onChange={(days) => updateEveningTask(task.id, { daysOfWeek: days }).then(() => reload(child.id))}
             />
@@ -113,7 +113,12 @@ export default function EveningTasksSettings() {
             label="追加"
             onPress={async () => {
               if (!eveningLabel.trim()) return;
-              await createEveningTask({ childId: child.id, label: eveningLabel.trim(), icon: '✅' });
+              await createEveningTask({
+                childId: child.id,
+                label: eveningLabel.trim(),
+                icon: '✅',
+                daysOfWeek: WEEKDAY_DAYS,
+              });
               setEveningLabel('');
               reload(child.id);
             }}

@@ -1,4 +1,16 @@
+import { isJapaneseHoliday } from './holidays';
+
 export const WEEKDAY_LABELS_JA = ['日', '月', '火', '水', '木', '金', '土'];
+
+// Day-of-week for task/timetable filtering, but with public holidays
+// bucketed in with weekends: a weekday (1-5) that's also a holiday is
+// reported as day 0 (Sunday) so it matches a "土日祝" (weekend/holiday)
+// daysOfWeek set like [0, 6] the same way a real Sat/Sun would.
+export function effectiveDayOfWeek(date: Date = new Date()): number {
+  const day = date.getDay();
+  if (day === 0 || day === 6) return day;
+  return isJapaneseHoliday(date) ? 0 : day;
+}
 
 export function toDateKey(date: Date): string {
   const y = date.getFullYear();
