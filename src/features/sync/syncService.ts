@@ -139,11 +139,6 @@ const CHILD_SCOPED_TABLES: TableSync[] = [
     ],
   },
   {
-    table: 'stamp',
-    onConflict: 'id',
-    columns: ['id', 'childId', 'date', 'kind', 'stampType', 'source', 'createdAt'],
-  },
-  {
     table: 'notification_setting',
     onConflict: 'child_id',
     columns: [

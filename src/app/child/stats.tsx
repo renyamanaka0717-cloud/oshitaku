@@ -9,8 +9,8 @@ import { SectionHeader } from '@/components/SectionHeader';
 import { SimpleBarChart } from '@/components/SimpleBarChart';
 import { useActiveChild } from '@/features/child/store';
 import { useStreakStore } from '@/features/home/streakStore';
-import { dayCompletionRepository, pointHistoryRepository, stampRepository } from '@/db/repositories';
-import { DayCompletion, PointHistory, Stamp } from '@/db/models';
+import { dayCompletionRepository, pointHistoryRepository } from '@/db/repositories';
+import { DayCompletion, PointHistory } from '@/db/models';
 import {
   forgottenItemDays,
   lastNDaysPoints,
@@ -29,18 +29,15 @@ export default function StatsScreen() {
 
   const [completions, setCompletions] = useState<DayCompletion[]>([]);
   const [history, setHistory] = useState<PointHistory[]>([]);
-  const [stamps, setStamps] = useState<Stamp[]>([]);
 
   useEffect(() => {
     if (!child) return;
     Promise.all([
       dayCompletionRepository.listRecentCompletions(child.id, HISTORY_LIMIT),
       pointHistoryRepository.listPointHistory(child.id, HISTORY_LIMIT),
-      stampRepository.listStamps(child.id, HISTORY_LIMIT),
-    ]).then(([c, h, s]) => {
+    ]).then(([c, h]) => {
       setCompletions(c);
       setHistory(h);
-      setStamps(s);
     });
   }, [child]);
 
@@ -72,7 +69,6 @@ export default function StatsScreen() {
         <StatCard icon="🔥" value={`${streak}日`} label="連続達成日数" />
         <StatCard icon="🏆" value={`${longest}日`} label="最長記録" accentColor={colors.accentDark} />
         <StatCard icon="⭐" value={totalPoints} label="累計ポイント" />
-        <StatCard icon="🏅" value={stamps.length} label="累計スタンプ" />
         <StatCard icon="🎒" value={forgottenDays} label="忘れ物のあった日" accentColor={colors.danger} />
       </View>
 

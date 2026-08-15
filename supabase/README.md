@@ -30,7 +30,6 @@ erDiagram
     child ||--o{ chore_request : ""
     child ||--o| point_rule : ""
     child ||--o{ point_history : ""
-    child ||--o{ stamp : ""
     child ||--o| notification_setting : ""
 ```
 

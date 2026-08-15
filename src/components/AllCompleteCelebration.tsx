@@ -13,11 +13,9 @@ import { Button } from './Button';
 import { ConfettiBurst } from './ConfettiBurst';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 import { playSound } from '@/features/sound/soundService';
-import { STAMP_EMOJI } from '@/features/stamps/store';
 
 type PerfectDayInfo = {
   bonusPoints: number;
-  specialStampType: string;
 };
 
 type Props = {
@@ -35,7 +33,7 @@ export function AllCompleteCelebration({ visible, onClose, perfectDay }: Props) 
 
   useEffect(() => {
     if (!visible) return;
-    playSound(perfectDay ? 'stamp' : 'complete').catch(() => {});
+    playSound(perfectDay ? 'reward' : 'complete').catch(() => {});
     cardScale.value = 0.5;
     cardScale.value = withSpring(1, { damping: 8, stiffness: 130 });
 
@@ -68,8 +66,6 @@ export function AllCompleteCelebration({ visible, onClose, perfectDay }: Props) 
     transform: [{ scale: glowPulse.value }],
   }));
 
-  const specialEmoji = perfectDay ? STAMP_EMOJI[perfectDay.specialStampType] ?? '✨' : null;
-
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <View style={styles.backdrop}>
@@ -78,7 +74,7 @@ export function AllCompleteCelebration({ visible, onClose, perfectDay }: Props) 
           {perfectDay ? (
             <View style={styles.specialEmojiWrap}>
               <Animated.View style={[styles.glow, glowStyle]} />
-              <AppText style={styles.specialEmoji}>{specialEmoji}</AppText>
+              <AppText style={styles.specialEmoji}>🏆</AppText>
             </View>
           ) : (
             <Animated.Text style={[styles.emoji, emojiStyle]}>🎉</Animated.Text>
