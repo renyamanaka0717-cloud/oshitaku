@@ -5,7 +5,8 @@ import { HeaderBar } from '@/components/HeaderBar';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { ExpandableCard } from '@/components/ExpandableCard';
-import { DayTypePicker, WEEKDAY_DAYS } from '@/features/parent/components/DayTypePicker';
+import { DayTypePicker } from '@/features/parent/components/DayTypePicker';
+import { AddTaskModal } from '@/features/parent/components/AddTaskModal';
 import { useActiveChild } from '@/features/child/store';
 import {
   createMorningTask,
@@ -15,7 +16,7 @@ import {
   updateMorningTask,
 } from '@/db/repositories/taskRepository';
 import { MorningTask } from '@/db/models';
-import { ColorPalette, radius, spacing, useTheme } from '@/theme';
+import { ColorPalette, hardShadow, outlineWidth, radius, spacing, useTheme } from '@/theme';
 import { goBack } from '@/utils/navigation';
 
 export default function MorningTasksSettings() {
@@ -23,7 +24,7 @@ export default function MorningTasksSettings() {
   const styles = useMemo(() => createStyles(colors), [colors]);
   const child = useActiveChild();
   const [morningTasks, setMorningTasks] = useState<MorningTask[]>([]);
-  const [morningLabel, setMorningLabel] = useState('');
+  const [addModalVisible, setAddModalVisible] = useState(false);
 
   const reload = async (childId: string) => {
     setMorningTasks(await listMorningTasks(childId));
@@ -37,7 +38,17 @@ export default function MorningTasksSettings() {
 
   return (
     <Screen>
-      <HeaderBar title="朝のタスク" onBack={goBack} />
+      <HeaderBar
+        title="朝のタスク"
+        onBack={goBack}
+        right={
+          <Pressable style={styles.addButton} onPress={() => setAddModalVisible(true)}>
+            <AppText variant="caption" color={colors.white}>
+              ＋ 追加
+            </AppText>
+          </Pressable>
+        }
+      />
 
       <View style={styles.section}>
         {morningTasks.map((task, index) => (
@@ -101,37 +112,32 @@ export default function MorningTasksSettings() {
             <Button label="削除" variant="danger" size="md" onPress={() => deleteMorningTask(task.id).then(() => reload(child.id))} />
           </ExpandableCard>
         ))}
-        <View style={styles.row}>
-          <TextInput
-            value={morningLabel}
-            onChangeText={setMorningLabel}
-            placeholder="新しいタスク"
-            placeholderTextColor={colors.textMuted}
-            style={styles.labelInput}
-          />
-          <Button
-            label="追加"
-            onPress={async () => {
-              if (!morningLabel.trim()) return;
-              await createMorningTask({
-                childId: child.id,
-                label: morningLabel.trim(),
-                icon: '✅',
-                daysOfWeek: WEEKDAY_DAYS,
-              });
-              setMorningLabel('');
-              reload(child.id);
-            }}
-            disabled={!morningLabel.trim()}
-          />
-        </View>
       </View>
+
+      <AddTaskModal
+        visible={addModalVisible}
+        onSave={async ({ label, icon, daysOfWeek }) => {
+          await createMorningTask({ childId: child.id, label, icon, daysOfWeek });
+          reload(child.id);
+        }}
+        onClose={() => setAddModalVisible(false)}
+      />
     </Screen>
   );
 }
 
 function createStyles(colors: ColorPalette) {
   return StyleSheet.create({
+    addButton: {
+      paddingVertical: spacing.xs,
+      paddingHorizontal: spacing.md,
+      borderRadius: radius.round,
+      backgroundColor: colors.primary,
+      borderWidth: outlineWidth - 1,
+      borderColor: colors.black,
+      borderBottomWidth: outlineWidth + hardShadow.offsetSm,
+      borderRightWidth: outlineWidth + hardShadow.offsetSm,
+    },
     section: {
       gap: spacing.sm,
     },
