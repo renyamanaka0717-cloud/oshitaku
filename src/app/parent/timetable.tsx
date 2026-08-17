@@ -101,20 +101,7 @@ export default function TimetableSettings() {
 
   return (
     <Screen scroll={false} contentStyle={styles.screenContent}>
-      <HeaderBar
-        title="時間割・教科"
-        onBack={goBack}
-        right={
-          <Pressable
-            style={[styles.editToggle, editMode ? styles.editToggleActive : null]}
-            onPress={editMode ? stopEdit : startEdit}
-          >
-            <AppText variant="caption" color={editMode ? colors.white : colors.text}>
-              {editMode ? '完了' : '編集'}
-            </AppText>
-          </Pressable>
-        }
-      />
+      <HeaderBar title="時間割・教科" onBack={goBack} />
 
       <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <View style={styles.section}>
@@ -135,7 +122,20 @@ export default function TimetableSettings() {
         </Pressable>
 
         <View style={styles.section}>
-          <SectionHeader title="時間割" icon="📅" />
+          <SectionHeader
+            title="時間割"
+            icon="📅"
+            right={
+              <Pressable
+                style={[styles.editToggle, editMode ? styles.editToggleActive : null]}
+                onPress={editMode ? stopEdit : startEdit}
+              >
+                <AppText variant="caption" color={editMode ? colors.white : colors.text}>
+                  {editMode ? '完了' : '編集'}
+                </AppText>
+              </Pressable>
+            }
+          />
           <View style={styles.dayTabs}>
             {DAYS.map((day) => (
               <Pressable
