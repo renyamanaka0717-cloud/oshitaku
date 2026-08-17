@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, TextInput, View } from 'react-native';
-import { router } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { AppText } from '@/components/AppText';
@@ -10,6 +9,7 @@ import { ItemMultiPickerModal } from '@/features/timetable/components/ItemMultiP
 import { useActiveChild } from '@/features/child/store';
 import { useTimetableStore } from '@/features/timetable/store';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
+import { goBack } from '@/utils/navigation';
 
 export default function SubjectsSettings() {
   const { colors } = useTheme();
@@ -41,7 +41,7 @@ export default function SubjectsSettings() {
 
   return (
     <Screen>
-      <HeaderBar title="教科・持ち物の登録" onBack={() => router.back()} />
+      <HeaderBar title="教科・持ち物の登録" onBack={goBack} />
 
       <View style={styles.section}>
         <SectionHeader title="教科" icon="🖍️" />

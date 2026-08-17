@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
-import { router } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { AppText } from '@/components/AppText';
@@ -8,6 +7,7 @@ import { Card } from '@/components/Card';
 import { useActiveChild, useChildStore } from '@/features/child/store';
 import { WEEKDAY_LABELS_JA } from '@/utils/date';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
+import { goBack } from '@/utils/navigation';
 
 export default function ScheduleSettings() {
   const { colors } = useTheme();
@@ -36,7 +36,7 @@ export default function ScheduleSettings() {
 
   return (
     <Screen>
-      <HeaderBar title="時間設定" onBack={() => router.back()} />
+      <HeaderBar title="時間設定" onBack={goBack} />
 
       <AppText variant="caption" color={colors.textMuted}>
         曜日ごとに登校時間を設定できます

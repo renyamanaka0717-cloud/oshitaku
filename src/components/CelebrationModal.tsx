@@ -11,6 +11,7 @@ import { AppText } from './AppText';
 import { Button } from './Button';
 import { ConfettiBurst } from './ConfettiBurst';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
+import { Icon } from '@/theme/icons';
 import { playSound } from '@/features/sound/soundService';
 
 type Props = {
@@ -56,7 +57,9 @@ export function CelebrationModal({ visible, points, onClose }: Props) {
         <ConfettiBurst active={visible} count={16} />
         <Animated.View style={[styles.card, cardStyle]}>
           <View style={styles.emojiWrap}>
-            <Animated.Text style={[styles.emoji, emojiStyle]}>⭐</Animated.Text>
+            <Animated.View style={emojiStyle}>
+              <Icon name="star" size={64} />
+            </Animated.View>
           </View>
           <AppText variant="title" style={styles.center}>
             やったね！
@@ -96,9 +99,6 @@ function createStyles(colors: ColorPalette) {
       justifyContent: 'center',
       width: 96,
       height: 96,
-    },
-    emoji: {
-      fontSize: 64,
     },
     center: {
       textAlign: 'center',

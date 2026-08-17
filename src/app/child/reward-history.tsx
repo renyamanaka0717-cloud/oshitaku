@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { router } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { Card } from '@/components/Card';
@@ -10,6 +9,7 @@ import { useActiveChild } from '@/features/child/store';
 import { pointHistoryRepository } from '@/db/repositories';
 import { PointHistory } from '@/db/models';
 import { ColorPalette, spacing, useTheme } from '@/theme';
+import { goBack } from '@/utils/navigation';
 
 const HISTORY_LIMIT = 200;
 
@@ -28,7 +28,7 @@ export default function RewardHistoryScreen() {
 
   return (
     <Screen>
-      <HeaderBar title="こうかんりれき" onBack={() => router.back()} />
+      <HeaderBar title="こうかんりれき" onBack={goBack} />
 
       {exchanges.length === 0 ? (
         <EmptyState icon="🧾" message="まだこうかんしたごほうびはありません" />

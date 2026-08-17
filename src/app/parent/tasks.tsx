@@ -5,6 +5,7 @@ import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { AppText } from '@/components/AppText';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
+import { goBack } from '@/utils/navigation';
 
 const MENU: Array<{ href: string; icon: string; label: string; description: string }> = [
   { href: '/parent/tasks-morning', icon: '☀️', label: '朝のタスク', description: 'チェックリストの内容を編集' },
@@ -17,7 +18,7 @@ export default function TasksSettings() {
 
   return (
     <Screen>
-      <HeaderBar title="朝・夜タスク" onBack={() => router.back()} />
+      <HeaderBar title="朝・夜タスク" onBack={goBack} />
 
       <View style={styles.menu}>
         {MENU.map((item) => (

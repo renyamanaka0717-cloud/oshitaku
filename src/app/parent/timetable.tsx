@@ -13,6 +13,7 @@ import { useTimetableStore } from '@/features/timetable/store';
 import { LESSON_PERIOD } from '@/features/timetable/constants';
 import { ColorPalette, hardShadow, outlineWidth, radius, spacing, useTheme } from '@/theme';
 import { WEEKDAY_LABELS_JA } from '@/utils/date';
+import { goBack } from '@/utils/navigation';
 
 const DAYS = [1, 2, 3, 4, 5, 6, 0]; // 月-日
 const PERIODS = [1, 2, 3, 4, 5, 6];
@@ -102,7 +103,7 @@ export default function TimetableSettings() {
     <Screen scroll={false} contentStyle={styles.screenContent}>
       <HeaderBar
         title="時間割・教科"
-        onBack={() => router.back()}
+        onBack={goBack}
         right={
           <Pressable
             style={[styles.editToggle, editMode ? styles.editToggleActive : null]}

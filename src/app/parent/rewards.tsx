@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Image, Pressable, StyleSheet, TextInput, View } from 'react-native';
-import { router } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { AppText } from '@/components/AppText';
@@ -14,6 +13,7 @@ import { useRewardsStore } from '@/features/rewards/store';
 import { usePointsStore } from '@/features/points/store';
 import { pickRewardImage } from '@/features/rewards/imagePicker';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
+import { goBack } from '@/utils/navigation';
 
 export default function RewardsSettings() {
   const { colors } = useTheme();
@@ -63,7 +63,7 @@ export default function RewardsSettings() {
 
   return (
     <Screen>
-      <HeaderBar title="ごほうび設定" onBack={() => router.back()} />
+      <HeaderBar title="ごほうび設定" onBack={goBack} />
 
       <View style={styles.section}>
         <SectionHeader title="ごほうび一覧" icon="🎁" />

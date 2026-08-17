@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { router, useFocusEffect } from 'expo-router';
+import { useFocusEffect } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { ChecklistItem } from '@/components/ChecklistItem';
@@ -14,6 +14,7 @@ import { useEveningStore } from '@/features/evening/store';
 import { useTimetableStore } from '@/features/timetable/store';
 import { isAllCompleteToday } from '@/features/home/allComplete';
 import { spacing } from '@/theme';
+import { goBack } from '@/utils/navigation';
 
 export default function EveningMode() {
   const child = useActiveChild();
@@ -66,7 +67,7 @@ export default function EveningMode() {
 
   return (
     <Screen>
-      <HeaderBar title="夜のおしたく" onBack={() => router.back()} right={<ModeSwitch active="evening" />} />
+      <HeaderBar title="夜のおしたく" onBack={goBack} right={<ModeSwitch active="evening" />} />
       <TomorrowDateHeader />
       <TomorrowPreview entries={entries} items={items} />
 

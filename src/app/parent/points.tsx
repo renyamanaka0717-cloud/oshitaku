@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
-import { router } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { AppText } from '@/components/AppText';
@@ -8,6 +7,7 @@ import { Card } from '@/components/Card';
 import { useActiveChild } from '@/features/child/store';
 import { usePointsStore } from '@/features/points/store';
 import { ColorPalette, outlineWidth, radius, spacing, useTheme } from '@/theme';
+import { goBack } from '@/utils/navigation';
 
 const FIELDS: Array<{
   key: 'morningComplete' | 'eveningComplete' | 'onTime' | 'noForgottenItems' | 'perfectDayBonus';
@@ -38,7 +38,7 @@ export default function PointsSettings() {
 
   return (
     <Screen>
-      <HeaderBar title="ポイント設定" onBack={() => router.back()} />
+      <HeaderBar title="ポイント設定" onBack={goBack} />
       <AppText variant="body" color={colors.textMuted}>
         それぞれの達成でもらえるポイント数を設定できます
       </AppText>

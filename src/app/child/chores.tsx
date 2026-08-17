@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { router, useFocusEffect } from 'expo-router';
+import { useFocusEffect } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { SectionHeader } from '@/components/SectionHeader';
@@ -16,6 +16,7 @@ import { usePointsStore } from '@/features/points/store';
 import { useActiveChild } from '@/features/child/store';
 import { Chore } from '@/db/models';
 import { spacing } from '@/theme';
+import { goBack } from '@/utils/navigation';
 
 const POLL_INTERVAL_MS = 8000;
 
@@ -58,7 +59,7 @@ export default function ChoresScreen() {
 
   return (
     <Screen>
-      <HeaderBar title="おてつだい" onBack={() => router.back()} />
+      <HeaderBar title="おてつだい" onBack={goBack} />
 
       <PointsBadge points={totalPoints} label="いまのポイント" variant="wide" />
 

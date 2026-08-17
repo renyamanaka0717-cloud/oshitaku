@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, TextInput, View } from 'react-native';
-import { router } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { AppText } from '@/components/AppText';
@@ -12,6 +11,7 @@ import { useChildStore } from '@/features/child/store';
 import { pickChildAvatarImage } from '@/features/child/imagePicker';
 import { AVATAR_EMOJIS } from '@/features/child/avatars';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
+import { goBack } from '@/utils/navigation';
 
 export default function ChildrenSettings() {
   const { colors } = useTheme();
@@ -35,7 +35,7 @@ export default function ChildrenSettings() {
 
   return (
     <Screen>
-      <HeaderBar title="お子さま管理" onBack={() => router.back()} />
+      <HeaderBar title="お子さま管理" onBack={goBack} />
 
       <View style={styles.list}>
         {children.map((child) => (
