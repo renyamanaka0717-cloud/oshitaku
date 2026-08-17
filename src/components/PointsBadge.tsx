@@ -110,7 +110,7 @@ function createStyles(colors: ColorPalette, isNeutral: boolean) {
       gap: 14,
     },
     textColWide: {
-      alignItems: 'flex-start',
+      alignItems: 'center',
     },
     coinWrap: {
       position: 'relative',
