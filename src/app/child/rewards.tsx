@@ -33,7 +33,7 @@ export default function RewardsScreen() {
       <HeaderBar title="ごほうび" onBack={() => router.back()} />
 
       <View style={styles.statsRow}>
-        <PointsBadge points={totalPoints} label="いまのポイント" />
+        <PointsBadge points={totalPoints} label="いまのポイント" variant="wide" />
         <StatBadge
           icon="🧾"
           value="りれき"
@@ -41,6 +41,7 @@ export default function RewardsScreen() {
           color={colors.surfaceAlt}
           onPress={() => router.push('/child/reward-history')}
           valueVariant="subtitle"
+          variant="wide"
         />
       </View>
 
