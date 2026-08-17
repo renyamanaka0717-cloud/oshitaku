@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { router } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { Card } from '@/components/Card';
@@ -19,6 +18,7 @@ import {
   totalEarnedPoints,
 } from '@/features/stats/selectors';
 import { spacing, useTheme } from '@/theme';
+import { goBack } from '@/utils/navigation';
 
 const HISTORY_LIMIT = 400;
 
@@ -62,7 +62,7 @@ export default function StatsScreen() {
 
   return (
     <Screen>
-      <HeaderBar title="とうけい" onBack={() => router.back()} />
+      <HeaderBar title="とうけい" onBack={goBack} />
 
       <View style={styles.grid}>
         <StatCard icon="📈" value={`${Math.round(achievementRate * 100)}%`} label="今月の達成率" />

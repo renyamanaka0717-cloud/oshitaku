@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
-import { router } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { AppText } from '@/components/AppText';
@@ -13,6 +12,7 @@ import { useActiveChild } from '@/features/child/store';
 import { useChoresStore } from '@/features/chores/store';
 import { usePointsStore } from '@/features/points/store';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
+import { goBack } from '@/utils/navigation';
 
 export default function ChoresSettings() {
   const { colors } = useTheme();
@@ -47,7 +47,7 @@ export default function ChoresSettings() {
 
   return (
     <Screen>
-      <HeaderBar title="おてつだい設定" onBack={() => router.back()} />
+      <HeaderBar title="おてつだい設定" onBack={goBack} />
 
       <View style={styles.section}>
         <SectionHeader title="おてつだい一覧" icon="🧹" />

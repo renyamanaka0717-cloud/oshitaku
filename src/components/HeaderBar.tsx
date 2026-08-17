@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { router } from 'expo-router';
 import { AppText } from './AppText';
 import { ColorPalette, hardShadow, outlineWidth, radius, spacing, useTheme } from '@/theme';
+import { goBack } from '@/utils/navigation';
 
 type Props = {
   title: string;
@@ -18,7 +18,7 @@ export function HeaderBar({ title, onBack, right }: Props) {
     <View style={styles.row}>
       <Pressable
         style={styles.backButton}
-        onPress={onBack ?? (() => router.back())}
+        onPress={onBack ?? goBack}
         hitSlop={10}
       >
         <AppText style={styles.backIcon}>←</AppText>

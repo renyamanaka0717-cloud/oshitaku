@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, TextInput, View } from 'react-native';
-import { router } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { AppText } from '@/components/AppText';
@@ -17,6 +16,7 @@ import {
 } from '@/db/repositories/taskRepository';
 import { MorningTask } from '@/db/models';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
+import { goBack } from '@/utils/navigation';
 
 export default function MorningTasksSettings() {
   const { colors } = useTheme();
@@ -37,7 +37,7 @@ export default function MorningTasksSettings() {
 
   return (
     <Screen>
-      <HeaderBar title="朝のタスク" onBack={() => router.back()} />
+      <HeaderBar title="朝のタスク" onBack={goBack} />
 
       <View style={styles.section}>
         {morningTasks.map((task, index) => (

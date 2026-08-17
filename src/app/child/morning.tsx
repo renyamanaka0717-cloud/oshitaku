@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { router, useFocusEffect } from 'expo-router';
+import { useFocusEffect } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { ChecklistItem } from '@/components/ChecklistItem';
@@ -13,6 +13,7 @@ import { useMorningStore } from '@/features/morning/store';
 import { isAllCompleteToday } from '@/features/home/allComplete';
 import { spacing } from '@/theme';
 import { todayArrivalTime } from '@/utils/date';
+import { goBack } from '@/utils/navigation';
 
 export default function MorningMode() {
   const child = useActiveChild();
@@ -54,7 +55,7 @@ export default function MorningMode() {
 
   return (
     <Screen>
-      <HeaderBar title="朝のおしたく" onBack={() => router.back()} right={<ModeSwitch active="morning" />} />
+      <HeaderBar title="朝のおしたく" onBack={goBack} right={<ModeSwitch active="morning" />} />
       <SchoolCountdownCard schoolArrivalTime={todayArrivalTime(child.schoolArrivalTimes)} progress={progress} />
       <View style={styles.list}>
         {tasks.map((task) => (

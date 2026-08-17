@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, TextInput, View } from 'react-native';
-import { router } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { AppText } from '@/components/AppText';
@@ -9,6 +8,7 @@ import { Button } from '@/components/Button';
 import { useActiveChild } from '@/features/child/store';
 import { useTimetableStore } from '@/features/timetable/store';
 import { ColorPalette, hardShadow, outlineWidth, radius, spacing, useTheme } from '@/theme';
+import { goBack } from '@/utils/navigation';
 
 export default function ItemsSettings() {
   const { colors } = useTheme();
@@ -39,7 +39,7 @@ export default function ItemsSettings() {
     <Screen>
       <HeaderBar
         title="持ち物リスト"
-        onBack={() => router.back()}
+        onBack={goBack}
         right={
           <Pressable
             style={[styles.editToggle, editMode ? styles.editToggleActive : null]}

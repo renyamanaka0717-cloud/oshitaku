@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
-import { router } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { AppText } from '@/components/AppText';
@@ -10,6 +9,7 @@ import { useAuthStore } from '@/features/auth/store';
 import { useActiveChild } from '@/features/child/store';
 import { pullChildrenFromCloud, pushChildToCloud, pushPendingDeletes, SyncProgress } from '@/features/sync/syncService';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
+import { goBack } from '@/utils/navigation';
 
 export default function AccountSettings() {
   const { colors } = useTheme();
@@ -91,7 +91,7 @@ export default function AccountSettings() {
 
   return (
     <Screen>
-      <HeaderBar title="クラウド同期" onBack={() => router.back()} />
+      <HeaderBar title="クラウド同期" onBack={goBack} />
 
       {session ? (
         <Card style={styles.card}>

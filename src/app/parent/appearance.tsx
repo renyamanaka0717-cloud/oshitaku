@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { router } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { AppText } from '@/components/AppText';
 import { Card } from '@/components/Card';
 import { ColorPalette, ThemeMode, radius, spacing, useTheme } from '@/theme';
+import { goBack } from '@/utils/navigation';
 
 const OPTIONS: Array<{ mode: ThemeMode; icon: string; label: string }> = [
   { mode: 'light', icon: '☀️', label: 'ライトモード' },
@@ -19,7 +19,7 @@ export default function AppearanceSettings() {
 
   return (
     <Screen>
-      <HeaderBar title="表示設定" onBack={() => router.back()} />
+      <HeaderBar title="表示設定" onBack={goBack} />
       <AppText variant="body" color={colors.textMuted}>
         アプリの見た目を選べます
       </AppText>

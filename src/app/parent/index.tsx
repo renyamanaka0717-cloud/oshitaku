@@ -7,6 +7,7 @@ import { AppText } from '@/components/AppText';
 import { PinPad } from '@/components/PinPad';
 import { useParentAuthStore } from '@/features/parent/store';
 import { spacing, useTheme } from '@/theme';
+import { goBack } from '@/utils/navigation';
 
 const PIN_LENGTH = 4;
 
@@ -62,7 +63,7 @@ export default function ParentGate() {
 
   return (
     <Screen contentStyle={styles.content}>
-      <HeaderBar title="保護者モード" onBack={() => router.back()} />
+      <HeaderBar title="保護者モード" onBack={goBack} />
       <AppText variant="subtitle" style={styles.title}>
         {title}
       </AppText>

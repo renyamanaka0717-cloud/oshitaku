@@ -14,6 +14,7 @@ import { useRewardsStore } from '@/features/rewards/store';
 import { usePointsStore } from '@/features/points/store';
 import { Reward } from '@/db/models';
 import { colors, spacing } from '@/theme';
+import { goBack } from '@/utils/navigation';
 
 export default function RewardsScreen() {
   const allRewards = useRewardsStore((s) => s.rewards);
@@ -30,7 +31,7 @@ export default function RewardsScreen() {
 
   return (
     <Screen>
-      <HeaderBar title="ごほうび" onBack={() => router.back()} />
+      <HeaderBar title="ごほうび" onBack={goBack} />
 
       <View style={styles.statsRow}>
         <PointsBadge points={totalPoints} label="いまのポイント" variant="wide" />

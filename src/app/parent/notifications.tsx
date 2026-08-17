@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from 'react';
 import { StyleSheet, Switch, TextInput, View } from 'react-native';
-import { router } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { AppText } from '@/components/AppText';
@@ -8,6 +7,7 @@ import { Card } from '@/components/Card';
 import { useActiveChild } from '@/features/child/store';
 import { useNotificationStore } from '@/features/notifications/store';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
+import { goBack } from '@/utils/navigation';
 
 export default function NotificationsSettings() {
   const { colors } = useTheme();
@@ -25,7 +25,7 @@ export default function NotificationsSettings() {
 
   return (
     <Screen>
-      <HeaderBar title="通知設定" onBack={() => router.back()} />
+      <HeaderBar title="通知設定" onBack={goBack} />
 
       <Card style={styles.row}>
         <AppText style={styles.icon}>☀️</AppText>

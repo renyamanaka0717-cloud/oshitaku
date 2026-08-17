@@ -12,6 +12,7 @@ import { AppText } from './AppText';
 import { Button } from './Button';
 import { ConfettiBurst } from './ConfettiBurst';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
+import { Icon } from '@/theme/icons';
 import { playSound } from '@/features/sound/soundService';
 
 type PerfectDayInfo = {
@@ -74,10 +75,12 @@ export function AllCompleteCelebration({ visible, onClose, perfectDay }: Props) 
           {perfectDay ? (
             <View style={styles.specialEmojiWrap}>
               <Animated.View style={[styles.glow, glowStyle]} />
-              <AppText style={styles.specialEmoji}>🏆</AppText>
+              <Icon name="trophy" size={72} />
             </View>
           ) : (
-            <Animated.Text style={[styles.emoji, emojiStyle]}>🎉</Animated.Text>
+            <Animated.View style={emojiStyle}>
+              <Icon name="party" size={72} />
+            </Animated.View>
           )}
           <AppText variant="hero" style={styles.center}>
             {perfectDay ? 'パーフェクトな一日！✨' : 'やったね！'}
@@ -115,9 +118,6 @@ function createStyles(colors: ColorPalette) {
       width: '100%',
       maxWidth: 320,
     },
-    emoji: {
-      fontSize: 72,
-    },
     specialEmojiWrap: {
       alignItems: 'center',
       justifyContent: 'center',
@@ -131,9 +131,6 @@ function createStyles(colors: ColorPalette) {
       borderRadius: 52,
       backgroundColor: colors.accent,
       opacity: 0.4,
-    },
-    specialEmoji: {
-      fontSize: 72,
     },
     center: {
       textAlign: 'center',

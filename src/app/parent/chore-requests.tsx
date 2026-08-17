@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useRef } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
-import { router, useFocusEffect } from 'expo-router';
+import { useFocusEffect } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { AppText } from '@/components/AppText';
@@ -11,6 +11,7 @@ import { useChildStore } from '@/features/child/store';
 import { ChildAvatar } from '@/features/child/components/ChildAvatar';
 import { useChoreRequestsStore } from '@/features/chores/requestsStore';
 import { ColorPalette, spacing, useTheme } from '@/theme';
+import { goBack } from '@/utils/navigation';
 
 const POLL_INTERVAL_MS = 7000;
 
@@ -63,7 +64,7 @@ export default function ChoreRequestsScreen() {
 
   return (
     <Screen>
-      <HeaderBar title="おてつだい申請" onBack={() => router.back()} />
+      <HeaderBar title="おてつだい申請" onBack={goBack} />
 
       {pending.length === 0 ? (
         <EmptyState icon="✅" message="承認待ちの申請はありません" />
