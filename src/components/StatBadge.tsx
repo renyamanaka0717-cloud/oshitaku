@@ -104,7 +104,7 @@ function createStyles(colors: ColorPalette, isNeutral: boolean) {
       gap: spacing.sm,
     },
     textColWide: {
-      alignItems: 'flex-start',
+      alignItems: 'center',
     },
     icon: {
       fontSize: 26,
