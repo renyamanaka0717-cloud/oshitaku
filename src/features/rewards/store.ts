@@ -42,7 +42,7 @@ export const useRewardsStore = create<RewardsState>((set, get) => ({
   exchange: async (reward: Reward) => {
     const points = usePointsStore.getState();
     if (points.total < reward.pointCost) return false;
-    await points.spend(reward.childId, todayKey(), reward.pointCost, `${reward.name}と交換`);
+    await points.spend(reward.childId, todayKey(), reward.pointCost, `${reward.name}とこうかん`);
     return true;
   },
 }));
