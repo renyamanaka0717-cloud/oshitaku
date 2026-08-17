@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { StyleSheet, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
@@ -8,7 +8,7 @@ import { Card } from '@/components/Card';
 import { Button } from '@/components/Button';
 import { useActiveChild } from '@/features/child/store';
 import { useTimetableStore } from '@/features/timetable/store';
-import { ColorPalette, radius, spacing, useTheme } from '@/theme';
+import { ColorPalette, hardShadow, outlineWidth, radius, spacing, useTheme } from '@/theme';
 
 export default function ItemsSettings() {
   const { colors } = useTheme();
@@ -22,6 +22,7 @@ export default function ItemsSettings() {
 
   const [name, setName] = useState('');
   const [icon, setIcon] = useState('📦');
+  const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
     if (child) load(child.id);
@@ -36,7 +37,20 @@ export default function ItemsSettings() {
 
   return (
     <Screen>
-      <HeaderBar title="持ち物リスト" onBack={() => router.back()} />
+      <HeaderBar
+        title="持ち物リスト"
+        onBack={() => router.back()}
+        right={
+          <Pressable
+            style={[styles.editToggle, editMode ? styles.editToggleActive : null]}
+            onPress={() => setEditMode((v) => !v)}
+          >
+            <AppText variant="caption" color={editMode ? colors.white : colors.text}>
+              {editMode ? '完了' : '編集'}
+            </AppText>
+          </Pressable>
+        }
+      />
 
       <View style={styles.list}>
         {items.map((item) => (
@@ -52,7 +66,9 @@ export default function ItemsSettings() {
               onChangeText={(v) => updateItem(item.id, { name: v })}
               style={styles.nameInput}
             />
-            <Button label="削除" variant="danger" onPress={() => deleteItem(item.id)} />
+            {editMode ? (
+              <Button label="削除" variant="danger" onPress={() => deleteItem(item.id)} />
+            ) : null}
           </Card>
         ))}
       </View>
@@ -77,6 +93,19 @@ export default function ItemsSettings() {
 
 function createStyles(colors: ColorPalette) {
   return StyleSheet.create({
+    editToggle: {
+      paddingVertical: spacing.xs,
+      paddingHorizontal: spacing.md,
+      borderRadius: radius.round,
+      backgroundColor: colors.surfaceAlt,
+      borderWidth: outlineWidth - 1,
+      borderColor: colors.black,
+      borderBottomWidth: outlineWidth + hardShadow.offsetSm,
+      borderRightWidth: outlineWidth + hardShadow.offsetSm,
+    },
+    editToggleActive: {
+      backgroundColor: colors.primary,
+    },
     list: {
       gap: spacing.sm,
     },
