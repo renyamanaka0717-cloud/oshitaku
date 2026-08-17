@@ -4,7 +4,6 @@ import { router } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { AppText } from '@/components/AppText';
-import { Button } from '@/components/Button';
 import { SectionHeader } from '@/components/SectionHeader';
 import { SubjectPickerModal } from '@/features/timetable/components/SubjectPickerModal';
 import { TimetableSetModal } from '@/features/timetable/components/TimetableSetModal';
@@ -127,12 +126,12 @@ export default function TimetableSettings() {
           </Pressable>
         </View>
 
-        <Button
-          label="教科・持ち物を登録する"
-          icon="🖍️"
-          variant="secondary"
-          onPress={() => router.push('/parent/subjects')}
-        />
+        <Pressable style={styles.subjectsButton} onPress={() => router.push('/parent/subjects')}>
+          <AppText style={styles.subjectsButtonIcon}>🖍️</AppText>
+          <AppText variant="subtitle" color={colors.white}>
+            教科・持ち物を登録する
+          </AppText>
+        </Pressable>
 
         <View style={styles.section}>
           <SectionHeader title="時間割" icon="📅" />
@@ -314,6 +313,23 @@ function createStyles(colors: ColorPalette) {
       borderColor: colors.black,
       borderBottomWidth: outlineWidth + hardShadow.offset,
       borderRightWidth: outlineWidth + hardShadow.offset,
+    },
+    subjectsButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: spacing.sm,
+      borderRadius: radius.md,
+      paddingVertical: spacing.md,
+      paddingHorizontal: spacing.lg,
+      backgroundColor: colors.secondary,
+      borderWidth: outlineWidth,
+      borderColor: colors.black,
+      borderBottomWidth: outlineWidth + hardShadow.offset,
+      borderRightWidth: outlineWidth + hardShadow.offset,
+    },
+    subjectsButtonIcon: {
+      fontSize: 18,
     },
     dayTabs: {
       flexDirection: 'row',

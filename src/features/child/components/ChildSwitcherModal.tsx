@@ -55,12 +55,15 @@ function createStyles(colors: ColorPalette) {
     backdrop: {
       flex: 1,
       backgroundColor: 'rgba(0,0,0,0.35)',
-      justifyContent: 'flex-end',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: spacing.lg,
     },
     sheet: {
+      width: '100%',
+      maxWidth: 400,
       backgroundColor: colors.surface,
-      borderTopLeftRadius: radius.xl,
-      borderTopRightRadius: radius.xl,
+      borderRadius: radius.xl,
       padding: spacing.lg,
       gap: spacing.md,
     },
