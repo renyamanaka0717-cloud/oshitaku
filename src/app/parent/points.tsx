@@ -7,14 +7,19 @@ import { AppText } from '@/components/AppText';
 import { Card } from '@/components/Card';
 import { useActiveChild } from '@/features/child/store';
 import { usePointsStore } from '@/features/points/store';
-import { ColorPalette, radius, spacing, useTheme } from '@/theme';
+import { ColorPalette, outlineWidth, radius, spacing, useTheme } from '@/theme';
 
-const FIELDS: Array<{ key: 'morningComplete' | 'eveningComplete' | 'onTime' | 'noForgottenItems' | 'perfectDayBonus'; label: string; icon: string }> = [
-  { key: 'morningComplete', label: '朝完了', icon: '☀️' },
-  { key: 'eveningComplete', label: '夜完了', icon: '🌙' },
-  { key: 'onTime', label: '時間内達成', icon: '⏰' },
-  { key: 'noForgottenItems', label: '忘れ物ゼロ', icon: '🎒' },
-  { key: 'perfectDayBonus', label: '朝＋夜パーフェクト', icon: '✨' },
+const FIELDS: Array<{
+  key: 'morningComplete' | 'eveningComplete' | 'onTime' | 'noForgottenItems' | 'perfectDayBonus';
+  label: string;
+  icon: string;
+  tint: keyof ColorPalette;
+}> = [
+  { key: 'morningComplete', label: '朝完了', icon: '☀️', tint: 'yellow' },
+  { key: 'eveningComplete', label: '夜完了', icon: '🌙', tint: 'purple' },
+  { key: 'onTime', label: '時間内達成', icon: '⏰', tint: 'blue' },
+  { key: 'noForgottenItems', label: '忘れ物ゼロ', icon: '🎒', tint: 'green' },
+  { key: 'perfectDayBonus', label: '朝＋夜パーフェクト', icon: '✨', tint: 'pink' },
 ];
 
 export default function PointsSettings() {
@@ -40,20 +45,26 @@ export default function PointsSettings() {
 
       {FIELDS.map((field) => (
         <Card key={field.key} style={styles.row}>
-          <AppText style={styles.icon}>{field.icon}</AppText>
+          <View style={[styles.iconBox, { backgroundColor: colors[field.tint] as string }]}>
+            <AppText style={styles.icon}>{field.icon}</AppText>
+          </View>
           <AppText variant="subtitle" style={styles.label}>
             {field.label}
           </AppText>
-          <TextInput
-            value={String(rule[field.key])}
-            onChangeText={(v) => {
-              const n = Number(v.replace(/[^0-9]/g, ''));
-              updateRule({ [field.key]: Number.isNaN(n) ? 0 : n });
-            }}
-            keyboardType="number-pad"
-            style={styles.input}
-          />
-          <AppText variant="caption">pt</AppText>
+          <View style={styles.inputWrap}>
+            <TextInput
+              value={String(rule[field.key])}
+              onChangeText={(v) => {
+                const n = Number(v.replace(/[^0-9]/g, ''));
+                updateRule({ [field.key]: Number.isNaN(n) ? 0 : n });
+              }}
+              keyboardType="number-pad"
+              style={styles.input}
+            />
+            <AppText variant="caption" color={colors.textMuted}>
+              pt
+            </AppText>
+          </View>
         </Card>
       ))}
     </Screen>
@@ -65,21 +76,38 @@ function createStyles(colors: ColorPalette) {
     row: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: spacing.sm,
+      gap: spacing.md,
+    },
+    iconBox: {
+      width: 48,
+      height: 48,
+      borderRadius: radius.md,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth: outlineWidth - 1,
+      borderColor: colors.black,
     },
     icon: {
-      fontSize: 24,
+      fontSize: 22,
     },
     label: {
       flex: 1,
     },
+    inputWrap: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
+    },
     input: {
-      width: 64,
+      width: 60,
       textAlign: 'center',
       backgroundColor: colors.surfaceAlt,
       borderRadius: radius.sm,
-      padding: spacing.sm,
+      borderWidth: outlineWidth - 1,
+      borderColor: colors.border,
+      paddingVertical: spacing.sm,
       fontSize: 18,
+      fontWeight: '700',
       color: colors.text,
     },
   });

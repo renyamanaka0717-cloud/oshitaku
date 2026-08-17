@@ -35,7 +35,7 @@ export function ChoreDetailModal({ visible, chore, onComplete, onClose }: Props)
           {confirming ? (
             <>
               <AppText variant="subtitle" style={styles.center}>
-                {chore.pointValue}ポイントもらう？
+                「{chore.name}」を申請する？
               </AppText>
               <View style={styles.confirmRow}>
                 <Button
@@ -45,7 +45,7 @@ export function ChoreDetailModal({ visible, chore, onComplete, onClose }: Props)
                   style={styles.confirmButton}
                 />
                 <Button
-                  label="した！"
+                  label="申請する"
                   onPress={() => {
                     onComplete();
                     handleClose();
@@ -67,7 +67,7 @@ export function ChoreDetailModal({ visible, chore, onComplete, onClose }: Props)
                   ⭐ +{chore.pointValue}pt
                 </AppText>
               </View>
-              <Button label="した！" onPress={() => setConfirming(true)} style={styles.fullButton} />
+              <Button label="申請する" onPress={() => setConfirming(true)} style={styles.fullButton} />
             </>
           )}
         </Pressable>
