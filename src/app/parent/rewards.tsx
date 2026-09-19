@@ -3,16 +3,17 @@ import { Image, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { AppText } from '@/components/AppText';
-import { Card } from '@/components/Card';
 import { Button } from '@/components/Button';
+import { Card } from '@/components/Card';
 import { SectionHeader } from '@/components/SectionHeader';
 import { EmptyState } from '@/components/EmptyState';
 import { ExpandableCard } from '@/components/ExpandableCard';
+import { AddRewardModal } from '@/features/rewards/components/AddRewardModal';
 import { useActiveChild } from '@/features/child/store';
 import { useRewardsStore } from '@/features/rewards/store';
 import { usePointsStore } from '@/features/points/store';
 import { pickRewardImage } from '@/features/rewards/imagePicker';
-import { ColorPalette, radius, spacing, useTheme } from '@/theme';
+import { ColorPalette, hardShadow, outlineWidth, radius, spacing, useTheme } from '@/theme';
 import { goBack } from '@/utils/navigation';
 
 export default function RewardsSettings() {
@@ -26,30 +27,11 @@ export default function RewardsSettings() {
   const deleteReward = useRewardsStore((s) => s.deleteReward);
   const history = usePointsStore((s) => s.history);
 
-  const [name, setName] = useState('');
-  const [icon, setIcon] = useState('🎁');
-  const [description, setDescription] = useState('');
-  const [cost, setCost] = useState('50');
-  const [imageUri, setImageUri] = useState<string | null>(null);
+  const [addModalVisible, setAddModalVisible] = useState(false);
 
   useEffect(() => {
     if (child) load(child.id);
   }, [child, load]);
-
-  const handleAdd = async () => {
-    if (!name.trim()) return;
-    const pointCost = Number(cost) || 0;
-    await createReward({ name: name.trim(), icon, description: description.trim(), imageUri, pointCost });
-    setName('');
-    setDescription('');
-    setCost('50');
-    setImageUri(null);
-  };
-
-  const handlePickImageForNew = async () => {
-    const uri = await pickRewardImage();
-    if (uri) setImageUri(uri);
-  };
 
   const handlePickImageForExisting = async (rewardId: string) => {
     const uri = await pickRewardImage();
@@ -63,7 +45,17 @@ export default function RewardsSettings() {
 
   return (
     <Screen>
-      <HeaderBar title="ごほうび設定" onBack={goBack} />
+      <HeaderBar
+        title="ごほうび設定"
+        onBack={goBack}
+        right={
+          <Pressable style={styles.addButton} onPress={() => setAddModalVisible(true)}>
+            <AppText variant="caption" color={colors.white}>
+              ＋ 追加
+            </AppText>
+          </Pressable>
+        }
+      />
 
       <View style={styles.section}>
         <SectionHeader title="ごほうび一覧" icon="🎁" />
@@ -124,41 +116,6 @@ export default function RewardsSettings() {
             <Button label="削除" variant="danger" size="md" onPress={() => deleteReward(reward.id)} />
           </ExpandableCard>
         ))}
-
-        <Card style={styles.addCard}>
-          <AppText variant="subtitle">ごほうびを追加</AppText>
-          <View style={styles.row}>
-            <Pressable onPress={handlePickImageForNew} style={styles.imageBox}>
-              {imageUri ? (
-                <Image source={{ uri: imageUri }} style={styles.image} resizeMode="cover" />
-              ) : (
-                <AppText style={styles.imagePlaceholder}>{icon}</AppText>
-              )}
-            </Pressable>
-            <TextInput value={icon} onChangeText={setIcon} style={styles.iconInput} maxLength={2} />
-            <TextInput
-              value={name}
-              onChangeText={setName}
-              placeholder="ごほうびの名前"
-              placeholderTextColor={colors.textMuted}
-              style={styles.nameInput}
-            />
-            <TextInput
-              value={cost}
-              onChangeText={setCost}
-              style={styles.costInput}
-              keyboardType="number-pad"
-            />
-          </View>
-          <TextInput
-            value={description}
-            onChangeText={setDescription}
-            placeholder="説明（任意）"
-            placeholderTextColor={colors.textMuted}
-            style={styles.descriptionInput}
-          />
-          <Button label="追加する" onPress={handleAdd} disabled={!name.trim()} />
-        </Card>
       </View>
 
       <View style={styles.section}>
@@ -174,12 +131,28 @@ export default function RewardsSettings() {
           ))
         )}
       </View>
+
+      <AddRewardModal
+        visible={addModalVisible}
+        onSave={(input) => createReward(input)}
+        onClose={() => setAddModalVisible(false)}
+      />
     </Screen>
   );
 }
 
 function createStyles(colors: ColorPalette) {
   return StyleSheet.create({
+    addButton: {
+      paddingVertical: spacing.xs,
+      paddingHorizontal: spacing.md,
+      borderRadius: radius.round,
+      backgroundColor: colors.primary,
+      borderWidth: outlineWidth - 1,
+      borderColor: colors.black,
+      borderBottomWidth: outlineWidth + hardShadow.offsetSm,
+      borderRightWidth: outlineWidth + hardShadow.offsetSm,
+    },
     section: {
       gap: spacing.sm,
     },
@@ -233,6 +206,7 @@ function createStyles(colors: ColorPalette) {
     },
     nameInput: {
       flex: 1,
+      minWidth: 0,
       backgroundColor: colors.surfaceAlt,
       borderRadius: radius.sm,
       padding: spacing.sm,
