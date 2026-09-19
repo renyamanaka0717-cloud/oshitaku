@@ -134,7 +134,7 @@ export default function ChildHome() {
             title="おてつだい"
             subtitle="できることをみる"
             icon={<Icon name="broom" size={28} />}
-            tint={colors.mint}
+            tint={colors.green}
             onPress={() => router.push('/child/chores')}
           />
         </View>
@@ -158,14 +158,16 @@ export default function ChildHome() {
             title="ごほうび"
             subtitle="どんなごほうびがあるかな？"
             icon={<Icon name="gift" size={28} />}
-            tint={colors.pink}
+            tint={colors.surface}
+            badgeTint={colors.pink}
             onPress={() => router.push('/child/rewards')}
           />
           <LinkRowCard
             title="カレンダー"
             subtitle="たのしみなよていをみる"
             icon={<AppText style={styles.calendarIcon}>📅</AppText>}
-            tint={colors.blue}
+            tint={colors.surface}
+            badgeTint={colors.blue}
             onPress={() => router.push('/child/calendar')}
           />
         </View>

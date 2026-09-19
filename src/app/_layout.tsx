@@ -15,11 +15,11 @@ import { lightColors, ThemeProvider, useTheme } from '@/theme';
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
 function RootLayoutInner() {
-  const { colors, scheme } = useTheme();
+  const { colors } = useTheme();
   useAutoSync();
   return (
     <SafeAreaProvider>
-      <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
+      <StatusBar style="dark" />
       <Stack
         screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background } }}
       />
