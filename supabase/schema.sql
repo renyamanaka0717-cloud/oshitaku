@@ -255,6 +255,20 @@ create table reward_request (
 create index idx_reward_request_child on reward_request(child_id);
 create index idx_reward_request_child_status on reward_request(child_id, status);
 
+-- ── calendar_event (たのしみな予定) ──────────────────────────────────────
+create table calendar_event (
+  id text primary key,
+  child_id text not null references child(id) on delete cascade,
+  title text not null,
+  date text not null,
+  icon text not null,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  deleted_at timestamptz
+);
+create index idx_calendar_event_child on calendar_event(child_id);
+create index idx_calendar_event_child_date on calendar_event(child_id, date);
+
 -- ── point_rule ────────────────────────────────────────────────────────────
 create table point_rule (
   child_id text primary key references child(id) on delete cascade,
@@ -301,7 +315,7 @@ begin
   for t in select unnest(array[
     'parent_profile','child','timetable_set','subject','item','subject_item',
     'timetable_entry','morning_task','evening_task','daily_task_log',
-    'day_completion','reward','chore','chore_request','reward_request','point_rule','point_history',
+    'day_completion','reward','chore','chore_request','reward_request','calendar_event','point_rule','point_history',
     'notification_setting'
   ])
   loop
@@ -399,6 +413,11 @@ create policy "parent manages own reward_request" on reward_request
   for all using (exists (select 1 from child c where c.id = reward_request.child_id and c.parent_id = auth.uid()))
   with check (exists (select 1 from child c where c.id = reward_request.child_id and c.parent_id = auth.uid()));
 alter table reward_request enable row level security;
+
+create policy "parent manages own calendar_event" on calendar_event
+  for all using (exists (select 1 from child c where c.id = calendar_event.child_id and c.parent_id = auth.uid()))
+  with check (exists (select 1 from child c where c.id = calendar_event.child_id and c.parent_id = auth.uid()));
+alter table calendar_event enable row level security;
 
 create policy "parent manages own point_rule" on point_rule
   for all using (exists (select 1 from child c where c.id = point_rule.child_id and c.parent_id = auth.uid()))

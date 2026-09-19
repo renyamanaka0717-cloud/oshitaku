@@ -304,6 +304,22 @@ async function migrate(db: SQLite.SQLiteDatabase) {
     version = 11;
   }
 
+  if (version < 12) {
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS calendar_event (
+        id TEXT PRIMARY KEY NOT NULL,
+        childId TEXT NOT NULL,
+        title TEXT NOT NULL,
+        date TEXT NOT NULL,
+        icon TEXT NOT NULL,
+        createdAt TEXT NOT NULL
+      );
+      CREATE INDEX IF NOT EXISTS idx_calendar_event_child_date
+        ON calendar_event (childId, date);
+    `);
+    version = 12;
+  }
+
   await db.execAsync(`PRAGMA user_version = ${version}`);
 }
 

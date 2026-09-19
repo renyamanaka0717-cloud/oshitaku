@@ -4,7 +4,6 @@ import { router, useFocusEffect } from 'expo-router';
 import { Redirect } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { AppText } from '@/components/AppText';
-import { BounceOnChange } from '@/components/BounceOnChange';
 import { NavIconLink } from '@/components/NavIconLink';
 import { FadeInUp } from '@/components/FadeInUp';
 import { useChildStore, useActiveChild } from '@/features/child/store';
@@ -12,10 +11,13 @@ import { ChildSwitcherModal } from '@/features/child/components/ChildSwitcherMod
 import { GreetingHeader } from '@/features/home/components/GreetingHeader';
 import { TodayBonusCard, BonusBreakdownItem } from '@/features/home/components/TodayBonusCard';
 import { PrepLinkCard } from '@/features/home/components/PrepLinkCard';
+import { HeroPrepCard } from '@/features/home/components/HeroPrepCard';
+import { PointsProgressCard } from '@/features/home/components/PointsProgressCard';
 import { useItemsStore } from '@/features/items/store';
 import { useMorningStore } from '@/features/morning/store';
 import { useEveningStore } from '@/features/evening/store';
 import { usePointsStore } from '@/features/points/store';
+import { useRewardsStore } from '@/features/rewards/store';
 import { getSuggestedMode } from '@/features/home/timeMode';
 import { Icon } from '@/theme/icons';
 import { ColorPalette, spacing, useTheme } from '@/theme';
@@ -54,6 +56,13 @@ export default function ChildHome() {
 
   const totalPoints = usePointsStore((s) => s.total);
   const rule = usePointsStore((s) => s.rule);
+  const rewards = useRewardsStore((s) => s.rewards);
+
+  const nextReward = useMemo(() => {
+    const active = rewards.filter((r) => r.isActive);
+    if (active.length === 0) return null;
+    return [...active].sort((a, b) => a.pointCost - b.pointCost)[0];
+  }, [rewards]);
 
   const bonusPoints = useMemo(() => {
     if (!rule) return 0;
@@ -88,63 +97,48 @@ export default function ChildHome() {
   const morningDone = morningTasks.filter((t) => morningChecked[t.id]).length;
   const eveningDone = eveningTasks.filter((t) => eveningChecked[t.id]).length;
 
+  const heroMode = suggestedMode ?? (!morningComplete ? 'morning' : 'evening');
+  const demotedMode = heroMode === 'morning' ? 'evening' : 'morning';
+
   return (
     <Screen>
       <GreetingHeader child={child} onPressAvatar={() => setSwitcherVisible(true)} />
 
       <FadeInUp delay={40}>
-        <View style={styles.prepRow}>
-          <PrepLinkCard
-            title="朝のおしたく"
-            subtitle={morningComplete ? 'できた！✨' : `${morningDone}/${morningTasks.length} できた`}
-            icon={<Icon name="sun" size={52} />}
-            tint={colors.yellow}
-            topBadge={
-              suggestedMode === 'morning' ? (
-                <AppText variant="caption" color={colors.white}>
-                  いまだよ！
-                </AppText>
-              ) : undefined
-            }
-            cornerBadge={morningComplete ? <AppText style={styles.check}>✓</AppText> : undefined}
-            onPress={() => router.push('/child/morning')}
-          />
-          <PrepLinkCard
-            title="夜のおしたく"
-            subtitle={eveningComplete ? 'できた！✨' : `${eveningDone}/${eveningTasks.length} できた`}
-            icon={<Icon name="moon" size={52} />}
-            tint={colors.purple}
-            topBadge={
-              suggestedMode === 'evening' ? (
-                <AppText variant="caption" color={colors.white}>
-                  いまだよ！
-                </AppText>
-              ) : undefined
-            }
-            cornerBadge={eveningComplete ? <AppText style={styles.check}>✓</AppText> : undefined}
-            onPress={() => router.push('/child/evening')}
-          />
-        </View>
+        <HeroPrepCard
+          mode={heroMode}
+          tasks={heroMode === 'morning' ? morningTasks : eveningTasks}
+          checked={heroMode === 'morning' ? morningChecked : eveningChecked}
+          isSuggested={suggestedMode === heroMode}
+          onPress={() => router.push(heroMode === 'morning' ? '/child/morning' : '/child/evening')}
+        />
       </FadeInUp>
 
       <FadeInUp delay={100}>
-        <View style={styles.statsRow}>
+        <View style={styles.demotedRow}>
+          {demotedMode === 'morning' ? (
+            <PrepLinkCard
+              title="朝のおしたく"
+              subtitle={morningComplete ? 'できた！✨' : `${morningDone}/${morningTasks.length} できた`}
+              icon={<Icon name="sun" size={40} />}
+              tint={colors.yellow}
+              cornerBadge={morningComplete ? <AppText style={styles.check}>✓</AppText> : undefined}
+              onPress={() => router.push('/child/morning')}
+            />
+          ) : (
+            <PrepLinkCard
+              title="夜のおしたく"
+              subtitle={eveningComplete ? 'できた！✨' : `${eveningDone}/${eveningTasks.length} できた`}
+              icon={<Icon name="moon" size={40} />}
+              tint={colors.purple}
+              cornerBadge={eveningComplete ? <AppText style={styles.check}>✓</AppText> : undefined}
+              onPress={() => router.push('/child/evening')}
+            />
+          )}
           <PrepLinkCard
             title="おてつだい"
-            icon={<Icon name="broom" size={52} />}
+            icon={<Icon name="broom" size={40} />}
             tint={colors.mint}
-            onPress={() => router.push('/child/chores')}
-          />
-          <PrepLinkCard
-            title={
-              <BounceOnChange watch={totalPoints}>
-                <AppText variant="subtitle" color={colors.black}>
-                  {totalPoints} ポイント
-                </AppText>
-              </BounceOnChange>
-            }
-            icon={<Icon name="coin" size={52} />}
-            tint={colors.cream}
             onPress={() => router.push('/child/chores')}
           />
         </View>
@@ -155,10 +149,36 @@ export default function ChildHome() {
       </FadeInUp>
 
       <FadeInUp delay={220}>
+        <PointsProgressCard
+          points={totalPoints}
+          nextReward={nextReward}
+          onPress={() => router.push('/child/rewards')}
+        />
+      </FadeInUp>
+
+      <FadeInUp delay={280}>
+        <View style={styles.featureRow}>
+          <PrepLinkCard
+            title="ごほうび"
+            icon={<Icon name="gift" size={40} />}
+            tint={colors.pink}
+            onPress={() => router.push('/child/rewards')}
+          />
+          <PrepLinkCard
+            title="カレンダー"
+            subtitle="たのしみなよてい"
+            icon={<AppText style={styles.calendarIcon}>📅</AppText>}
+            tint={colors.blue}
+            onPress={() => router.push('/child/calendar')}
+          />
+        </View>
+      </FadeInUp>
+
+      <FadeInUp delay={340}>
         <View style={styles.linkRow}>
-          <NavIconLink icon="gift" label="ごほうび" tint={colors.pink} onPress={() => router.push('/child/rewards')} />
+          <NavIconLink icon="house" label="ホーム" tint={colors.blue} onPress={() => {}} />
           <NavIconLink icon="chart" label="とうけい" tint={colors.secondary} onPress={() => router.push('/child/stats')} />
-          <NavIconLink icon="gear" label="設定" tint={colors.blue} onPress={() => router.push('/parent/dashboard')} />
+          <NavIconLink icon="gear" label="設定" tint={colors.yellow} onPress={() => router.push('/parent/dashboard')} />
         </View>
       </FadeInUp>
 
@@ -185,11 +205,11 @@ export default function ChildHome() {
 
 function createStyles(colors: ColorPalette) {
   return StyleSheet.create({
-    prepRow: {
+    demotedRow: {
       flexDirection: 'row',
       gap: spacing.md,
     },
-    statsRow: {
+    featureRow: {
       flexDirection: 'row',
       gap: spacing.md,
     },
@@ -206,6 +226,9 @@ function createStyles(colors: ColorPalette) {
       fontSize: 20,
       color: colors.success,
       fontWeight: '900',
+    },
+    calendarIcon: {
+      fontSize: 40,
     },
   });
 }

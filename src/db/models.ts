@@ -148,6 +148,15 @@ export type RewardRequest = {
   notifiedAt: string | null;
 };
 
+export type CalendarEvent = {
+  id: string;
+  childId: string;
+  title: string;
+  date: string;
+  icon: string;
+  createdAt: string;
+};
+
 export type PointHistoryType =
   | 'morning_complete'
   | 'evening_complete'

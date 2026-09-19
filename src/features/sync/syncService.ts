@@ -147,6 +147,11 @@ const CHILD_SCOPED_TABLES: TableSync[] = [
     ],
   },
   {
+    table: 'calendar_event',
+    onConflict: 'id',
+    columns: ['id', 'childId', 'title', 'date', 'icon', 'createdAt'],
+  },
+  {
     table: 'notification_setting',
     onConflict: 'child_id',
     columns: [

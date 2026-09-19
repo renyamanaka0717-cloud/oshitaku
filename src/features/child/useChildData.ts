@@ -8,6 +8,7 @@ import { useRewardsStore } from '@/features/rewards/store';
 import { useRewardRequestsStore } from '@/features/rewards/requestsStore';
 import { useChoresStore } from '@/features/chores/store';
 import { useChoreRequestsStore } from '@/features/chores/requestsStore';
+import { useCalendarStore } from '@/features/calendar/store';
 import { useStreakStore } from '@/features/home/streakStore';
 import { useChildStore } from '@/features/child/store';
 import { notificationSettingRepository } from '@/db/repositories';
@@ -23,6 +24,7 @@ export function useChildData(childId: string | null | undefined) {
   const loadRewardRequests = useRewardRequestsStore((s) => s.load);
   const loadChores = useChoresStore((s) => s.load);
   const loadChoreRequests = useChoreRequestsStore((s) => s.load);
+  const loadCalendar = useCalendarStore((s) => s.load);
   const loadStreak = useStreakStore((s) => s.load);
 
   useEffect(() => {
@@ -38,6 +40,7 @@ export function useChildData(childId: string | null | undefined) {
         loadRewardRequests(childId),
         loadChores(childId),
         loadChoreRequests(childId),
+        loadCalendar(childId),
         loadStreak(childId),
       ]);
 
@@ -58,6 +61,7 @@ export function useChildData(childId: string | null | undefined) {
     loadRewardRequests,
     loadChores,
     loadChoreRequests,
+    loadCalendar,
     loadStreak,
   ]);
 }
