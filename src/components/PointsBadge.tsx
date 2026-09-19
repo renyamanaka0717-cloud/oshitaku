@@ -42,16 +42,16 @@ export function PointsBadge({ points, label = 'ポイント', color, onPress, va
   );
 
   const content = wide ? (
-    <View style={styles.innerWide}>
-      {coin}
-      <View style={styles.textColWide}>
+    <View style={styles.wideStack}>
+      <View style={styles.innerWide}>
+        {coin}
         <AppText variant="hero" style={styles.value} numberOfLines={1}>
           {points}
         </AppText>
-        <AppText variant="caption" style={styles.label}>
-          {label}
-        </AppText>
       </View>
+      <AppText variant="caption" style={styles.label}>
+        {label}
+      </AppText>
     </View>
   ) : (
     <View style={styles.inner}>
@@ -109,8 +109,9 @@ function createStyles(colors: ColorPalette, isNeutral: boolean) {
       alignItems: 'center',
       gap: 14,
     },
-    textColWide: {
+    wideStack: {
       alignItems: 'center',
+      gap: 2,
     },
     coinWrap: {
       position: 'relative',
