@@ -23,6 +23,11 @@ export function todayKey(): string {
   return toDateKey(new Date());
 }
 
+export function parseDateKey(dateKey: string): Date {
+  const [y, m, d] = dateKey.split('-').map(Number);
+  return new Date(y, (m || 1) - 1, d || 1);
+}
+
 export function tomorrowKey(): string {
   const d = new Date();
   d.setDate(d.getDate() + 1);

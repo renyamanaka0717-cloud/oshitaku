@@ -45,6 +45,7 @@ const SECTIONS: MenuSection[] = [
       { href: '/parent/timetable', icon: '📚', label: '時間割・教科', description: '曜日ごとの時間割と教科の持ち物' },
       { href: '/parent/items', icon: '🎒', label: '持ち物リスト', description: '持ち物の登録' },
       { href: '/parent/tasks', icon: '📝', label: '朝・夜タスク', description: 'チェックリストの内容' },
+      { href: '/parent/calendar', icon: '📅', label: 'カレンダー設定', description: 'たのしみな予定の登録' },
     ],
   },
   {

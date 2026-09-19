@@ -9,6 +9,7 @@ export * as rewardRepository from './rewardRepository';
 export * as choreRepository from './choreRepository';
 export * as choreRequestRepository from './choreRequestRepository';
 export * as rewardRequestRepository from './rewardRequestRepository';
+export * as calendarEventRepository from './calendarEventRepository';
 export * as pointHistoryRepository from './pointHistoryRepository';
 export * as notificationSettingRepository from './notificationSettingRepository';
 export * as pointRuleRepository from './pointRuleRepository';
