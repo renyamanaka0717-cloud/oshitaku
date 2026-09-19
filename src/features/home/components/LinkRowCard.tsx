@@ -9,20 +9,23 @@ type Props = {
   subtitle: string;
   icon: React.ReactNode;
   tint: string;
+  badgeTint?: string;
   onPress: () => void;
 };
 
 // A half-width rectangular link card: icon badge + title/subtitle on the
 // left, a chevron on the right — used for the demoted prep/chores row and
 // the reward/calendar row on the home screen, distinct from the square
-// PrepLinkCard tile shape.
-export function LinkRowCard({ title, subtitle, icon, tint, onPress }: Props) {
+// PrepLinkCard tile shape. On a vivid card tint the badge is a translucent
+// white circle; on a neutral (white/cream) card, pass badgeTint for a
+// colored accent circle instead, since translucent white disappears there.
+export function LinkRowCard({ title, subtitle, icon, tint, badgeTint, onPress }: Props) {
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
 
   return (
     <PressableCard backgroundColor={tint} onPress={onPress} style={styles.card}>
-      <View style={styles.iconBadge}>{icon}</View>
+      <View style={[styles.iconBadge, badgeTint ? { backgroundColor: badgeTint } : null]}>{icon}</View>
       <View style={styles.textCol}>
         <AppText variant="subtitle" color={colors.black} numberOfLines={1}>
           {title}

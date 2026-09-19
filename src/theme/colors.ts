@@ -12,6 +12,7 @@ export type ColorPalette = {
 
   pink: string;
   purple: string;
+  purpleDark: string;
   blue: string;
   green: string;
   yellow: string;
@@ -39,9 +40,7 @@ export type ColorPalette = {
 };
 
 // "black" doubles as the bold comic-outline / hard-shadow ink used by the
-// pop-art component style (Button, Card, chips). It intentionally stays
-// the same near-black in both themes — the vivid accent colors it outlines
-// don't invert either, so the ink needs to keep working against both.
+// pop-art component style (Button, Card, chips).
 const INK = '#8A6A55';
 
 export const lightColors: ColorPalette = {
@@ -58,6 +57,7 @@ export const lightColors: ColorPalette = {
 
   pink: '#FFAB91',
   purple: '#C5B5F0',
+  purpleDark: '#7C6FC4',
   blue: '#9AC7EE',
   green: '#8DDB6E',
   yellow: '#F8CC55',
@@ -85,48 +85,8 @@ export const lightColors: ColorPalette = {
   black: INK,
 };
 
-export const darkColors: ColorPalette = {
-  background: '#191410',
-  surface: '#241C16',
-  surfaceAlt: '#332720',
-
-  primary: '#FF8B70',
-  primaryDark: '#FF6A4D',
-  secondary: '#7FCFC2',
-  secondaryDark: '#4FA396',
-  accent: '#E7BE7A',
-  accentDark: '#C99A4E',
-
-  pink: '#FFAB91',
-  purple: '#C5B5F0',
-  blue: '#9AC7EE',
-  green: '#8DDB6E',
-  yellow: '#F8CC55',
-  cream: '#FFF7D6',
-  mint: '#E8FFF2',
-
-  text: '#F3E9DE',
-  textMuted: '#B5A395',
-  textOnPrimary: '#FFFFFF',
-
-  border: '#332720',
-
-  success: '#3DC47E',
-  warning: '#FFB43D',
-  danger: '#E8613B',
-
-  timeSafe: '#3DC47E',
-  timeWarn: '#FFB43D',
-  timeDanger: '#E8613B',
-
-  shadow: '#000000',
-
-  white: '#FFFFFF',
-  black: INK,
-};
-
-// Backwards-compatible static export (light palette) for call sites that
-// have not been migrated to useTheme() yet.
+// Backwards-compatible static export for call sites that have not been
+// migrated to useTheme() yet. The app is light-mode only.
 export const colors = lightColors;
 
 export const subjectPalette = [

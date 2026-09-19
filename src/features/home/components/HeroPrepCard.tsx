@@ -26,6 +26,7 @@ const MODE_CONTENT: Record<'morning' | 'evening', { icon: IconName; title: strin
 export function HeroPrepCard({ mode, tasks, checked, isSuggested, onPress }: Props) {
   const { colors } = useTheme();
   const tint = mode === 'morning' ? colors.yellow : colors.purple;
+  const ctaColor = mode === 'morning' ? colors.primaryDark : colors.purpleDark;
   const styles = useMemo(() => createStyles(colors), [colors]);
   const { icon, title } = MODE_CONTENT[mode];
 
@@ -106,7 +107,7 @@ export function HeroPrepCard({ mode, tasks, checked, isSuggested, onPress }: Pro
         ) : null}
 
         <View style={styles.ctaWrap}>
-          <Button label={ctaLabel} size="lg" onPress={onPress} />
+          <Button label={ctaLabel} size="lg" onPress={onPress} style={{ backgroundColor: ctaColor }} />
         </View>
       </PressableCard>
     </View>

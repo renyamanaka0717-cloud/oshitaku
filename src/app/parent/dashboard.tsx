@@ -65,12 +65,11 @@ const SECTIONS: MenuSection[] = [
   {
     key: 'other',
     title: 'その他の設定',
-    subtitle: '通知や見た目、クラウド同期を設定します',
+    subtitle: '通知やクラウド同期を設定します',
     illustration: '⚙️',
     tint: 'purple',
     items: [
       { href: '/parent/notifications', icon: '🔔', label: '通知設定', description: '通知する時間' },
-      { href: '/parent/appearance', icon: '🎨', label: '表示設定', description: 'ライト・ダークモード' },
       { href: '/parent/account', icon: '☁️', label: 'クラウド同期', description: 'アカウント作成・ログイン' },
     ],
   },
