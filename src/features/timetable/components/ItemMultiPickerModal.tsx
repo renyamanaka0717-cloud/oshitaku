@@ -122,6 +122,7 @@ function createStyles(colors: ColorPalette) {
       padding: spacing.lg,
       gap: spacing.md,
       maxHeight: '70%',
+      overflow: 'hidden',
     },
     title: {
       textAlign: 'center',
@@ -159,6 +160,7 @@ function createStyles(colors: ColorPalette) {
     },
     newNameInput: {
       flex: 1,
+      minWidth: 0,
       backgroundColor: colors.surfaceAlt,
       borderRadius: radius.sm,
       padding: spacing.sm,
