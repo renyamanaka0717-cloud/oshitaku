@@ -5,6 +5,7 @@ import { useMorningStore } from '@/features/morning/store';
 import { useEveningStore } from '@/features/evening/store';
 import { usePointsStore } from '@/features/points/store';
 import { useRewardsStore } from '@/features/rewards/store';
+import { useRewardRequestsStore } from '@/features/rewards/requestsStore';
 import { useChoresStore } from '@/features/chores/store';
 import { useChoreRequestsStore } from '@/features/chores/requestsStore';
 import { useStreakStore } from '@/features/home/streakStore';
@@ -19,6 +20,7 @@ export function useChildData(childId: string | null | undefined) {
   const loadEvening = useEveningStore((s) => s.load);
   const loadPoints = usePointsStore((s) => s.load);
   const loadRewards = useRewardsStore((s) => s.load);
+  const loadRewardRequests = useRewardRequestsStore((s) => s.load);
   const loadChores = useChoresStore((s) => s.load);
   const loadChoreRequests = useChoreRequestsStore((s) => s.load);
   const loadStreak = useStreakStore((s) => s.load);
@@ -33,6 +35,7 @@ export function useChildData(childId: string | null | undefined) {
         loadEvening(childId),
         loadPoints(childId),
         loadRewards(childId),
+        loadRewardRequests(childId),
         loadChores(childId),
         loadChoreRequests(childId),
         loadStreak(childId),
@@ -44,5 +47,17 @@ export function useChildData(childId: string | null | undefined) {
         syncNotificationSchedule(childId, child.name, setting).catch(() => {});
       }
     })();
-  }, [childId, loadTimetable, loadItems, loadMorning, loadEvening, loadPoints, loadRewards, loadChores, loadChoreRequests, loadStreak]);
+  }, [
+    childId,
+    loadTimetable,
+    loadItems,
+    loadMorning,
+    loadEvening,
+    loadPoints,
+    loadRewards,
+    loadRewardRequests,
+    loadChores,
+    loadChoreRequests,
+    loadStreak,
+  ]);
 }

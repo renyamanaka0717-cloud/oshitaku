@@ -9,11 +9,11 @@ type Props = {
   visible: boolean;
   reward: Reward | null;
   currentPoints: number;
-  onExchange: () => void;
+  onRequest: () => void;
   onClose: () => void;
 };
 
-export function RewardDetailModal({ visible, reward, currentPoints, onExchange, onClose }: Props) {
+export function RewardDetailModal({ visible, reward, currentPoints, onRequest, onClose }: Props) {
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const [confirming, setConfirming] = useState(false);
@@ -37,7 +37,7 @@ export function RewardDetailModal({ visible, reward, currentPoints, onExchange, 
           {confirming ? (
             <>
               <AppText variant="subtitle" style={styles.center}>
-                {reward.pointCost}ポイントで交換する？
+                {reward.pointCost}ポイントで交換申請する？
               </AppText>
               <View style={styles.confirmRow}>
                 <View style={styles.confirmButtonWrap}>
@@ -45,9 +45,9 @@ export function RewardDetailModal({ visible, reward, currentPoints, onExchange, 
                 </View>
                 <View style={styles.confirmButtonWrap}>
                   <Button
-                    label="こうかん"
+                    label="申請する"
                     onPress={() => {
-                      onExchange();
+                      onRequest();
                       handleClose();
                     }}
                   />
@@ -83,7 +83,7 @@ export function RewardDetailModal({ visible, reward, currentPoints, onExchange, 
               ) : null}
               <View style={styles.fullButtonWrap}>
                 <Button
-                  label="こうかん"
+                  label="申請する"
                   onPress={() => setConfirming(true)}
                   disabled={!canAfford}
                   variant={canAfford ? 'secondary' : 'ghost'}

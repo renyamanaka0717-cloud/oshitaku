@@ -230,6 +230,31 @@ create table chore_request (
 create index idx_chore_request_child on chore_request(child_id);
 create index idx_chore_request_child_status on chore_request(child_id, status);
 
+-- ── reward_request (ごほうび申請) ────────────────────────────────────────
+-- A child requests a reward exchange; a parent approves/rejects it on their
+-- own device. reward_id intentionally has no FK to reward(id) so the request
+-- history survives the reward later being edited or deleted. point_history_id
+-- links an approved request to the point_history row it produced. notified_at
+-- is unused for now, reserved for a future push notification pass so it
+-- never re-notifies for the same request.
+create table reward_request (
+  id text primary key,
+  child_id text not null references child(id) on delete cascade,
+  reward_id text not null,
+  reward_name text not null,
+  reward_icon text not null,
+  point_cost integer not null,
+  status text not null default 'pending' check (status in ('pending','approved','rejected')),
+  resolved_at timestamptz,
+  point_history_id text,
+  notified_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  deleted_at timestamptz
+);
+create index idx_reward_request_child on reward_request(child_id);
+create index idx_reward_request_child_status on reward_request(child_id, status);
+
 -- ── point_rule ────────────────────────────────────────────────────────────
 create table point_rule (
   child_id text primary key references child(id) on delete cascade,
@@ -276,7 +301,7 @@ begin
   for t in select unnest(array[
     'parent_profile','child','timetable_set','subject','item','subject_item',
     'timetable_entry','morning_task','evening_task','daily_task_log',
-    'day_completion','reward','chore','chore_request','point_rule','point_history',
+    'day_completion','reward','chore','chore_request','reward_request','point_rule','point_history',
     'notification_setting'
   ])
   loop
@@ -369,6 +394,11 @@ create policy "parent manages own chore_request" on chore_request
   for all using (exists (select 1 from child c where c.id = chore_request.child_id and c.parent_id = auth.uid()))
   with check (exists (select 1 from child c where c.id = chore_request.child_id and c.parent_id = auth.uid()));
 alter table chore_request enable row level security;
+
+create policy "parent manages own reward_request" on reward_request
+  for all using (exists (select 1 from child c where c.id = reward_request.child_id and c.parent_id = auth.uid()))
+  with check (exists (select 1 from child c where c.id = reward_request.child_id and c.parent_id = auth.uid()));
+alter table reward_request enable row level security;
 
 create policy "parent manages own point_rule" on point_rule
   for all using (exists (select 1 from child c where c.id = point_rule.child_id and c.parent_id = auth.uid()))

@@ -9,20 +9,20 @@ import { Button } from '@/components/Button';
 import { EmptyState } from '@/components/EmptyState';
 import { useChildStore } from '@/features/child/store';
 import { ChildAvatar } from '@/features/child/components/ChildAvatar';
-import { useChoreRequestsStore } from '@/features/chores/requestsStore';
+import { useRewardRequestsStore } from '@/features/rewards/requestsStore';
 import { ColorPalette, spacing, useTheme } from '@/theme';
 import { goBack } from '@/utils/navigation';
 
 const POLL_INTERVAL_MS = 7000;
 
-export default function ChoreRequestsScreen() {
+export default function RewardRequestsScreen() {
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const children = useChildStore((s) => s.children);
-  const requests = useChoreRequestsStore((s) => s.requests);
-  const pollRemote = useChoreRequestsStore((s) => s.pollRemote);
-  const approve = useChoreRequestsStore((s) => s.approve);
-  const reject = useChoreRequestsStore((s) => s.reject);
+  const requests = useRewardRequestsStore((s) => s.requests);
+  const pollRemote = useRewardRequestsStore((s) => s.pollRemote);
+  const approve = useRewardRequestsStore((s) => s.approve);
+  const reject = useRewardRequestsStore((s) => s.reject);
   const pollTimer = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const childIds = useMemo(() => children.map((c) => c.id), [children]);
@@ -64,10 +64,10 @@ export default function ChoreRequestsScreen() {
 
   return (
     <Screen>
-      <HeaderBar title="おてつだい申請" onBack={goBack} />
+      <HeaderBar title="ごほうび申請" onBack={goBack} />
 
       {pending.length === 0 ? (
-        <EmptyState icon="✅" message="承認待ちの申請はありません" />
+        <EmptyState icon="🎁" message="承認待ちの申請はありません" />
       ) : (
         <View style={styles.list}>
           {pending.map((request) => {
@@ -88,10 +88,10 @@ export default function ChoreRequestsScreen() {
                       {child?.name ?? ''}
                     </AppText>
                     <AppText variant="subtitle">
-                      {request.choreIcon} {request.choreName}
+                      {request.rewardIcon} {request.rewardName}
                     </AppText>
                     <AppText variant="caption" color={colors.primaryDark}>
-                      +{request.pointValue}pt
+                      -{request.pointCost}pt
                     </AppText>
                   </View>
                 </View>

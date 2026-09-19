@@ -132,6 +132,22 @@ export type ChoreRequest = {
   notifiedAt: string | null;
 };
 
+export type RewardRequestStatus = 'pending' | 'approved' | 'rejected';
+
+export type RewardRequest = {
+  id: string;
+  childId: string;
+  rewardId: string;
+  rewardName: string;
+  rewardIcon: string;
+  pointCost: number;
+  status: RewardRequestStatus;
+  createdAt: string;
+  resolvedAt: string | null;
+  pointHistoryId: string | null;
+  notifiedAt: string | null;
+};
+
 export type PointHistoryType =
   | 'morning_complete'
   | 'evening_complete'

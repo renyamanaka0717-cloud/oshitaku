@@ -3,13 +3,17 @@ import { Animated, Modal, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { ConfettiBurst } from '@/components/ConfettiBurst';
-import { Reward } from '@/db/models';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 import { playSound } from '@/features/sound/soundService';
 
+type RewardSnapshot = {
+  icon: string;
+  name: string;
+};
+
 type Props = {
   visible: boolean;
-  reward: Reward | null;
+  reward: RewardSnapshot | null;
   onClose: () => void;
 };
 
