@@ -40,20 +40,18 @@ export function RewardDetailModal({ visible, reward, currentPoints, onExchange, 
                 {reward.pointCost}ポイントで交換する？
               </AppText>
               <View style={styles.confirmRow}>
-                <Button
-                  label="やめる"
-                  variant="ghost"
-                  onPress={() => setConfirming(false)}
-                  style={styles.confirmButton}
-                />
-                <Button
-                  label="こうかん"
-                  onPress={() => {
-                    onExchange();
-                    handleClose();
-                  }}
-                  style={styles.confirmButton}
-                />
+                <View style={styles.confirmButtonWrap}>
+                  <Button label="やめる" variant="ghost" onPress={() => setConfirming(false)} />
+                </View>
+                <View style={styles.confirmButtonWrap}>
+                  <Button
+                    label="こうかん"
+                    onPress={() => {
+                      onExchange();
+                      handleClose();
+                    }}
+                  />
+                </View>
               </View>
             </>
           ) : (
@@ -83,13 +81,14 @@ export function RewardDetailModal({ visible, reward, currentPoints, onExchange, 
                   ポイントが足りません
                 </AppText>
               ) : null}
-              <Button
-                label="こうかん"
-                onPress={() => setConfirming(true)}
-                disabled={!canAfford}
-                variant={canAfford ? 'secondary' : 'ghost'}
-                style={styles.fullButton}
-              />
+              <View style={styles.fullButtonWrap}>
+                <Button
+                  label="こうかん"
+                  onPress={() => setConfirming(true)}
+                  disabled={!canAfford}
+                  variant={canAfford ? 'secondary' : 'ghost'}
+                />
+              </View>
             </>
           )}
         </Pressable>
@@ -141,7 +140,7 @@ function createStyles(colors: ColorPalette) {
       paddingVertical: spacing.xs,
       paddingHorizontal: spacing.md,
     },
-    fullButton: {
+    fullButtonWrap: {
       alignSelf: 'stretch',
     },
     confirmRow: {
@@ -149,7 +148,7 @@ function createStyles(colors: ColorPalette) {
       gap: spacing.sm,
       alignSelf: 'stretch',
     },
-    confirmButton: {
+    confirmButtonWrap: {
       flex: 1,
     },
   });
