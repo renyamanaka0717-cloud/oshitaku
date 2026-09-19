@@ -10,9 +10,9 @@ import { useChildStore, useActiveChild } from '@/features/child/store';
 import { ChildSwitcherModal } from '@/features/child/components/ChildSwitcherModal';
 import { GreetingHeader } from '@/features/home/components/GreetingHeader';
 import { TodayBonusCard, BonusBreakdownItem } from '@/features/home/components/TodayBonusCard';
-import { PrepLinkCard } from '@/features/home/components/PrepLinkCard';
 import { HeroPrepCard } from '@/features/home/components/HeroPrepCard';
 import { PointsProgressCard } from '@/features/home/components/PointsProgressCard';
+import { LinkRowCard } from '@/features/home/components/LinkRowCard';
 import { useItemsStore } from '@/features/items/store';
 import { useMorningStore } from '@/features/morning/store';
 import { useEveningStore } from '@/features/evening/store';
@@ -94,9 +94,6 @@ export default function ChildHome() {
     return null;
   }
 
-  const morningDone = morningTasks.filter((t) => morningChecked[t.id]).length;
-  const eveningDone = eveningTasks.filter((t) => eveningChecked[t.id]).length;
-
   const heroMode = suggestedMode ?? (!morningComplete ? 'morning' : 'evening');
   const demotedMode = heroMode === 'morning' ? 'evening' : 'morning';
 
@@ -117,27 +114,26 @@ export default function ChildHome() {
       <FadeInUp delay={100}>
         <View style={styles.demotedRow}>
           {demotedMode === 'morning' ? (
-            <PrepLinkCard
+            <LinkRowCard
               title="朝のおしたく"
-              subtitle={morningComplete ? 'できた！✨' : `${morningDone}/${morningTasks.length} できた`}
-              icon={<Icon name="sun" size={40} />}
+              subtitle={morningComplete ? 'できた！✨' : 'あさのじゅんびをみる'}
+              icon={<Icon name="sun" size={28} />}
               tint={colors.yellow}
-              cornerBadge={morningComplete ? <AppText style={styles.check}>✓</AppText> : undefined}
               onPress={() => router.push('/child/morning')}
             />
           ) : (
-            <PrepLinkCard
+            <LinkRowCard
               title="夜のおしたく"
-              subtitle={eveningComplete ? 'できた！✨' : `${eveningDone}/${eveningTasks.length} できた`}
-              icon={<Icon name="moon" size={40} />}
+              subtitle={eveningComplete ? 'できた！✨' : 'よるのじゅんびをみる'}
+              icon={<Icon name="moon" size={28} />}
               tint={colors.purple}
-              cornerBadge={eveningComplete ? <AppText style={styles.check}>✓</AppText> : undefined}
               onPress={() => router.push('/child/evening')}
             />
           )}
-          <PrepLinkCard
+          <LinkRowCard
             title="おてつだい"
-            icon={<Icon name="broom" size={40} />}
+            subtitle="できることをみる"
+            icon={<Icon name="broom" size={28} />}
             tint={colors.mint}
             onPress={() => router.push('/child/chores')}
           />
@@ -158,15 +154,16 @@ export default function ChildHome() {
 
       <FadeInUp delay={280}>
         <View style={styles.featureRow}>
-          <PrepLinkCard
+          <LinkRowCard
             title="ごほうび"
-            icon={<Icon name="gift" size={40} />}
+            subtitle="どんなごほうびがあるかな？"
+            icon={<Icon name="gift" size={28} />}
             tint={colors.pink}
             onPress={() => router.push('/child/rewards')}
           />
-          <PrepLinkCard
+          <LinkRowCard
             title="カレンダー"
-            subtitle="たのしみなよてい"
+            subtitle="たのしみなよていをみる"
             icon={<AppText style={styles.calendarIcon}>📅</AppText>}
             tint={colors.blue}
             onPress={() => router.push('/child/calendar')}
@@ -176,9 +173,9 @@ export default function ChildHome() {
 
       <FadeInUp delay={340}>
         <View style={styles.linkRow}>
-          <NavIconLink icon="house" label="ホーム" tint={colors.blue} onPress={() => {}} />
-          <NavIconLink icon="chart" label="とうけい" tint={colors.secondary} onPress={() => router.push('/child/stats')} />
-          <NavIconLink icon="gear" label="設定" tint={colors.yellow} onPress={() => router.push('/parent/dashboard')} />
+          <NavIconLink icon="house" label="ホーム" tint={colors.primary} active onPress={() => {}} />
+          <NavIconLink icon="chart" label="とうけい" tint={colors.surfaceAlt} onPress={() => router.push('/child/stats')} />
+          <NavIconLink icon="gear" label="設定" tint={colors.surfaceAlt} onPress={() => router.push('/parent/dashboard')} />
         </View>
       </FadeInUp>
 
@@ -222,13 +219,8 @@ function createStyles(colors: ColorPalette) {
       alignItems: 'center',
       paddingVertical: spacing.md,
     },
-    check: {
-      fontSize: 20,
-      color: colors.success,
-      fontWeight: '900',
-    },
     calendarIcon: {
-      fontSize: 40,
+      fontSize: 24,
     },
   });
 }
