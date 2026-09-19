@@ -41,7 +41,7 @@ export function SchoolCountdownCard({ schoolArrivalTime, progress }: Props) {
         </CircularProgress>
         <View style={styles.info}>
           <AppText variant="caption">学校まで</AppText>
-          <AppText variant="hero" color={tint} style={styles.countdown} numberOfLines={1} adjustsFontSizeToFit>
+          <AppText variant="hero" color={tint} style={styles.countdown} numberOfLines={2} adjustsFontSizeToFit>
             {remaining > 0 ? formatMinutes(remaining) : 'とうこう時間！'}
           </AppText>
         </View>
