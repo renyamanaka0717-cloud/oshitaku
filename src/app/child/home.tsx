@@ -10,7 +10,7 @@ import { FadeInUp } from '@/components/FadeInUp';
 import { useChildStore, useActiveChild } from '@/features/child/store';
 import { ChildSwitcherModal } from '@/features/child/components/ChildSwitcherModal';
 import { GreetingHeader } from '@/features/home/components/GreetingHeader';
-import { TodayBonusCard } from '@/features/home/components/TodayBonusCard';
+import { TodayBonusCard, BonusBreakdownItem } from '@/features/home/components/TodayBonusCard';
 import { PrepLinkCard } from '@/features/home/components/PrepLinkCard';
 import { useItemsStore } from '@/features/items/store';
 import { useMorningStore } from '@/features/morning/store';
@@ -62,6 +62,22 @@ export default function ChildHome() {
     if (!eveningComplete) total += rule.eveningComplete;
     if (items.length > 0 && !itemsComplete) total += rule.noForgottenItems;
     return total;
+  }, [rule, morningComplete, eveningComplete, items.length, itemsComplete]);
+
+  const bonusBreakdown = useMemo<BonusBreakdownItem[]>(() => {
+    if (!rule) return [];
+    const breakdown: BonusBreakdownItem[] = [];
+    if (!morningComplete) {
+      breakdown.push({ label: '朝のおしたくを終わらせる', points: rule.morningComplete });
+      breakdown.push({ label: '朝を時間内に終わらせる', points: rule.onTime });
+    }
+    if (!eveningComplete) {
+      breakdown.push({ label: '夜のおしたくを終わらせる', points: rule.eveningComplete });
+    }
+    if (items.length > 0 && !itemsComplete) {
+      breakdown.push({ label: '忘れ物をゼロにする', points: rule.noForgottenItems });
+    }
+    return breakdown;
   }, [rule, morningComplete, eveningComplete, items.length, itemsComplete]);
 
   if (!child) {
@@ -135,7 +151,7 @@ export default function ChildHome() {
       </FadeInUp>
 
       <FadeInUp delay={160}>
-        <TodayBonusCard bonusPoints={bonusPoints} />
+        <TodayBonusCard bonusPoints={bonusPoints} breakdown={bonusBreakdown} />
       </FadeInUp>
 
       <FadeInUp delay={220}>
