@@ -107,6 +107,7 @@ export async function deleteChild(id: string): Promise<void> {
     await db.runAsync('DELETE FROM daily_task_log WHERE childId = ?', [id]);
     await db.runAsync('DELETE FROM day_completion WHERE childId = ?', [id]);
     await db.runAsync('DELETE FROM reward WHERE childId = ?', [id]);
+    await db.runAsync('DELETE FROM reward_request WHERE childId = ?', [id]);
     await db.runAsync('DELETE FROM point_history WHERE childId = ?', [id]);
     await db.runAsync('DELETE FROM stamp WHERE childId = ?', [id]);
     await db.runAsync('DELETE FROM notification_setting WHERE childId = ?', [id]);

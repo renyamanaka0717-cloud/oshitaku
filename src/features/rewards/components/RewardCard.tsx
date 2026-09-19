@@ -8,15 +8,16 @@ import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 type Props = {
   reward: Reward;
   onPress: () => void;
+  pending?: boolean;
 };
 
-export function RewardCard({ reward, onPress }: Props) {
+export function RewardCard({ reward, onPress, pending }: Props) {
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
 
   return (
     <Pressable onPress={onPress} style={styles.pressable}>
-      <Card style={styles.card}>
+      <Card style={[styles.card, pending ? styles.cardPending : null]}>
         <View style={styles.imageBox}>
           {reward.imageUri ? (
             <Image source={{ uri: reward.imageUri }} style={styles.image} resizeMode="cover" />
@@ -29,11 +30,19 @@ export function RewardCard({ reward, onPress }: Props) {
           {reward.name}
         </AppText>
 
-        <View style={styles.costBadge}>
-          <AppText variant="caption" color={colors.primaryDark}>
-            ⭐ {reward.pointCost}pt
-          </AppText>
-        </View>
+        {pending ? (
+          <View style={styles.pendingBadge}>
+            <AppText variant="caption" color={colors.textMuted}>
+              申請中
+            </AppText>
+          </View>
+        ) : (
+          <View style={styles.costBadge}>
+            <AppText variant="caption" color={colors.primaryDark}>
+              ⭐ {reward.pointCost}pt
+            </AppText>
+          </View>
+        )}
       </Card>
     </Pressable>
   );
@@ -48,6 +57,15 @@ function createStyles(colors: ColorPalette) {
       gap: spacing.xs,
       alignItems: 'center',
       padding: spacing.sm,
+    },
+    cardPending: {
+      opacity: 0.6,
+    },
+    pendingBadge: {
+      backgroundColor: colors.surfaceAlt,
+      borderRadius: radius.round,
+      paddingVertical: 2,
+      paddingHorizontal: spacing.sm,
     },
     imageBox: {
       width: '100%',

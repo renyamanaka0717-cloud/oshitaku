@@ -139,6 +139,14 @@ const CHILD_SCOPED_TABLES: TableSync[] = [
     ],
   },
   {
+    table: 'reward_request',
+    onConflict: 'id',
+    columns: [
+      'id', 'childId', 'rewardId', 'rewardName', 'rewardIcon', 'pointCost', 'status',
+      'createdAt', 'resolvedAt', 'pointHistoryId', 'notifiedAt',
+    ],
+  },
+  {
     table: 'notification_setting',
     onConflict: 'child_id',
     columns: [

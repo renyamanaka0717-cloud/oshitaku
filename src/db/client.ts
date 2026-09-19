@@ -283,6 +283,27 @@ async function migrate(db: SQLite.SQLiteDatabase) {
     version = 10;
   }
 
+  if (version < 11) {
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS reward_request (
+        id TEXT PRIMARY KEY NOT NULL,
+        childId TEXT NOT NULL,
+        rewardId TEXT NOT NULL,
+        rewardName TEXT NOT NULL,
+        rewardIcon TEXT NOT NULL,
+        pointCost INTEGER NOT NULL,
+        status TEXT NOT NULL DEFAULT 'pending',
+        createdAt TEXT NOT NULL,
+        resolvedAt TEXT,
+        pointHistoryId TEXT,
+        notifiedAt TEXT
+      );
+      CREATE INDEX IF NOT EXISTS idx_reward_request_child_status
+        ON reward_request (childId, status);
+    `);
+    version = 11;
+  }
+
   await db.execAsync(`PRAGMA user_version = ${version}`);
 }
 

@@ -9,6 +9,7 @@ import { useActiveChild, useChildStore } from '@/features/child/store';
 import { ChildAvatar } from '@/features/child/components/ChildAvatar';
 import { useParentAuthStore } from '@/features/parent/store';
 import { useChoreRequestsStore } from '@/features/chores/requestsStore';
+import { useRewardRequestsStore } from '@/features/rewards/requestsStore';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 const MENU: Array<{ href: string; icon: string; label: string; description: string }> = [
@@ -19,6 +20,7 @@ const MENU: Array<{ href: string; icon: string; label: string; description: stri
   { href: '/parent/tasks', icon: '📝', label: '朝・夜タスク', description: 'チェックリストの内容' },
   { href: '/parent/points', icon: '⭐', label: 'ポイント設定', description: 'もらえるポイント数' },
   { href: '/parent/rewards', icon: '🎁', label: 'ごほうび設定', description: 'ごほうびと交換履歴' },
+  { href: '/parent/reward-requests', icon: '🛍️', label: 'ごほうび申請', description: '承認待ちの確認' },
   { href: '/parent/chores', icon: '🧹', label: 'おてつだい設定', description: 'おてつだいと完了履歴' },
   { href: '/parent/chore-requests', icon: '✅', label: 'おてつだい申請', description: '承認待ちの確認' },
   { href: '/parent/notifications', icon: '🔔', label: '通知設定', description: '通知する時間' },
@@ -32,12 +34,20 @@ export default function ParentDashboard() {
   const child = useActiveChild();
   const lock = useParentAuthStore((s) => s.lock);
   const children = useChildStore((s) => s.children);
-  const requests = useChoreRequestsStore((s) => s.requests);
-  const pollRemote = useChoreRequestsStore((s) => s.pollRemote);
-  const pendingCount = requests.filter((r) => r.status === 'pending').length;
+  const choreRequests = useChoreRequestsStore((s) => s.requests);
+  const pollChoreRequests = useChoreRequestsStore((s) => s.pollRemote);
+  const rewardRequests = useRewardRequestsStore((s) => s.requests);
+  const pollRewardRequests = useRewardRequestsStore((s) => s.pollRemote);
+  const pendingChoreCount = choreRequests.filter((r) => r.status === 'pending').length;
+  const pendingRewardCount = rewardRequests.filter((r) => r.status === 'pending').length;
+  const totalPendingCount = pendingChoreCount + pendingRewardCount;
 
   useEffect(() => {
-    if (children.length > 0) pollRemote(children.map((c) => c.id));
+    if (children.length > 0) {
+      const childIds = children.map((c) => c.id);
+      pollChoreRequests(childIds);
+      pollRewardRequests(childIds);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [children.length]);
 
@@ -52,16 +62,18 @@ export default function ParentDashboard() {
         title="保護者モード"
         onBack={handleBack}
         right={
-          pendingCount > 0 ? (
+          totalPendingCount > 0 ? (
             <Pressable
               style={styles.headerRequestButton}
-              onPress={() => router.push('/parent/chore-requests')}
+              onPress={() =>
+                router.push((pendingChoreCount > 0 ? '/parent/chore-requests' : '/parent/reward-requests') as never)
+              }
               hitSlop={8}
             >
               <AppText style={styles.headerRequestIcon}>✅</AppText>
               <View style={styles.badge}>
                 <AppText variant="caption" color={colors.white}>
-                  {pendingCount}
+                  {totalPendingCount}
                 </AppText>
               </View>
             </Pressable>
@@ -85,23 +97,31 @@ export default function ParentDashboard() {
       ) : null}
 
       <View style={styles.menu}>
-        {MENU.map((item) => (
-          <Pressable key={item.href} style={styles.menuItem} onPress={() => router.push(item.href as never)}>
-            <AppText style={styles.menuIcon}>{item.icon}</AppText>
-            <View style={styles.menuText}>
-              <AppText variant="subtitle">{item.label}</AppText>
-              <AppText variant="caption">{item.description}</AppText>
-            </View>
-            {item.href === '/parent/chore-requests' && pendingCount > 0 ? (
-              <View style={styles.badge}>
-                <AppText variant="caption" color={colors.white}>
-                  {pendingCount}
-                </AppText>
+        {MENU.map((item) => {
+          const badgeCount =
+            item.href === '/parent/chore-requests'
+              ? pendingChoreCount
+              : item.href === '/parent/reward-requests'
+                ? pendingRewardCount
+                : 0;
+          return (
+            <Pressable key={item.href} style={styles.menuItem} onPress={() => router.push(item.href as never)}>
+              <AppText style={styles.menuIcon}>{item.icon}</AppText>
+              <View style={styles.menuText}>
+                <AppText variant="subtitle">{item.label}</AppText>
+                <AppText variant="caption">{item.description}</AppText>
               </View>
-            ) : null}
-            <AppText style={styles.chevron}>›</AppText>
-          </Pressable>
-        ))}
+              {badgeCount > 0 ? (
+                <View style={styles.badge}>
+                  <AppText variant="caption" color={colors.white}>
+                    {badgeCount}
+                  </AppText>
+                </View>
+              ) : null}
+              <AppText style={styles.chevron}>›</AppText>
+            </Pressable>
+          );
+        })}
       </View>
     </Screen>
   );
