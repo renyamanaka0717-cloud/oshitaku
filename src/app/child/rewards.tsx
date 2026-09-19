@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { router } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
+import { AppText } from '@/components/AppText';
 import { SectionHeader } from '@/components/SectionHeader';
-import { StatBadge } from '@/components/StatBadge';
 import { PointsBadge } from '@/components/PointsBadge';
 import { EmptyState } from '@/components/EmptyState';
 import { RewardCard } from '@/features/rewards/components/RewardCard';
@@ -13,7 +13,7 @@ import { RewardCelebration } from '@/features/rewards/components/RewardCelebrati
 import { useRewardsStore } from '@/features/rewards/store';
 import { usePointsStore } from '@/features/points/store';
 import { Reward } from '@/db/models';
-import { colors, spacing } from '@/theme';
+import { colors, hardShadow, outlineWidth, radius, spacing } from '@/theme';
 import { goBack } from '@/utils/navigation';
 
 export default function RewardsScreen() {
@@ -31,20 +31,19 @@ export default function RewardsScreen() {
 
   return (
     <Screen>
-      <HeaderBar title="ごほうび" onBack={goBack} />
+      <HeaderBar
+        title="ごほうび"
+        onBack={goBack}
+        right={
+          <Pressable style={styles.historyButton} onPress={() => router.push('/child/reward-history')}>
+            <AppText variant="caption" color={colors.text}>
+              🧾 りれき
+            </AppText>
+          </Pressable>
+        }
+      />
 
-      <View style={styles.statsRow}>
-        <PointsBadge points={totalPoints} label="いまのポイント" variant="wide" />
-        <StatBadge
-          icon="🧾"
-          value="りれき"
-          label="こうかんりれき"
-          color={colors.surfaceAlt}
-          onPress={() => router.push('/child/reward-history')}
-          valueVariant="subtitle"
-          variant="wide"
-        />
-      </View>
+      <PointsBadge points={totalPoints} label="いまのポイント" variant="wide" />
 
       <View style={styles.section}>
         <SectionHeader title="ごほうびこうかん" icon="🎁" />
@@ -73,9 +72,15 @@ export default function RewardsScreen() {
 }
 
 const styles = StyleSheet.create({
-  statsRow: {
-    flexDirection: 'row',
-    gap: spacing.sm,
+  historyButton: {
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.md,
+    borderRadius: radius.round,
+    backgroundColor: colors.surfaceAlt,
+    borderWidth: outlineWidth - 1,
+    borderColor: colors.black,
+    borderBottomWidth: outlineWidth + hardShadow.offsetSm,
+    borderRightWidth: outlineWidth + hardShadow.offsetSm,
   },
   section: {
     gap: spacing.sm,
