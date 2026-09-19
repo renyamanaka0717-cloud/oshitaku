@@ -38,20 +38,18 @@ export function ChoreDetailModal({ visible, chore, onComplete, onClose }: Props)
                 「{chore.name}」を申請する？
               </AppText>
               <View style={styles.confirmRow}>
-                <Button
-                  label="やめる"
-                  variant="ghost"
-                  onPress={() => setConfirming(false)}
-                  style={styles.confirmButton}
-                />
-                <Button
-                  label="申請する"
-                  onPress={() => {
-                    onComplete();
-                    handleClose();
-                  }}
-                  style={styles.confirmButton}
-                />
+                <View style={styles.confirmButtonWrap}>
+                  <Button label="やめる" variant="ghost" onPress={() => setConfirming(false)} />
+                </View>
+                <View style={styles.confirmButtonWrap}>
+                  <Button
+                    label="申請する"
+                    onPress={() => {
+                      onComplete();
+                      handleClose();
+                    }}
+                  />
+                </View>
               </View>
             </>
           ) : (
@@ -67,7 +65,9 @@ export function ChoreDetailModal({ visible, chore, onComplete, onClose }: Props)
                   ⭐ +{chore.pointValue}pt
                 </AppText>
               </View>
-              <Button label="申請する" onPress={() => setConfirming(true)} style={styles.fullButton} />
+              <View style={styles.fullButtonWrap}>
+                <Button label="申請する" onPress={() => setConfirming(true)} />
+              </View>
             </>
           )}
         </Pressable>
@@ -114,7 +114,7 @@ function createStyles(colors: ColorPalette) {
       paddingVertical: spacing.xs,
       paddingHorizontal: spacing.md,
     },
-    fullButton: {
+    fullButtonWrap: {
       alignSelf: 'stretch',
     },
     confirmRow: {
@@ -122,7 +122,7 @@ function createStyles(colors: ColorPalette) {
       gap: spacing.sm,
       alignSelf: 'stretch',
     },
-    confirmButton: {
+    confirmButtonWrap: {
       flex: 1,
     },
   });
