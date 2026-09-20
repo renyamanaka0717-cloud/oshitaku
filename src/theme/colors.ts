@@ -44,7 +44,7 @@ export type ColorPalette = {
 const INK = '#8A6A55';
 
 export const lightColors: ColorPalette = {
-  background: '#FFF8EA',
+  background: '#FFF4DC',
   surface: '#FFFFFF',
   surfaceAlt: '#FFEAD2',
 
