@@ -24,29 +24,38 @@ export function LinkRowCard({ title, subtitle, icon, tint, badgeTint, onPress }:
   const styles = useMemo(() => createStyles(colors), [colors]);
 
   return (
-    <PressableCard backgroundColor={tint} onPress={onPress} style={styles.card}>
-      <View style={[styles.iconBadge, badgeTint ? { backgroundColor: badgeTint } : null]}>{icon}</View>
-      <View style={styles.textCol}>
-        <AppText variant="subtitle" color={colors.black} numberOfLines={1}>
-          {title}
+    // PressableCard's outer Animated.View (the actual flex child here) only
+    // ever gets a `transform` style — layout props like `flex` passed via
+    // `style` land on its inner Pressable instead, so a plain `flex: 1`
+    // wrapper is needed here for the two cards in a row to size equally.
+    <View style={styles.wrap}>
+      <PressableCard backgroundColor={tint} onPress={onPress} style={styles.card}>
+        <View style={[styles.iconBadge, badgeTint ? { backgroundColor: badgeTint } : null]}>{icon}</View>
+        <View style={styles.textCol}>
+          <AppText variant="subtitle" color={colors.black} numberOfLines={1}>
+            {title}
+          </AppText>
+          <AppText variant="caption" color={colors.black} style={styles.subtitle} numberOfLines={1}>
+            {subtitle}
+          </AppText>
+        </View>
+        <AppText style={styles.chevron} color={colors.black}>
+          ›
         </AppText>
-        <AppText variant="caption" color={colors.black} style={styles.subtitle} numberOfLines={1}>
-          {subtitle}
-        </AppText>
-      </View>
-      <AppText style={styles.chevron} color={colors.black}>
-        ›
-      </AppText>
-    </PressableCard>
+      </PressableCard>
+    </View>
   );
 }
 
 function createStyles(colors: ColorPalette) {
   return StyleSheet.create({
-    card: {
+    wrap: {
       flex: 1,
+    },
+    card: {
       padding: spacing.md,
       gap: spacing.xs,
+      height: '100%',
     },
     iconBadge: {
       width: 44,
