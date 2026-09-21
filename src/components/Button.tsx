@@ -75,7 +75,6 @@ export function Button({
           disabled={disabled}
           style={[styles.base, size === 'lg' ? styles.lg : styles.md, disabled ? styles.disabled : null]}
         >
-          <View style={styles.highlight} />
           {icon ? <AppText style={styles.icon}>{icon}</AppText> : null}
           <AppText variant="subtitle" color={v.text} style={textStyle}>
             {label}
@@ -108,15 +107,6 @@ function createStyles(bg: string) {
       height: '100%',
       borderRadius: radius.round,
       backgroundColor: darken(bg, 0.2),
-    },
-    highlight: {
-      position: 'absolute',
-      top: 0,
-      left: '12%',
-      right: '12%',
-      height: '38%',
-      borderRadius: radius.round,
-      backgroundColor: 'rgba(255,255,255,0.25)',
     },
     md: {
       paddingVertical: spacing.md,
