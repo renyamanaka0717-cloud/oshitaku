@@ -7,13 +7,26 @@ import { Icon, IconName } from '@/theme/icons';
 import { radius, spacing, useTheme } from '@/theme';
 import { formatJapaneseDate } from '@/utils/date';
 
+const MORNING_SCENE = require('@/assets/images/home-header-bg-morning.png');
+const MORNING_SCENE_ASPECT = 1628 / 966;
 const NIGHT_SCENE = require('@/assets/images/home-header-bg.jpg');
 const NIGHT_SCENE_ASPECT = 850 / 504;
+
+type Scene = 'morning' | 'night' | null;
 
 function greetingForHour(hour: number): string {
   if (hour < 11) return 'おはよう！';
   if (hour < 17) return 'こんにちは！';
   return 'こんばんは！';
+}
+
+// The bedroom illustrations only cover the おはよう／こんばんは windows —
+// there's no daytime (こんにちは) variant yet, so that stretch of the day
+// (and the small pre-dawn sliver of おはよう) falls back to the plain header.
+function sceneForHour(hour: number): Scene {
+  if (hour >= 5 && hour < 11) return 'morning';
+  if (hour >= 17) return 'night';
+  return null;
 }
 
 // Morning/evening show a small decorative sun/moon next to the greeting
@@ -35,22 +48,20 @@ export function GreetingHeader({ child, onPressAvatar }: Props) {
   const now = new Date();
   const mode = getSuggestedMode(now);
   const decor = mode ? MODE_DECOR[mode] : null;
-  // The bedroom illustration depicts nighttime, so it only shows alongside
-  // the "こんばんは！" greeting — there's no day/morning variant yet, so
-  // other times of day (including the small おはよう window before dawn)
-  // fall back to the plain header.
-  const isNight = now.getHours() >= 17;
+  const scene = sceneForHour(now.getHours());
+  const textColor = scene === 'night' ? colors.white : undefined;
+  const dateColor = scene === 'night' ? colors.white : colors.textMuted;
 
   const content = (
     <View style={styles.row}>
       <View style={styles.textCol}>
         <View style={styles.greetLine}>
           {decor ? <Icon name={decor} size={24} /> : null}
-          <AppText variant="hero" color={isNight ? colors.white : undefined}>
+          <AppText variant="hero" color={textColor}>
             {greetingForHour(now.getHours())}
           </AppText>
         </View>
-        <AppText variant="body" color={isNight ? colors.white : colors.textMuted}>
+        <AppText variant="body" color={dateColor}>
           {formatJapaneseDate(now)}
         </AppText>
       </View>
@@ -65,15 +76,17 @@ export function GreetingHeader({ child, onPressAvatar }: Props) {
     </View>
   );
 
-  if (isNight) {
+  if (scene) {
+    const source = scene === 'morning' ? MORNING_SCENE : NIGHT_SCENE;
+    const aspect = scene === 'morning' ? MORNING_SCENE_ASPECT : NIGHT_SCENE_ASPECT;
     return (
-      <View style={styles.nightWrap}>
+      <View style={styles.sceneWrap}>
         <Image
-          source={NIGHT_SCENE}
-          style={[styles.nightImage, { width: windowWidth, height: windowWidth / NIGHT_SCENE_ASPECT }]}
+          source={source}
+          style={[styles.sceneImage, { width: windowWidth, height: windowWidth / aspect }]}
           resizeMode="cover"
         />
-        <View style={styles.nightOverlay}>{content}</View>
+        <View style={styles.sceneOverlay}>{content}</View>
       </View>
     );
   }
@@ -87,16 +100,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  nightWrap: {
+  sceneWrap: {
     marginHorizontal: -spacing.lg,
     marginTop: -spacing.lg,
     marginBottom: spacing.sm,
   },
-  nightImage: {
+  sceneImage: {
     borderBottomLeftRadius: radius.lg,
     borderBottomRightRadius: radius.lg,
   },
-  nightOverlay: {
+  sceneOverlay: {
     position: 'absolute',
     top: 0,
     left: 0,
