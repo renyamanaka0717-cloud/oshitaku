@@ -3,7 +3,7 @@ import { Animated, Pressable, StyleSheet } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { AppText } from './AppText';
 import { Icon, IconName } from '@/theme/icons';
-import { ColorPalette, outlineWidth, useTheme, usePressLedge } from '@/theme';
+import { smallShadow, usePressLedge } from '@/theme';
 
 type Props = {
   icon: IconName;
@@ -16,9 +16,8 @@ type Props = {
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export function NavIconLink({ icon, label, tint, active, onPress }: Props) {
-  const { colors } = useTheme();
-  const styles = useMemo(() => createStyles(colors), [colors]);
-  const { pressIn, pressOut, translate, ledge, scale } = usePressLedge(outlineWidth - 1, 3);
+  const styles = useMemo(() => createStyles(), []);
+  const { pressIn, pressOut, translate, scale } = usePressLedge(2);
 
   const handlePress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
@@ -30,14 +29,9 @@ export function NavIconLink({ icon, label, tint, active, onPress }: Props) {
       onPress={handlePress}
       onPressIn={pressIn}
       onPressOut={pressOut}
-      style={[styles.item, { transform: [{ translateX: translate }, { translateY: translate }, { scale }] }]}
+      style={[styles.item, { transform: [{ translateY: translate }, { scale }] }]}
     >
-      <Animated.View
-        style={[
-          styles.circle,
-          { backgroundColor: tint, borderBottomWidth: ledge, borderRightWidth: ledge },
-        ]}
-      >
+      <Animated.View style={[styles.circle, { backgroundColor: tint }]}>
         <Icon name={icon} size={28} />
       </Animated.View>
       <AppText variant="caption" color={active ? tint : undefined} style={[styles.cap, active ? styles.capActive : null]}>
@@ -47,7 +41,7 @@ export function NavIconLink({ icon, label, tint, active, onPress }: Props) {
   );
 }
 
-function createStyles(colors: ColorPalette) {
+function createStyles() {
   return StyleSheet.create({
     item: {
       alignItems: 'center',
@@ -57,10 +51,9 @@ function createStyles(colors: ColorPalette) {
       width: 52,
       height: 52,
       borderRadius: 999,
-      borderWidth: outlineWidth - 1,
-      borderColor: colors.black,
       alignItems: 'center',
       justifyContent: 'center',
+      ...smallShadow,
     },
     cap: {
       fontSize: 10.5,

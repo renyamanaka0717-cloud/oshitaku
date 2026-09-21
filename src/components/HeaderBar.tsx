@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from './AppText';
-import { ColorPalette, hardShadow, outlineWidth, radius, spacing, useTheme } from '@/theme';
+import { ColorPalette, radius, smallShadow, spacing, useTheme } from '@/theme';
 import { goBack } from '@/utils/navigation';
 
 type Props = {
@@ -43,12 +43,9 @@ function createStyles(colors: ColorPalette) {
       height: 44,
       borderRadius: radius.round,
       backgroundColor: colors.surface,
-      borderWidth: outlineWidth,
-      borderColor: colors.black,
-      borderBottomWidth: outlineWidth + hardShadow.offsetSm,
-      borderRightWidth: outlineWidth + hardShadow.offsetSm,
       alignItems: 'center',
       justifyContent: 'center',
+      ...smallShadow,
     },
     backIcon: {
       fontSize: 20,

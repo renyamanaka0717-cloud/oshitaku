@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { PressableCard } from '@/components/PressableCard';
-import { ColorPalette, spacing, useTheme } from '@/theme';
+import { ColorPalette, smallShadow, spacing, useTheme } from '@/theme';
 
 type Props = {
   title: string;
@@ -32,14 +32,14 @@ export function LinkRowCard({ title, subtitle, icon, tint, badgeTint, onPress }:
       <PressableCard backgroundColor={tint} onPress={onPress} style={styles.card}>
         <View style={[styles.iconBadge, badgeTint ? { backgroundColor: badgeTint } : null]}>{icon}</View>
         <View style={styles.textCol}>
-          <AppText variant="subtitle" color={colors.black} numberOfLines={1}>
+          <AppText variant="subtitle" color={colors.text} numberOfLines={1}>
             {title}
           </AppText>
-          <AppText variant="caption" color={colors.black} style={styles.subtitle} numberOfLines={1}>
+          <AppText variant="caption" color={colors.textMuted} style={styles.subtitle} numberOfLines={1}>
             {subtitle}
           </AppText>
         </View>
-        <AppText style={styles.chevron} color={colors.black}>
+        <AppText style={styles.chevron} color={colors.textMuted}>
           ›
         </AppText>
       </PressableCard>
@@ -61,17 +61,16 @@ function createStyles(colors: ColorPalette) {
       width: 44,
       height: 44,
       borderRadius: 999,
-      backgroundColor: 'rgba(255,255,255,0.55)',
-      borderWidth: 2,
-      borderColor: colors.black,
+      backgroundColor: 'rgba(255,255,255,0.75)',
       alignItems: 'center',
       justifyContent: 'center',
+      ...smallShadow,
     },
     textCol: {
       gap: 1,
     },
     subtitle: {
-      opacity: 0.75,
+      opacity: 0.9,
     },
     chevron: {
       position: 'absolute',

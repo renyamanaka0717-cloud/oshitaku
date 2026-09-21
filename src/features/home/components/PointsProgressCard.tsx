@@ -1,18 +1,21 @@
 import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { AppText } from '@/components/AppText';
 import { PressableCard } from '@/components/PressableCard';
 import { ProgressBar } from '@/components/ProgressBar';
 import { BounceOnChange } from '@/components/BounceOnChange';
 import { Icon } from '@/theme/icons';
 import { Reward } from '@/db/models';
-import { ColorPalette, radius, spacing, useTheme } from '@/theme';
+import { ColorPalette, radius, smallShadow, spacing, useTheme } from '@/theme';
 
 type Props = {
   points: number;
   nextReward: Reward | null;
   onPress: () => void;
 };
+
+const GRADIENT: [string, string] = ['#FFD3C4', '#FFAB91'];
 
 export function PointsProgressCard({ points, nextReward, onPress }: Props) {
   const { colors } = useTheme();
@@ -22,7 +25,9 @@ export function PointsProgressCard({ points, nextReward, onPress }: Props) {
   const shortfall = nextReward ? Math.max(0, nextReward.pointCost - points) : 0;
 
   return (
-    <PressableCard backgroundColor={colors.pink} onPress={onPress} style={styles.card}>
+    <PressableCard backgroundColor="transparent" onPress={onPress} style={styles.card}>
+      <LinearGradient colors={GRADIENT} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={styles.gradient} />
+
       <View style={styles.row}>
         <View style={styles.leftCol}>
           <BounceOnChange watch={points}>
@@ -33,17 +38,17 @@ export function PointsProgressCard({ points, nextReward, onPress }: Props) {
               </View>
             </View>
           </BounceOnChange>
-          <AppText variant="caption" color={colors.black}>
+          <AppText variant="caption" color={colors.text}>
             もっているポイント
           </AppText>
-          <AppText variant="hero" color={colors.danger}>
+          <AppText variant="hero" color={colors.accentPink}>
             {points}ポイント
           </AppText>
         </View>
 
         {nextReward ? (
           <View style={styles.bubble}>
-            <AppText variant="caption" color={colors.black}>
+            <AppText variant="caption" color={colors.text}>
               {canExchange
                 ? `🎉 ${nextReward.name}と\nこうかんできるよ！`
                 : `あと${shortfall}ポイントで\n${nextReward.name}と\nこうかんできるよ！`}
@@ -55,9 +60,9 @@ export function PointsProgressCard({ points, nextReward, onPress }: Props) {
       {nextReward ? (
         <View style={styles.progressSection}>
           <View style={styles.progressBarWrap}>
-            <ProgressBar progress={points / nextReward.pointCost} color={colors.primary} height={14} />
+            <ProgressBar progress={points / nextReward.pointCost} color={colors.accentPink} height={14} />
           </View>
-          <AppText variant="caption" color={colors.black}>
+          <AppText variant="caption" color={colors.text}>
             {points}/{nextReward.pointCost}
           </AppText>
         </View>
@@ -71,6 +76,15 @@ function createStyles(colors: ColorPalette) {
     card: {
       padding: spacing.lg,
       gap: spacing.md,
+      overflow: 'hidden',
+      borderRadius: radius.xl,
+    },
+    gradient: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
     },
     row: {
       flexDirection: 'row',
@@ -93,9 +107,8 @@ function createStyles(colors: ColorPalette) {
       flex: 1,
       backgroundColor: colors.surface,
       borderRadius: radius.lg,
-      borderWidth: 2,
-      borderColor: colors.black,
       padding: spacing.sm,
+      ...smallShadow,
     },
     progressSection: {
       flexDirection: 'row',

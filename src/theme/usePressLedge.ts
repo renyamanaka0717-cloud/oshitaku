@@ -1,12 +1,12 @@
 import { useRef } from 'react';
 import { Animated } from 'react-native';
-import { hardShadow, outlineWidth } from './pop';
+import { buttonDepth } from './pop';
 
-// Shared "pressable sticker" interaction: the element sinks into its own
-// hard shadow and squishes slightly, then springs back on release. Used
-// by Button and PressableCard so every tappable surface in the app feels
-// the same.
-export function usePressLedge(baseBorder: number = outlineWidth, ledgeExtra: number = hardShadow.offset) {
+// Shared "puffy" press interaction: the element sinks down and squishes
+// slightly on press, then springs back on release. Used by Button,
+// PressableCard, and NavIconLink so every tappable surface in the app
+// feels the same.
+export function usePressLedge(depth: number = buttonDepth) {
   const press = useRef(new Animated.Value(0)).current;
 
   const pressIn = () => {
@@ -16,9 +16,8 @@ export function usePressLedge(baseBorder: number = outlineWidth, ledgeExtra: num
     Animated.spring(press, { toValue: 0, useNativeDriver: false, friction: 5, tension: 220 }).start();
   };
 
-  const translate = press.interpolate({ inputRange: [0, 1], outputRange: [0, hardShadow.offset] });
-  const ledge = press.interpolate({ inputRange: [0, 1], outputRange: [baseBorder + ledgeExtra, baseBorder] });
-  const scale = press.interpolate({ inputRange: [0, 1], outputRange: [1, 0.96] });
+  const translate = press.interpolate({ inputRange: [0, 1], outputRange: [0, depth] });
+  const scale = press.interpolate({ inputRange: [0, 1], outputRange: [1, 0.97] });
 
-  return { press, pressIn, pressOut, translate, ledge, scale };
+  return { press, pressIn, pressOut, translate, scale };
 }

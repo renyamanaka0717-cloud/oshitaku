@@ -1,8 +1,38 @@
-// Shape language for the bold-outline / sticker-shadow visual style:
-// thick comic ink borders, hard (non-blurred) offset shadows, and a
-// bottom "bevel" ledge on buttons for a chunky, pressable feel.
-export const outlineWidth = 2;
+// Shape language: soft, floaty "native app / kids game" cards instead of
+// thick comic-ink borders. Hierarchy comes from background color, soft
+// drop shadows, and a hairline highlight border — not heavy outlines.
 
+// A very thin, barely-there border some white cards keep for definition
+// against light backgrounds (paired with a soft shadow, not a colored
+// outline).
+export const hairline = 1;
+
+// Soft, diffuse shadow for big surface cards (hero cards, panels).
+export const cardShadow = {
+  shadowColor: '#4B3F73',
+  shadowOffset: { width: 0, height: 8 },
+  shadowOpacity: 0.12,
+  shadowRadius: 16,
+  elevation: 5,
+};
+
+// Lighter shadow for small chips/tiles/nav icons.
+export const smallShadow = {
+  shadowColor: '#4B3F73',
+  shadowOffset: { width: 0, height: 3 },
+  shadowOpacity: 0.1,
+  shadowRadius: 8,
+  elevation: 2,
+};
+
+// How far a "puffy" button's darker base layer peeks out below its top
+// face — the depth a button sinks by when pressed.
+export const buttonDepth = 5;
+
+// Kept for the handful of small bespoke chip buttons (e.g. header "＋
+//追加" pills) that still use a border ledge rather than the soft-shadow
+// system above; new UI should prefer cardShadow/smallShadow/buttonDepth.
+export const outlineWidth = 2;
 export const hardShadow = {
   offset: 3,
   offsetSm: 2,

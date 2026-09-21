@@ -11,6 +11,7 @@ export type ColorPalette = {
   accentDark: string;
 
   pink: string;
+  accentPink: string;
   purple: string;
   purpleDark: string;
   blue: string;
@@ -58,6 +59,7 @@ export const lightColors: ColorPalette = {
   accentDark: '#C99A4E',
 
   pink: '#FFAB91',
+  accentPink: '#FF4F81',
   purple: '#C9B8FF',
   purpleDark: '#7C6CE0',
   blue: '#9AC7EE',
@@ -66,8 +68,8 @@ export const lightColors: ColorPalette = {
   cream: '#FFF7D6',
   mint: '#E8FFF2',
 
-  text: '#4A4542',
-  textMuted: '#928C87',
+  text: '#34313F',
+  textMuted: '#8B8894',
   textOnPrimary: '#FFFFFF',
 
   border: '#F3E7D6',
