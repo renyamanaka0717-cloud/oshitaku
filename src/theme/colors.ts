@@ -40,35 +40,37 @@ export type ColorPalette = {
 };
 
 // "black" doubles as the bold comic-outline / hard-shadow ink used by the
-// pop-art component style (Button, Card, chips).
-const INK = '#8A6A55';
+// pop-art component style (Button, Card, chips). Kept as a warm charcoal
+// instead of true black or a muddy brown, so outlines read as crisp rather
+// than heavy.
+const INK = '#756B65';
 
 export const lightColors: ColorPalette = {
-  background: '#FFF4DC',
+  background: '#FFF9ED',
   surface: '#FFFFFF',
-  surfaceAlt: '#FFEAD2',
+  surfaceAlt: '#FFEFE3',
 
-  primary: '#FF7A5C',
-  primaryDark: '#E3573B',
+  primary: '#FF6B55',
+  primaryDark: '#E8503A',
   secondary: '#7FCFC2',
   secondaryDark: '#4FA396',
   accent: '#E7BE7A',
   accentDark: '#C99A4E',
 
   pink: '#FFAB91',
-  purple: '#C5B5F0',
-  purpleDark: '#7C6FC4',
+  purple: '#C9B8FF',
+  purpleDark: '#7C6CE0',
   blue: '#9AC7EE',
-  green: '#8DDB6E',
-  yellow: '#F8CC55',
+  green: '#91E47A',
+  yellow: '#FFD84D',
   cream: '#FFF7D6',
   mint: '#E8FFF2',
 
-  text: '#4B443D',
-  textMuted: '#8F8880',
+  text: '#4A4542',
+  textMuted: '#928C87',
   textOnPrimary: '#FFFFFF',
 
-  border: '#F0E2D0',
+  border: '#F3E7D6',
 
   success: '#3DC47E',
   warning: '#FFB43D',
