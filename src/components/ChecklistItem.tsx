@@ -2,10 +2,12 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { AppText } from './AppText';
+import { CuteIcon } from './CuteIcon';
 import { PopScale } from './animations/PopScale';
 import { CardFlash } from './animations/CardFlash';
 import { FlyingStar } from './animations/FlyingStar';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
+import { cuteIconKeyForTaskEmoji } from '@/theme/cuteIcons';
 import { playSound } from '@/features/sound/soundService';
 
 type Props = {
@@ -43,7 +45,13 @@ export function ChecklistItem({ label, icon, checked, onToggle }: Props) {
       style={[styles.row, checked ? styles.rowChecked : null]}
     >
       <CardFlash trigger={justChecked} flashColor={colors.success} style={styles.flashLayer} />
-      {icon ? <AppText style={styles.icon}>{icon}</AppText> : null}
+      {icon ? (
+        <CuteIcon
+          iconKey={cuteIconKeyForTaskEmoji(icon)}
+          size={32}
+          fallback={<AppText style={styles.icon}>{icon}</AppText>}
+        />
+      ) : null}
       <AppText variant="subtitle" style={styles.label}>
         {label}
       </AppText>

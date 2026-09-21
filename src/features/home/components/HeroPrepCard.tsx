@@ -3,8 +3,10 @@ import { StyleSheet, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
+import { CuteIcon } from '@/components/CuteIcon';
 import { PressableCard } from '@/components/PressableCard';
 import { Icon, IconName } from '@/theme/icons';
+import { CuteIconKey, cuteIconKeyForTaskEmoji } from '@/theme/cuteIcons';
 import { ColorPalette, radius, smallShadow, spacing, useTheme } from '@/theme';
 
 type PreviewTask = { id: string; icon: string; label: string };
@@ -19,9 +21,9 @@ type Props = {
 
 const PREVIEW_LIMIT = 4;
 
-const MODE_CONTENT: Record<'morning' | 'evening', { icon: IconName; title: string }> = {
-  morning: { icon: 'sun', title: '朝のおしたく' },
-  evening: { icon: 'moon', title: '夜のおしたく' },
+const MODE_CONTENT: Record<'morning' | 'evening', { icon: IconName; cuteKey: CuteIconKey; title: string }> = {
+  morning: { icon: 'sun', cuteKey: 'morningPrep', title: '朝のおしたく' },
+  evening: { icon: 'moon', cuteKey: 'eveningPrep', title: '夜のおしたく' },
 };
 
 // Soft top-to-bottom gradient per mode, a shade lighter at the top so the
@@ -36,7 +38,7 @@ export function HeroPrepCard({ mode, tasks, checked, isSuggested, onPress }: Pro
   const gradient = MODE_GRADIENT[mode];
   const ctaColor = mode === 'morning' ? colors.primaryDark : colors.purpleDark;
   const styles = useMemo(() => createStyles(colors), [colors]);
-  const { icon, title } = MODE_CONTENT[mode];
+  const { icon, cuteKey, title } = MODE_CONTENT[mode];
 
   const doneCount = tasks.filter((t) => checked[t.id]).length;
   const total = tasks.length;
@@ -68,7 +70,7 @@ export function HeroPrepCard({ mode, tasks, checked, isSuggested, onPress }: Pro
 
         <View style={styles.headerRow}>
           <View style={styles.iconBadge}>
-            <Icon name={icon} size={36} />
+            <CuteIcon iconKey={cuteKey} size={40} fallback={<Icon name={icon} size={36} />} />
           </View>
           <AppText variant="title" color={colors.text} style={styles.titleText}>
             {title}
@@ -100,7 +102,11 @@ export function HeroPrepCard({ mode, tasks, checked, isSuggested, onPress }: Pro
                 key={task.id}
                 style={[styles.previewItem, checked[task.id] ? styles.previewItemDone : null]}
               >
-                <AppText style={styles.previewIcon}>{task.icon}</AppText>
+                <CuteIcon
+                  iconKey={cuteIconKeyForTaskEmoji(task.icon)}
+                  size={40}
+                  fallback={<AppText style={styles.previewIcon}>{task.icon}</AppText>}
+                />
                 <AppText variant="caption" color={colors.text} numberOfLines={1} style={styles.previewLabel}>
                   {task.label}
                 </AppText>

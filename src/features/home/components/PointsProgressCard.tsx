@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { AppText } from '@/components/AppText';
+import { CuteIcon } from '@/components/CuteIcon';
 import { PressableCard } from '@/components/PressableCard';
 import { ProgressBar } from '@/components/ProgressBar';
 import { BounceOnChange } from '@/components/BounceOnChange';
@@ -32,7 +33,7 @@ export function PointsProgressCard({ points, nextReward, onPress }: Props) {
         <View style={styles.leftCol}>
           <BounceOnChange watch={points}>
             <View style={styles.coinWrap}>
-              <Icon name="coin" size={32} />
+              <CuteIcon iconKey="points" size={36} fallback={<Icon name="coin" size={32} />} />
               <View style={styles.sparkle}>
                 <Icon name="sparkles" size={13} />
               </View>

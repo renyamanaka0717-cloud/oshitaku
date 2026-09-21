@@ -2,11 +2,14 @@ import { useMemo } from 'react';
 import { Animated, Pressable, StyleSheet } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { AppText } from './AppText';
+import { CuteIcon } from './CuteIcon';
 import { Icon, IconName } from '@/theme/icons';
+import { CuteIconKey } from '@/theme/cuteIcons';
 import { smallShadow, usePressLedge } from '@/theme';
 
 type Props = {
   icon: IconName;
+  cuteKey?: CuteIconKey;
   label: string;
   tint: string;
   active?: boolean;
@@ -15,7 +18,7 @@ type Props = {
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-export function NavIconLink({ icon, label, tint, active, onPress }: Props) {
+export function NavIconLink({ icon, cuteKey, label, tint, active, onPress }: Props) {
   const styles = useMemo(() => createStyles(), []);
   const { pressIn, pressOut, translate, scale } = usePressLedge(2);
 
@@ -32,7 +35,7 @@ export function NavIconLink({ icon, label, tint, active, onPress }: Props) {
       style={[styles.item, { transform: [{ translateY: translate }, { scale }] }]}
     >
       <Animated.View style={[styles.circle, { backgroundColor: tint }]}>
-        <Icon name={icon} size={28} />
+        <CuteIcon iconKey={cuteKey} size={28} fallback={<Icon name={icon} size={28} />} />
       </Animated.View>
       <AppText variant="caption" color={active ? tint : undefined} style={[styles.cap, active ? styles.capActive : null]}>
         {label}
