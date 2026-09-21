@@ -185,12 +185,11 @@ function createStyles(colors: ColorPalette) {
     },
     previewRow: {
       flexDirection: 'row',
-      flexWrap: 'wrap',
       gap: spacing.sm,
     },
     previewItem: {
-      width: 76,
-      height: 76,
+      flex: 1,
+      height: 72,
       borderRadius: radius.md,
       backgroundColor: colors.surface,
       borderWidth: 2,
