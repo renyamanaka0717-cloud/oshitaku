@@ -4,6 +4,7 @@ import { router, useFocusEffect } from 'expo-router';
 import { Redirect } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { AppText } from '@/components/AppText';
+import { CuteIcon } from '@/components/CuteIcon';
 import { NavIconLink } from '@/components/NavIconLink';
 import { FadeInUp } from '@/components/FadeInUp';
 import { useChildStore, useActiveChild } from '@/features/child/store';
@@ -117,7 +118,7 @@ export default function ChildHome() {
             <LinkRowCard
               title="朝のおしたく"
               subtitle={morningComplete ? 'できた！✨' : 'あさのじゅんびをみる'}
-              icon={<Icon name="sun" size={28} />}
+              icon={<CuteIcon iconKey="morningPrep" size={28} fallback={<Icon name="sun" size={28} />} />}
               tint={colors.yellow}
               onPress={() => router.push('/child/morning')}
             />
@@ -125,7 +126,7 @@ export default function ChildHome() {
             <LinkRowCard
               title="夜のおしたく"
               subtitle={eveningComplete ? 'できた！✨' : 'よるのじゅんびをみる'}
-              icon={<Icon name="moon" size={28} />}
+              icon={<CuteIcon iconKey="eveningPrep" size={28} fallback={<Icon name="moon" size={28} />} />}
               tint={colors.purple}
               onPress={() => router.push('/child/evening')}
             />
@@ -133,7 +134,7 @@ export default function ChildHome() {
           <LinkRowCard
             title="おてつだい"
             subtitle="できることをみる"
-            icon={<Icon name="broom" size={28} />}
+            icon={<CuteIcon iconKey="chores" size={28} fallback={<Icon name="broom" size={28} />} />}
             tint={colors.green}
             onPress={() => router.push('/child/chores')}
           />
@@ -157,7 +158,7 @@ export default function ChildHome() {
           <LinkRowCard
             title="ごほうび"
             subtitle="どんなごほうびがあるかな？"
-            icon={<Icon name="gift" size={28} />}
+            icon={<CuteIcon iconKey="rewards" size={28} fallback={<Icon name="gift" size={28} />} />}
             tint={colors.surface}
             badgeTint={colors.pink}
             onPress={() => router.push('/child/rewards')}
@@ -165,7 +166,13 @@ export default function ChildHome() {
           <LinkRowCard
             title="カレンダー"
             subtitle="たのしみなよていをみる"
-            icon={<AppText style={styles.calendarIcon}>📅</AppText>}
+            icon={
+              <CuteIcon
+                iconKey="calendar"
+                size={28}
+                fallback={<AppText style={styles.calendarIcon}>📅</AppText>}
+              />
+            }
             tint={colors.surface}
             badgeTint={colors.blue}
             onPress={() => router.push('/child/calendar')}
@@ -175,9 +182,21 @@ export default function ChildHome() {
 
       <FadeInUp delay={340}>
         <View style={styles.linkRow}>
-          <NavIconLink icon="house" label="ホーム" tint={colors.primary} active onPress={() => {}} />
-          <NavIconLink icon="chart" label="とうけい" tint={colors.surfaceAlt} onPress={() => router.push('/child/stats')} />
-          <NavIconLink icon="gear" label="設定" tint={colors.surfaceAlt} onPress={() => router.push('/parent/dashboard')} />
+          <NavIconLink icon="house" cuteKey="home" label="ホーム" tint={colors.primary} active onPress={() => {}} />
+          <NavIconLink
+            icon="chart"
+            cuteKey="stats"
+            label="とうけい"
+            tint={colors.surfaceAlt}
+            onPress={() => router.push('/child/stats')}
+          />
+          <NavIconLink
+            icon="gear"
+            cuteKey="settings"
+            label="設定"
+            tint={colors.surfaceAlt}
+            onPress={() => router.push('/parent/dashboard')}
+          />
         </View>
       </FadeInUp>
 
