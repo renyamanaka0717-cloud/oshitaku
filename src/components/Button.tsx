@@ -4,13 +4,14 @@ import {
   Pressable,
   StyleProp,
   StyleSheet,
+  View,
   ViewStyle,
   TextStyle,
   GestureResponderEvent,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { AppText } from './AppText';
-import { ColorPalette, outlineWidth, radius, spacing, useTheme, usePressLedge } from '@/theme';
+import { ColorPalette, buttonDepth, darken, radius, spacing, useTheme, usePressLedge } from '@/theme';
 
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
 type Size = 'md' | 'lg';
@@ -24,6 +25,9 @@ type Props = {
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
   icon?: string;
+  // Overrides the variant's own fill color (e.g. a mode-specific CTA
+  // tint) while still deriving a matching darker "puffy" base layer.
+  color?: string;
 };
 
 function getVariantStyles(colors: ColorPalette): Record<Variant, { bg: string; text: string }> {
@@ -46,11 +50,13 @@ export function Button({
   style,
   textStyle,
   icon,
+  color,
 }: Props) {
   const { colors } = useTheme();
-  const styles = useMemo(() => createStyles(), []);
   const v = useMemo(() => getVariantStyles(colors), [colors])[variant];
-  const { pressIn, pressOut, translate, ledge, scale } = usePressLedge();
+  const bg = color ?? v.bg;
+  const styles = useMemo(() => createStyles(bg), [bg]);
+  const { pressIn, pressOut, translate, scale } = usePressLedge();
 
   const handlePress = (e: GestureResponderEvent) => {
     if (disabled) return;
@@ -59,43 +65,58 @@ export function Button({
   };
 
   return (
-    <Animated.View style={{ transform: [{ translateX: translate }, { translateY: translate }, { scale }] }}>
-      <AnimatedPressable
-        onPress={handlePress}
-        onPressIn={pressIn}
-        onPressOut={pressOut}
-        disabled={disabled}
-        style={[
-          styles.base,
-          size === 'lg' ? styles.lg : styles.md,
-          {
-            backgroundColor: v.bg,
-            borderColor: colors.black,
-            borderBottomWidth: ledge,
-            borderRightWidth: ledge,
-          },
-          disabled ? styles.disabled : null,
-          style,
-        ]}
-      >
-        {icon ? <AppText style={styles.icon}>{icon}</AppText> : null}
-        <AppText variant="subtitle" color={v.text} style={textStyle}>
-          {label}
-        </AppText>
-      </AnimatedPressable>
-    </Animated.View>
+    <View style={[styles.wrap, style]}>
+      <View style={[styles.depthLayer, disabled ? styles.disabled : null]} />
+      <Animated.View style={{ transform: [{ translateY: translate }, { scale }] }}>
+        <AnimatedPressable
+          onPress={handlePress}
+          onPressIn={pressIn}
+          onPressOut={pressOut}
+          disabled={disabled}
+          style={[styles.base, size === 'lg' ? styles.lg : styles.md, disabled ? styles.disabled : null]}
+        >
+          <View style={styles.highlight} />
+          {icon ? <AppText style={styles.icon}>{icon}</AppText> : null}
+          <AppText variant="subtitle" color={v.text} style={textStyle}>
+            {label}
+          </AppText>
+        </AnimatedPressable>
+      </Animated.View>
+    </View>
   );
 }
 
-function createStyles() {
+function createStyles(bg: string) {
   return StyleSheet.create({
+    wrap: {
+      position: 'relative',
+    },
     base: {
       borderRadius: radius.round,
-      borderWidth: outlineWidth,
+      backgroundColor: bg,
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
       gap: spacing.sm,
+      overflow: 'hidden',
+    },
+    depthLayer: {
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      top: buttonDepth,
+      height: '100%',
+      borderRadius: radius.round,
+      backgroundColor: darken(bg, 0.2),
+    },
+    highlight: {
+      position: 'absolute',
+      top: 0,
+      left: '12%',
+      right: '12%',
+      height: '38%',
+      borderRadius: radius.round,
+      backgroundColor: 'rgba(255,255,255,0.25)',
     },
     md: {
       paddingVertical: spacing.md,

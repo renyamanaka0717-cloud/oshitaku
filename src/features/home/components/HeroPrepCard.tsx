@@ -1,10 +1,11 @@
 import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { PressableCard } from '@/components/PressableCard';
 import { Icon, IconName } from '@/theme/icons';
-import { ColorPalette, radius, spacing, useTheme } from '@/theme';
+import { ColorPalette, radius, smallShadow, spacing, useTheme } from '@/theme';
 
 type PreviewTask = { id: string; icon: string; label: string };
 
@@ -23,9 +24,16 @@ const MODE_CONTENT: Record<'morning' | 'evening', { icon: IconName; title: strin
   evening: { icon: 'moon', title: '夜のおしたく' },
 };
 
+// Soft top-to-bottom gradient per mode, a shade lighter at the top so the
+// hero card reads as a gently lit surface instead of a flat color block.
+const MODE_GRADIENT: Record<'morning' | 'evening', [string, string]> = {
+  morning: ['#FFE68A', '#FFD84D'],
+  evening: ['#DDD1FF', '#C9B8FF'],
+};
+
 export function HeroPrepCard({ mode, tasks, checked, isSuggested, onPress }: Props) {
   const { colors } = useTheme();
-  const tint = mode === 'morning' ? colors.yellow : colors.purple;
+  const gradient = MODE_GRADIENT[mode];
   const ctaColor = mode === 'morning' ? colors.primaryDark : colors.purpleDark;
   const styles = useMemo(() => createStyles(colors), [colors]);
   const { icon, title } = MODE_CONTENT[mode];
@@ -50,16 +58,23 @@ export function HeroPrepCard({ mode, tasks, checked, isSuggested, onPress }: Pro
         </View>
       ) : null}
 
-      <PressableCard backgroundColor={tint} onPress={onPress} style={styles.card}>
+      <PressableCard backgroundColor="transparent" onPress={onPress} style={styles.card}>
+        <LinearGradient
+          colors={gradient}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={styles.gradient}
+        />
+
         <View style={styles.headerRow}>
           <View style={styles.iconBadge}>
             <Icon name={icon} size={36} />
           </View>
-          <AppText variant="title" color={colors.black} style={styles.titleText}>
+          <AppText variant="title" color={colors.text} style={styles.titleText}>
             {title}
           </AppText>
           <View style={styles.remainingChip}>
-            <AppText variant="caption" color={colors.black}>
+            <AppText variant="caption" color={colors.text}>
               あと{remaining}こ
             </AppText>
           </View>
@@ -72,7 +87,7 @@ export function HeroPrepCard({ mode, tasks, checked, isSuggested, onPress }: Pro
                 <View key={t.id} style={[styles.dot, checked[t.id] ? styles.dotDone : null]} />
               ))}
             </View>
-            <AppText variant="caption" color={colors.black}>
+            <AppText variant="caption" color={colors.text}>
               {doneCount}/{total} できた
             </AppText>
           </View>
@@ -107,7 +122,7 @@ export function HeroPrepCard({ mode, tasks, checked, isSuggested, onPress }: Pro
         ) : null}
 
         <View style={styles.ctaWrap}>
-          <Button label={ctaLabel} size="lg" onPress={onPress} style={{ backgroundColor: ctaColor }} />
+          <Button label={ctaLabel} size="lg" onPress={onPress} color={ctaColor} />
         </View>
       </PressableCard>
     </View>
@@ -121,21 +136,29 @@ function createStyles(colors: ColorPalette) {
     },
     suggestedWrap: {
       position: 'absolute',
-      top: -14,
+      top: -12,
       left: spacing.lg,
       zIndex: 2,
     },
     suggestedBubble: {
       backgroundColor: colors.surface,
       borderRadius: radius.round,
-      borderWidth: 2,
-      borderColor: colors.black,
       paddingHorizontal: spacing.md,
-      paddingVertical: 4,
+      paddingVertical: 5,
+      ...smallShadow,
     },
     card: {
       padding: spacing.lg,
       gap: spacing.md,
+      overflow: 'hidden',
+      borderRadius: radius.xl,
+    },
+    gradient: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
     },
     headerRow: {
       flexDirection: 'row',
@@ -146,22 +169,19 @@ function createStyles(colors: ColorPalette) {
       width: 56,
       height: 56,
       borderRadius: 999,
-      backgroundColor: 'rgba(255,255,255,0.55)',
-      borderWidth: 2,
-      borderColor: colors.black,
+      backgroundColor: 'rgba(255,255,255,0.75)',
       alignItems: 'center',
       justifyContent: 'center',
+      ...smallShadow,
     },
     titleText: {
       flex: 1,
     },
     remainingChip: {
-      backgroundColor: 'rgba(255,255,255,0.7)',
+      backgroundColor: 'rgba(255,255,255,0.85)',
       borderRadius: radius.round,
-      borderWidth: 2,
-      borderColor: colors.black,
       paddingHorizontal: spacing.sm,
-      paddingVertical: 4,
+      paddingVertical: 5,
     },
     progressRow: {
       flexDirection: 'row',
@@ -177,11 +197,9 @@ function createStyles(colors: ColorPalette) {
       height: 16,
       borderRadius: 999,
       backgroundColor: 'rgba(255,255,255,0.7)',
-      borderWidth: 2,
-      borderColor: colors.black,
     },
     dotDone: {
-      backgroundColor: colors.success,
+      backgroundColor: colors.accentPink,
     },
     previewRow: {
       flexDirection: 'row',
@@ -189,21 +207,20 @@ function createStyles(colors: ColorPalette) {
     },
     previewItem: {
       flex: 1,
-      height: 72,
+      height: 76,
       borderRadius: radius.md,
       backgroundColor: colors.surface,
-      borderWidth: 2,
-      borderColor: colors.black,
       alignItems: 'center',
       justifyContent: 'center',
       gap: 2,
       padding: 4,
+      ...smallShadow,
     },
     previewItemDone: {
       opacity: 0.55,
     },
     previewIcon: {
-      fontSize: 26,
+      fontSize: 28,
     },
     previewLabel: {
       fontSize: 10,
@@ -217,8 +234,6 @@ function createStyles(colors: ColorPalette) {
       height: 20,
       borderRadius: 999,
       backgroundColor: colors.success,
-      borderWidth: 1.5,
-      borderColor: colors.black,
       alignItems: 'center',
       justifyContent: 'center',
     },

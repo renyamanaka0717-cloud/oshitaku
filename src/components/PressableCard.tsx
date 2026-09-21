@@ -1,7 +1,7 @@
 import { PropsWithChildren, useMemo } from 'react';
 import { Animated, Pressable, StyleProp, StyleSheet, ViewStyle } from 'react-native';
 import * as Haptics from 'expo-haptics';
-import { ColorPalette, outlineWidth, radius, useTheme, usePressLedge } from '@/theme';
+import { cardShadow, hairline, radius, useTheme, usePressLedge } from '@/theme';
 
 type Props = PropsWithChildren<{
   onPress?: () => void;
@@ -13,13 +13,13 @@ type Props = PropsWithChildren<{
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-// A tappable card: bold outline + hard shadow ledge that flattens and
-// squishes on press, so anything wrapped in this reads as "pressable"
-// at a glance, distinct from static info cards.
+// A tappable card: soft floating shadow + a hairline edge that sinks and
+// squishes slightly on press, so anything wrapped in this reads as
+// "pressable" at a glance without a heavy outline.
 export function PressableCard({ children, onPress, backgroundColor, style, disabled, radius: r }: Props) {
   const { colors } = useTheme();
-  const styles = useMemo(() => createStyles(colors), [colors]);
-  const { pressIn, pressOut, translate, ledge, scale } = usePressLedge();
+  const styles = useMemo(() => createStyles(), []);
+  const { pressIn, pressOut, translate, scale } = usePressLedge(3);
 
   const handlePress = () => {
     if (disabled || !onPress) return;
@@ -28,7 +28,7 @@ export function PressableCard({ children, onPress, backgroundColor, style, disab
   };
 
   return (
-    <Animated.View style={{ transform: [{ translateX: translate }, { translateY: translate }, { scale }] }}>
+    <Animated.View style={{ transform: [{ translateY: translate }, { scale }] }}>
       <AnimatedPressable
         onPress={handlePress}
         onPressIn={pressIn}
@@ -38,10 +38,7 @@ export function PressableCard({ children, onPress, backgroundColor, style, disab
           styles.base,
           {
             backgroundColor: backgroundColor ?? colors.surface,
-            borderColor: colors.black,
             borderRadius: r ?? radius.lg,
-            borderBottomWidth: ledge,
-            borderRightWidth: ledge,
           },
           disabled ? styles.disabled : null,
           style,
@@ -53,11 +50,12 @@ export function PressableCard({ children, onPress, backgroundColor, style, disab
   );
 }
 
-function createStyles(colors: ColorPalette) {
+function createStyles() {
   return StyleSheet.create({
     base: {
-      borderWidth: outlineWidth,
-      borderColor: colors.black,
+      borderWidth: hairline,
+      borderColor: 'rgba(0,0,0,0.06)',
+      ...cardShadow,
     },
     disabled: {
       opacity: 0.5,
