@@ -2,7 +2,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { Modal, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
+import { CuteIconPicker } from '@/components/CuteIconPicker';
 import { DayTypePicker, WEEKDAY_DAYS } from './DayTypePicker';
+import { TASK_ICON_OPTIONS } from '@/theme/cuteIcons';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 type Props = {
@@ -15,20 +17,20 @@ export function AddTaskModal({ visible, onSave, onClose }: Props) {
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const [label, setLabel] = useState('');
-  const [icon, setIcon] = useState('✅');
+  const [icon, setIcon] = useState(TASK_ICON_OPTIONS[0].emoji);
   const [daysOfWeek, setDaysOfWeek] = useState<number[]>(WEEKDAY_DAYS);
 
   useEffect(() => {
     if (visible) {
       setLabel('');
-      setIcon('✅');
+      setIcon(TASK_ICON_OPTIONS[0].emoji);
       setDaysOfWeek(WEEKDAY_DAYS);
     }
   }, [visible]);
 
   const handleSave = () => {
     if (!label.trim()) return;
-    onSave({ label: label.trim(), icon: icon || '✅', daysOfWeek });
+    onSave({ label: label.trim(), icon, daysOfWeek });
     onClose();
   };
 
@@ -39,18 +41,16 @@ export function AddTaskModal({ visible, onSave, onClose }: Props) {
           <AppText variant="subtitle" style={styles.title}>
             新しいタスクを追加
           </AppText>
-          <View style={styles.row}>
-            <TextInput value={icon} onChangeText={setIcon} maxLength={2} style={styles.iconInput} />
-            <TextInput
-              value={label}
-              onChangeText={setLabel}
-              placeholder="タスクの名前"
-              placeholderTextColor={colors.textMuted}
-              style={styles.labelInput}
-              autoFocus
-              onSubmitEditing={handleSave}
-            />
-          </View>
+          <TextInput
+            value={label}
+            onChangeText={setLabel}
+            placeholder="タスクの名前"
+            placeholderTextColor={colors.textMuted}
+            style={styles.labelInput}
+            autoFocus
+            onSubmitEditing={handleSave}
+          />
+          <CuteIconPicker options={TASK_ICON_OPTIONS} value={icon} onSelect={setIcon} />
           <DayTypePicker value={daysOfWeek} onChange={setDaysOfWeek} />
           <Button label="追加する" onPress={handleSave} disabled={!label.trim()} />
         </Pressable>
@@ -79,22 +79,7 @@ function createStyles(colors: ColorPalette) {
     title: {
       textAlign: 'center',
     },
-    row: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing.sm,
-    },
-    iconInput: {
-      width: 44,
-      textAlign: 'center',
-      backgroundColor: colors.surfaceAlt,
-      borderRadius: radius.sm,
-      padding: spacing.sm,
-      fontSize: 18,
-      color: colors.text,
-    },
     labelInput: {
-      flex: 1,
       backgroundColor: colors.surfaceAlt,
       borderRadius: radius.sm,
       padding: spacing.sm,

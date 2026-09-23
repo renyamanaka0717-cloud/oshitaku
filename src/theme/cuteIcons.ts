@@ -111,6 +111,12 @@ export function cuteIconKeyForTaskEmoji(emoji: string | undefined | null): CuteI
   return TASK_ICON_KEY_BY_EMOJI[emoji];
 }
 
+// Picker options for task icon-selection UI (parent-mode task editing), in the
+// same order as TASK_ICON_KEY_BY_EMOJI above.
+export const TASK_ICON_OPTIONS: Array<{ emoji: string; key: CuteIconKey }> = Object.entries(
+  TASK_ICON_KEY_BY_EMOJI,
+).map(([emoji, key]) => ({ emoji, key }));
+
 // Same idea for persistent items (itemRepository's default new-item emoji).
 export const ITEM_ICON_KEY_BY_EMOJI: Record<string, CuteIconKey> = {
   '📦': 'schoolItem',
@@ -120,6 +126,11 @@ export function cuteIconKeyForItemEmoji(emoji: string | undefined | null): CuteI
   if (!emoji) return undefined;
   return ITEM_ICON_KEY_BY_EMOJI[emoji];
 }
+
+// Picker options for item icon-selection UI (parent-mode 持ち物リスト editing).
+export const ITEM_ICON_OPTIONS: Array<{ emoji: string; key: CuteIconKey }> = Object.entries(
+  ITEM_ICON_KEY_BY_EMOJI,
+).map(([emoji, key]) => ({ emoji, key }));
 
 // Same idea for the fixed avatar picker (features/child/avatars.ts).
 export const AVATAR_ICON_KEY_BY_EMOJI: Record<string, CuteIconKey> = {
