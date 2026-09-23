@@ -2,8 +2,10 @@ import { Image, Pressable, StyleSheet, useWindowDimensions, View } from 'react-n
 import { Child } from '@/db/models';
 import { AppText } from '@/components/AppText';
 import { ChildAvatar } from '@/features/child/components/ChildAvatar';
+import { CuteIcon } from '@/components/CuteIcon';
 import { getSuggestedMode } from '@/features/home/timeMode';
 import { Icon, IconName } from '@/theme/icons';
+import { CuteIconKey } from '@/theme/cuteIcons';
 import { radius, spacing, useTheme } from '@/theme';
 import { formatJapaneseDate } from '@/utils/date';
 
@@ -32,9 +34,9 @@ function sceneForHour(hour: number): Scene {
 // Morning/evening show a small decorative sun/moon next to the greeting
 // so the screen's mood shifts with the time of day, without wrapping the
 // header in its own colored panel.
-const MODE_DECOR: Record<'morning' | 'evening', IconName> = {
-  morning: 'sun',
-  evening: 'moon',
+const MODE_DECOR: Record<'morning' | 'evening', { icon: IconName; cuteKey: CuteIconKey }> = {
+  morning: { icon: 'sun', cuteKey: 'morningPrep' },
+  evening: { icon: 'moon', cuteKey: 'eveningPrep' },
 };
 
 type Props = {
@@ -56,7 +58,7 @@ export function GreetingHeader({ child, onPressAvatar }: Props) {
     <View style={styles.row}>
       <View style={styles.textCol}>
         <View style={styles.greetLine}>
-          {decor ? <Icon name={decor} size={24} /> : null}
+          {decor ? <CuteIcon iconKey={decor.cuteKey} size={24} fallback={<Icon name={decor.icon} size={24} />} /> : null}
           <AppText variant="hero" color={textColor}>
             {greetingForHour(now.getHours())}
           </AppText>
