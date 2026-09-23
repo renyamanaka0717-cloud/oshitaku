@@ -2,10 +2,6 @@ import { Image, Pressable, StyleSheet, useWindowDimensions, View } from 'react-n
 import { Child } from '@/db/models';
 import { AppText } from '@/components/AppText';
 import { ChildAvatar } from '@/features/child/components/ChildAvatar';
-import { CuteIcon } from '@/components/CuteIcon';
-import { getSuggestedMode } from '@/features/home/timeMode';
-import { Icon, IconName } from '@/theme/icons';
-import { CuteIconKey } from '@/theme/cuteIcons';
 import { radius, spacing, useTheme } from '@/theme';
 import { formatJapaneseDate } from '@/utils/date';
 
@@ -31,14 +27,6 @@ function sceneForHour(hour: number): Scene {
   return null;
 }
 
-// Morning/evening show a small decorative sun/moon next to the greeting
-// so the screen's mood shifts with the time of day, without wrapping the
-// header in its own colored panel.
-const MODE_DECOR: Record<'morning' | 'evening', { icon: IconName; cuteKey: CuteIconKey }> = {
-  morning: { icon: 'sun', cuteKey: 'morningPrep' },
-  evening: { icon: 'moon', cuteKey: 'eveningPrep' },
-};
-
 type Props = {
   child: Child;
   onPressAvatar: () => void;
@@ -48,22 +36,27 @@ export function GreetingHeader({ child, onPressAvatar }: Props) {
   const { colors } = useTheme();
   const { width: windowWidth } = useWindowDimensions();
   const now = new Date();
-  const mode = getSuggestedMode(now);
-  const decor = mode ? MODE_DECOR[mode] : null;
   const scene = sceneForHour(now.getHours());
   const textColor = scene === 'night' ? colors.white : undefined;
   const dateColor = scene === 'night' ? colors.white : colors.textMuted;
+  // Both bedroom scenes are busy illustrations, so the greeting/date need a
+  // shadow to stay legible wherever they land on the image — a dark shadow
+  // for the white night text, a light one for the dark morning text.
+  const textShadowStyle = scene
+    ? {
+        textShadowColor: scene === 'night' ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.85)',
+        textShadowOffset: { width: 0, height: 1 },
+        textShadowRadius: 6,
+      }
+    : undefined;
 
   const content = (
     <View style={styles.row}>
       <View style={styles.textCol}>
-        <View style={styles.greetLine}>
-          {decor ? <CuteIcon iconKey={decor.cuteKey} size={24} fallback={<Icon name={decor.icon} size={24} />} /> : null}
-          <AppText variant="hero" color={textColor}>
-            {greetingForHour(now.getHours())}
-          </AppText>
-        </View>
-        <AppText variant="body" color={dateColor}>
+        <AppText variant="hero" color={textColor} style={textShadowStyle}>
+          {greetingForHour(now.getHours())}
+        </AppText>
+        <AppText variant="body" color={dateColor} style={textShadowStyle}>
           {formatJapaneseDate(now)}
         </AppText>
       </View>
@@ -121,10 +114,5 @@ const styles = StyleSheet.create({
   },
   textCol: {
     gap: 2,
-  },
-  greetLine: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.xs,
   },
 });
