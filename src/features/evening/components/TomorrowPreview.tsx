@@ -2,10 +2,12 @@ import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Card } from '@/components/Card';
 import { AppText } from '@/components/AppText';
+import { CuteIcon } from '@/components/CuteIcon';
 import { SectionHeader } from '@/components/SectionHeader';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 import { Item, Subject, TimetableEntry } from '@/db/models';
 import { LESSON_PERIOD } from '@/features/timetable/constants';
+import { cuteIconKeyForItemEmoji } from '@/theme/cuteIcons';
 
 type Props = {
   entries: Array<TimetableEntry & { subject: Subject | undefined }>;
@@ -44,7 +46,12 @@ export function TomorrowPreview({ entries, items }: Props) {
         <View style={styles.subjectRow}>
           {items.map((item) => (
             <View key={item.id} style={styles.itemChip}>
-              <AppText>{item.icon} {item.name}</AppText>
+              <CuteIcon
+                iconKey={cuteIconKeyForItemEmoji(item.icon)}
+                size={18}
+                fallback={<AppText>{item.icon}</AppText>}
+              />
+              <AppText>{item.name}</AppText>
             </View>
           ))}
         </View>
@@ -69,6 +76,9 @@ function createStyles(colors: ColorPalette) {
       paddingHorizontal: spacing.sm,
     },
     itemChip: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
       borderRadius: radius.round,
       paddingVertical: spacing.xs,
       paddingHorizontal: spacing.sm,

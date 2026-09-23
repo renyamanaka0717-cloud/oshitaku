@@ -1,7 +1,9 @@
 import { Image, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
+import { CuteIcon } from '@/components/CuteIcon';
 import { Icon } from '@/theme/icons';
 import { avatarIconFor } from '@/features/child/avatars';
+import { cuteIconKeyForAvatarEmoji } from '@/theme/cuteIcons';
 import { useTheme } from '@/theme';
 
 type Props = {
@@ -38,7 +40,11 @@ export function ChildAvatar({ avatarImageUri, avatarEmoji, avatarColor, size = 6
       ]}
     >
       {iconName ? (
-        <Icon name={iconName} size={size * 0.56} />
+        <CuteIcon
+          iconKey={cuteIconKeyForAvatarEmoji(avatarEmoji)}
+          size={size * 0.8}
+          fallback={<Icon name={iconName} size={size * 0.56} />}
+        />
       ) : (
         <AppText style={{ fontSize: size * 0.5 }}>{avatarEmoji}</AppText>
       )}

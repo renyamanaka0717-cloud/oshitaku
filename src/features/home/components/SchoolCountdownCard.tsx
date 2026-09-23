@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Card } from '@/components/Card';
 import { AppText } from '@/components/AppText';
+import { CuteIcon } from '@/components/CuteIcon';
 import { ProgressBar } from '@/components/ProgressBar';
 import { CircularProgress } from '@/components/CircularProgress';
 import { ColorPalette, spacing, useTheme } from '@/theme';
@@ -37,7 +38,7 @@ export function SchoolCountdownCard({ schoolArrivalTime, progress }: Props) {
     <Card style={styles.card}>
       <View style={styles.row}>
         <CircularProgress progress={timeProgress} color={tint} size={80} strokeWidth={8}>
-          <AppText style={styles.ringEmoji}>🏫</AppText>
+          <CuteIcon iconKey="schoolBuilding" size={32} fallback={<AppText style={styles.ringEmoji}>🏫</AppText>} />
         </CircularProgress>
         <View style={styles.info}>
           <AppText variant="caption">学校まで</AppText>

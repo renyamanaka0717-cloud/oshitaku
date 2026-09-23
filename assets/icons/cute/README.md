@@ -1,6 +1,6 @@
 # Icons8 "Cute Color" icons
 
-All 23 icons are filled in and registered in `src/theme/cuteIcons.ts`
+All 33 icons are filled in and registered in `src/theme/cuteIcons.ts`
 (source: https://icons8.com/icons/dusk--author-made-by-made). Every PNG
 here is a 256×256 transparent image, downscaled from the original
 1024×1024 exports to keep the app bundle small — plenty of headroom for
@@ -37,3 +37,15 @@ renders through `<CuteIcon>`.
 - `home.png` — ホーム
 - `stats.png` — とうけい
 - `settings.png` — 設定
+- `school-building.png` — 学校まで（カウントダウンカード）
+- `school-item.png` — 持ち物（汎用）
+
+## Avatar icons
+- `avatar-chick.png` — 🐣
+- `avatar-bear.png` — 🐻
+- `avatar-rabbit.png` — 🐰
+- `avatar-cat.png` — 🐱
+- `avatar-fox.png` — 🦊
+- `avatar-dog.png` — 🐶
+- `avatar-panda.png` — 🐼
+- `avatar-lion.png` — 🦁
