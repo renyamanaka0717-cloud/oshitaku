@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { router } from 'expo-router';
 import { AppText } from './AppText';
+import { CuteIcon } from './CuteIcon';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 type Mode = 'morning' | 'evening';
@@ -26,14 +27,14 @@ export function ModeSwitch({ active }: Props) {
         onPress={() => goTo('morning')}
         hitSlop={6}
       >
-        <AppText style={styles.icon}>☀️</AppText>
+        <CuteIcon iconKey="morningPrep" size={22} fallback={<AppText style={styles.icon}>☀️</AppText>} />
       </Pressable>
       <Pressable
         style={[styles.option, active === 'evening' ? styles.optionActive : null]}
         onPress={() => goTo('evening')}
         hitSlop={6}
       >
-        <AppText style={styles.icon}>🌙</AppText>
+        <CuteIcon iconKey="eveningPrep" size={22} fallback={<AppText style={styles.icon}>🌙</AppText>} />
       </Pressable>
     </View>
   );
