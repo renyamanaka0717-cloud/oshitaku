@@ -86,9 +86,7 @@ export const CUTE_ICON_SOURCES: Partial<Record<CuteIconKey, ImageSourcePropType>
 // Best-effort bridge from the free-text emoji stored on existing morning/
 // evening tasks (see taskRepository.DEFAULT_MORNING_TASKS/DEFAULT_EVENING_TASKS)
 // to a Cute Color key, so tasks created before this system existed pick up
-// the new icon automatically once it's registered above. Tasks created with
-// an emoji not listed here simply keep showing their emoji until they're
-// re-picked from a Cute Color-aware picker (not built yet).
+// the new icon automatically once it's registered above.
 export const TASK_ICON_KEY_BY_EMOJI: Record<string, CuteIconKey> = {
   '🧼': 'washFace',
   '🪥': 'toothbrush',
@@ -106,31 +104,27 @@ export const TASK_ICON_KEY_BY_EMOJI: Record<string, CuteIconKey> = {
   '🚽': 'toilet',
 };
 
-export function cuteIconKeyForTaskEmoji(emoji: string | undefined | null): CuteIconKey | undefined {
-  if (!emoji) return undefined;
-  return TASK_ICON_KEY_BY_EMOJI[emoji];
-}
-
-// Picker options for task icon-selection UI (parent-mode task editing), in the
-// same order as TASK_ICON_KEY_BY_EMOJI above.
-export const TASK_ICON_OPTIONS: Array<{ emoji: string; key: CuteIconKey }> = Object.entries(
-  TASK_ICON_KEY_BY_EMOJI,
-).map(([emoji, key]) => ({ emoji, key }));
-
 // Same idea for persistent items (itemRepository's default new-item emoji).
 export const ITEM_ICON_KEY_BY_EMOJI: Record<string, CuteIconKey> = {
   '📦': 'schoolItem',
 };
 
-export function cuteIconKeyForItemEmoji(emoji: string | undefined | null): CuteIconKey | undefined {
-  if (!emoji) return undefined;
-  return ITEM_ICON_KEY_BY_EMOJI[emoji];
-}
-
-// Picker options for item icon-selection UI (parent-mode 持ち物リスト editing).
-export const ITEM_ICON_OPTIONS: Array<{ emoji: string; key: CuteIconKey }> = Object.entries(
-  ITEM_ICON_KEY_BY_EMOJI,
-).map(([emoji, key]) => ({ emoji, key }));
+// Menu/nav icon concepts (rendered via a fixed cuteKey prop at each call
+// site, not stored as free-text emoji) still need a representative emoji so
+// they can appear as icon-picker options and be recognized if a task/item
+// ends up using one.
+export const MENU_ICON_KEY_BY_EMOJI: Record<string, CuteIconKey> = {
+  '☀️': 'morningPrep',
+  '🌙': 'eveningPrep',
+  '🧹': 'chores',
+  '🎁': 'rewards',
+  '📅': 'calendar',
+  '🪙': 'points',
+  '🏠': 'home',
+  '📊': 'stats',
+  '⚙️': 'settings',
+  '🏫': 'schoolBuilding',
+};
 
 // Same idea for the fixed avatar picker (features/child/avatars.ts).
 export const AVATAR_ICON_KEY_BY_EMOJI: Record<string, CuteIconKey> = {
@@ -148,3 +142,32 @@ export function cuteIconKeyForAvatarEmoji(emoji: string | undefined | null): Cut
   if (!emoji) return undefined;
   return AVATAR_ICON_KEY_BY_EMOJI[emoji];
 }
+
+// Every registered icon's emoji → key, merged from every domain above — the
+// full set a task or item can be given, so the icon picker offers everything
+// that's been made, not just each domain's "own" icons.
+export const ALL_ICON_KEY_BY_EMOJI: Record<string, CuteIconKey> = {
+  ...TASK_ICON_KEY_BY_EMOJI,
+  ...ITEM_ICON_KEY_BY_EMOJI,
+  ...MENU_ICON_KEY_BY_EMOJI,
+  ...AVATAR_ICON_KEY_BY_EMOJI,
+};
+
+export function cuteIconKeyForEmoji(emoji: string | undefined | null): CuteIconKey | undefined {
+  if (!emoji) return undefined;
+  return ALL_ICON_KEY_BY_EMOJI[emoji];
+}
+
+export function cuteIconKeyForTaskEmoji(emoji: string | undefined | null): CuteIconKey | undefined {
+  return cuteIconKeyForEmoji(emoji);
+}
+
+export function cuteIconKeyForItemEmoji(emoji: string | undefined | null): CuteIconKey | undefined {
+  return cuteIconKeyForEmoji(emoji);
+}
+
+// Picker options for task/item icon-selection UI (parent-mode editing) — the
+// full registered set, in the same order as ALL_ICON_KEY_BY_EMOJI above.
+export const ALL_ICON_OPTIONS: Array<{ emoji: string; key: CuteIconKey }> = Object.entries(
+  ALL_ICON_KEY_BY_EMOJI,
+).map(([emoji, key]) => ({ emoji, key }));
