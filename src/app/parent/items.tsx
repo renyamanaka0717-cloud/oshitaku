@@ -5,8 +5,10 @@ import { HeaderBar } from '@/components/HeaderBar';
 import { AppText } from '@/components/AppText';
 import { Card } from '@/components/Card';
 import { Button } from '@/components/Button';
+import { CuteIconPicker } from '@/components/CuteIconPicker';
 import { useActiveChild } from '@/features/child/store';
 import { useTimetableStore } from '@/features/timetable/store';
+import { ITEM_ICON_OPTIONS } from '@/theme/cuteIcons';
 import { ColorPalette, hardShadow, outlineWidth, radius, spacing, useTheme } from '@/theme';
 import { goBack } from '@/utils/navigation';
 
@@ -54,37 +56,36 @@ export default function ItemsSettings() {
 
       <View style={styles.list}>
         {items.map((item) => (
-          <Card key={item.id} style={styles.row}>
-            <TextInput
+          <Card key={item.id} style={styles.itemCard}>
+            <View style={styles.row}>
+              <TextInput
+                value={item.name}
+                onChangeText={(v) => updateItem(item.id, { name: v })}
+                style={styles.nameInput}
+              />
+              {editMode ? (
+                <Button label="削除" variant="danger" onPress={() => deleteItem(item.id)} />
+              ) : null}
+            </View>
+            <CuteIconPicker
+              options={ITEM_ICON_OPTIONS}
               value={item.icon}
-              onChangeText={(v) => updateItem(item.id, { icon: v })}
-              style={styles.iconInput}
-              maxLength={2}
+              onSelect={(v) => updateItem(item.id, { icon: v })}
             />
-            <TextInput
-              value={item.name}
-              onChangeText={(v) => updateItem(item.id, { name: v })}
-              style={styles.nameInput}
-            />
-            {editMode ? (
-              <Button label="削除" variant="danger" onPress={() => deleteItem(item.id)} />
-            ) : null}
           </Card>
         ))}
       </View>
 
       <Card style={styles.addCard}>
         <AppText variant="subtitle">持ち物を追加</AppText>
-        <View style={styles.row}>
-          <TextInput value={icon} onChangeText={setIcon} style={styles.iconInput} maxLength={2} />
-          <TextInput
-            value={name}
-            onChangeText={setName}
-            placeholder="持ち物の名前"
-            placeholderTextColor={colors.textMuted}
-            style={styles.nameInput}
-          />
-        </View>
+        <TextInput
+          value={name}
+          onChangeText={setName}
+          placeholder="持ち物の名前"
+          placeholderTextColor={colors.textMuted}
+          style={styles.nameInput}
+        />
+        <CuteIconPicker options={ITEM_ICON_OPTIONS} value={icon} onSelect={setIcon} />
         <Button label="追加する" onPress={handleAdd} disabled={!name.trim()} />
       </Card>
     </Screen>
@@ -109,19 +110,13 @@ function createStyles(colors: ColorPalette) {
     list: {
       gap: spacing.sm,
     },
+    itemCard: {
+      gap: spacing.sm,
+    },
     row: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing.sm,
-    },
-    iconInput: {
-      width: 48,
-      textAlign: 'center',
-      backgroundColor: colors.surfaceAlt,
-      borderRadius: radius.sm,
-      padding: spacing.sm,
-      fontSize: 20,
-      color: colors.text,
     },
     nameInput: {
       flex: 1,

@@ -4,6 +4,7 @@ import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
+import { CuteIconPicker } from '@/components/CuteIconPicker';
 import { ExpandableCard } from '@/components/ExpandableCard';
 import { DayTypePicker } from '@/features/parent/components/DayTypePicker';
 import { AddTaskModal } from '@/features/parent/components/AddTaskModal';
@@ -16,6 +17,7 @@ import {
   updateEveningTask,
 } from '@/db/repositories/taskRepository';
 import { EveningTask } from '@/db/models';
+import { TASK_ICON_OPTIONS } from '@/theme/cuteIcons';
 import { ColorPalette, hardShadow, outlineWidth, radius, spacing, useTheme } from '@/theme';
 import { goBack } from '@/utils/navigation';
 
@@ -92,19 +94,16 @@ export default function EveningTasksSettings() {
               </>
             }
           >
-            <View style={styles.row}>
-              <TextInput
-                value={task.icon}
-                onChangeText={(v) => updateEveningTask(task.id, { icon: v }).then(() => reload(child.id))}
-                style={styles.iconInput}
-                maxLength={2}
-              />
-              <TextInput
-                value={task.label}
-                onChangeText={(v) => updateEveningTask(task.id, { label: v }).then(() => reload(child.id))}
-                style={styles.labelInput}
-              />
-            </View>
+            <TextInput
+              value={task.label}
+              onChangeText={(v) => updateEveningTask(task.id, { label: v }).then(() => reload(child.id))}
+              style={styles.labelInput}
+            />
+            <CuteIconPicker
+              options={TASK_ICON_OPTIONS}
+              value={task.icon}
+              onSelect={(v) => updateEveningTask(task.id, { icon: v }).then(() => reload(child.id))}
+            />
             <DayTypePicker
               value={task.daysOfWeek}
               onChange={(days) => updateEveningTask(task.id, { daysOfWeek: days }).then(() => reload(child.id))}
@@ -150,22 +149,7 @@ function createStyles(colors: ColorPalette) {
     summaryLabel: {
       flex: 1,
     },
-    row: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing.sm,
-    },
-    iconInput: {
-      width: 44,
-      textAlign: 'center',
-      backgroundColor: colors.surfaceAlt,
-      borderRadius: radius.sm,
-      padding: spacing.sm,
-      fontSize: 18,
-      color: colors.text,
-    },
     labelInput: {
-      flex: 1,
       backgroundColor: colors.surfaceAlt,
       borderRadius: radius.sm,
       padding: spacing.sm,
