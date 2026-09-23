@@ -8,7 +8,7 @@ import { Button } from '@/components/Button';
 import { CuteIconPicker } from '@/components/CuteIconPicker';
 import { useActiveChild } from '@/features/child/store';
 import { useTimetableStore } from '@/features/timetable/store';
-import { ITEM_ICON_OPTIONS } from '@/theme/cuteIcons';
+import { ALL_ICON_OPTIONS } from '@/theme/cuteIcons';
 import { ColorPalette, hardShadow, outlineWidth, radius, spacing, useTheme } from '@/theme';
 import { goBack } from '@/utils/navigation';
 
@@ -68,7 +68,7 @@ export default function ItemsSettings() {
               ) : null}
             </View>
             <CuteIconPicker
-              options={ITEM_ICON_OPTIONS}
+              options={ALL_ICON_OPTIONS}
               value={item.icon}
               onSelect={(v) => updateItem(item.id, { icon: v })}
             />
@@ -85,7 +85,7 @@ export default function ItemsSettings() {
           placeholderTextColor={colors.textMuted}
           style={styles.nameInput}
         />
-        <CuteIconPicker options={ITEM_ICON_OPTIONS} value={icon} onSelect={setIcon} />
+        <CuteIconPicker options={ALL_ICON_OPTIONS} value={icon} onSelect={setIcon} />
         <Button label="追加する" onPress={handleAdd} disabled={!name.trim()} />
       </Card>
     </Screen>

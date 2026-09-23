@@ -17,7 +17,7 @@ import {
   updateEveningTask,
 } from '@/db/repositories/taskRepository';
 import { EveningTask } from '@/db/models';
-import { TASK_ICON_OPTIONS } from '@/theme/cuteIcons';
+import { ALL_ICON_OPTIONS } from '@/theme/cuteIcons';
 import { ColorPalette, hardShadow, outlineWidth, radius, spacing, useTheme } from '@/theme';
 import { goBack } from '@/utils/navigation';
 
@@ -100,7 +100,7 @@ export default function EveningTasksSettings() {
               style={styles.labelInput}
             />
             <CuteIconPicker
-              options={TASK_ICON_OPTIONS}
+              options={ALL_ICON_OPTIONS}
               value={task.icon}
               onSelect={(v) => updateEveningTask(task.id, { icon: v }).then(() => reload(child.id))}
             />

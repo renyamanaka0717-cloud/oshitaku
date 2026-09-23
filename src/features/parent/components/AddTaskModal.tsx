@@ -4,7 +4,7 @@ import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { CuteIconPicker } from '@/components/CuteIconPicker';
 import { DayTypePicker, WEEKDAY_DAYS } from './DayTypePicker';
-import { TASK_ICON_OPTIONS } from '@/theme/cuteIcons';
+import { ALL_ICON_OPTIONS } from '@/theme/cuteIcons';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 type Props = {
@@ -17,13 +17,13 @@ export function AddTaskModal({ visible, onSave, onClose }: Props) {
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const [label, setLabel] = useState('');
-  const [icon, setIcon] = useState(TASK_ICON_OPTIONS[0].emoji);
+  const [icon, setIcon] = useState(ALL_ICON_OPTIONS[0].emoji);
   const [daysOfWeek, setDaysOfWeek] = useState<number[]>(WEEKDAY_DAYS);
 
   useEffect(() => {
     if (visible) {
       setLabel('');
-      setIcon(TASK_ICON_OPTIONS[0].emoji);
+      setIcon(ALL_ICON_OPTIONS[0].emoji);
       setDaysOfWeek(WEEKDAY_DAYS);
     }
   }, [visible]);
@@ -50,7 +50,7 @@ export function AddTaskModal({ visible, onSave, onClose }: Props) {
             autoFocus
             onSubmitEditing={handleSave}
           />
-          <CuteIconPicker options={TASK_ICON_OPTIONS} value={icon} onSelect={setIcon} />
+          <CuteIconPicker options={ALL_ICON_OPTIONS} value={icon} onSelect={setIcon} />
           <DayTypePicker value={daysOfWeek} onChange={setDaysOfWeek} />
           <Button label="追加する" onPress={handleSave} disabled={!label.trim()} />
         </Pressable>
