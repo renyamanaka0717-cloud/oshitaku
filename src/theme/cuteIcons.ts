@@ -29,7 +29,18 @@ export type CuteIconKey =
   | 'points'
   | 'home'
   | 'stats'
-  | 'settings';
+  | 'settings'
+  | 'schoolBuilding'
+  | 'schoolItem'
+  // avatar icons
+  | 'avatarChick'
+  | 'avatarBear'
+  | 'avatarRabbit'
+  | 'avatarCat'
+  | 'avatarFox'
+  | 'avatarDog'
+  | 'avatarPanda'
+  | 'avatarLion';
 
 // One `require()` line per icon that has an actual file yet — Metro needs
 // a static require for bundling, so this can't be built from a filename
@@ -60,6 +71,16 @@ export const CUTE_ICON_SOURCES: Partial<Record<CuteIconKey, ImageSourcePropType>
   home: require('@/assets/icons/cute/home.png'),
   stats: require('@/assets/icons/cute/stats.png'),
   settings: require('@/assets/icons/cute/settings.png'),
+  schoolBuilding: require('@/assets/icons/cute/school-building.png'),
+  schoolItem: require('@/assets/icons/cute/school-item.png'),
+  avatarChick: require('@/assets/icons/cute/avatar-chick.png'),
+  avatarBear: require('@/assets/icons/cute/avatar-bear.png'),
+  avatarRabbit: require('@/assets/icons/cute/avatar-rabbit.png'),
+  avatarCat: require('@/assets/icons/cute/avatar-cat.png'),
+  avatarFox: require('@/assets/icons/cute/avatar-fox.png'),
+  avatarDog: require('@/assets/icons/cute/avatar-dog.png'),
+  avatarPanda: require('@/assets/icons/cute/avatar-panda.png'),
+  avatarLion: require('@/assets/icons/cute/avatar-lion.png'),
 };
 
 // Best-effort bridge from the free-text emoji stored on existing morning/
@@ -88,4 +109,31 @@ export const TASK_ICON_KEY_BY_EMOJI: Record<string, CuteIconKey> = {
 export function cuteIconKeyForTaskEmoji(emoji: string | undefined | null): CuteIconKey | undefined {
   if (!emoji) return undefined;
   return TASK_ICON_KEY_BY_EMOJI[emoji];
+}
+
+// Same idea for persistent items (itemRepository's default new-item emoji).
+export const ITEM_ICON_KEY_BY_EMOJI: Record<string, CuteIconKey> = {
+  '📦': 'schoolItem',
+};
+
+export function cuteIconKeyForItemEmoji(emoji: string | undefined | null): CuteIconKey | undefined {
+  if (!emoji) return undefined;
+  return ITEM_ICON_KEY_BY_EMOJI[emoji];
+}
+
+// Same idea for the fixed avatar picker (features/child/avatars.ts).
+export const AVATAR_ICON_KEY_BY_EMOJI: Record<string, CuteIconKey> = {
+  '🐣': 'avatarChick',
+  '🐻': 'avatarBear',
+  '🐰': 'avatarRabbit',
+  '🐱': 'avatarCat',
+  '🦊': 'avatarFox',
+  '🐶': 'avatarDog',
+  '🐼': 'avatarPanda',
+  '🦁': 'avatarLion',
+};
+
+export function cuteIconKeyForAvatarEmoji(emoji: string | undefined | null): CuteIconKey | undefined {
+  if (!emoji) return undefined;
+  return AVATAR_ICON_KEY_BY_EMOJI[emoji];
 }

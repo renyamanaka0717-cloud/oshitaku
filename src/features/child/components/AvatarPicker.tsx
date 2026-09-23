@@ -1,8 +1,10 @@
 import { useMemo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
+import { CuteIcon } from '@/components/CuteIcon';
 import { Icon } from '@/theme/icons';
 import { AVATAR_OPTIONS } from '@/features/child/avatars';
+import { cuteIconKeyForAvatarEmoji } from '@/theme/cuteIcons';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 type Props = {
@@ -28,7 +30,7 @@ export function AvatarPicker({ value, onSelect, onPickPhoto }: Props) {
           onPress={() => onSelect(a.emoji)}
           style={[styles.chip, value === a.emoji ? styles.chipSelected : null]}
         >
-          <Icon name={a.icon} size={28} />
+          <CuteIcon iconKey={cuteIconKeyForAvatarEmoji(a.emoji)} size={32} fallback={<Icon name={a.icon} size={28} />} />
         </Pressable>
       ))}
     </View>
