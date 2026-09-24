@@ -1,14 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { AppText } from '@/components/AppText';
 import { Card } from '@/components/Card';
-import { Button } from '@/components/Button';
-import { CuteIconPicker } from '@/components/CuteIconPicker';
+import { CuteIcon } from '@/components/CuteIcon';
+import { EmptyState } from '@/components/EmptyState';
+import { ItemEditorModal } from '@/features/parent/components/ItemEditorModal';
 import { useActiveChild } from '@/features/child/store';
 import { useTimetableStore } from '@/features/timetable/store';
-import { ALL_ICON_OPTIONS } from '@/theme/cuteIcons';
+import { Item } from '@/db/models';
+import { cuteIconKeyForItemEmoji } from '@/theme/cuteIcons';
 import { ColorPalette, hardShadow, outlineWidth, radius, spacing, useTheme } from '@/theme';
 import { goBack } from '@/utils/navigation';
 
@@ -22,20 +24,12 @@ export default function ItemsSettings() {
   const updateItem = useTimetableStore((s) => s.updateItem);
   const deleteItem = useTimetableStore((s) => s.deleteItem);
 
-  const [name, setName] = useState('');
-  const [icon, setIcon] = useState('📦');
-  const [editMode, setEditMode] = useState(false);
+  const [editingItem, setEditingItem] = useState<Item | null>(null);
+  const [addModalVisible, setAddModalVisible] = useState(false);
 
   useEffect(() => {
     if (child) load(child.id);
   }, [child, load]);
-
-  const handleAdd = async () => {
-    if (!name.trim()) return;
-    await createItem(name.trim(), icon);
-    setName('');
-    setIcon('📦');
-  };
 
   return (
     <Screen>
@@ -43,91 +37,91 @@ export default function ItemsSettings() {
         title="持ち物リスト"
         onBack={goBack}
         right={
-          <Pressable
-            style={[styles.editToggle, editMode ? styles.editToggleActive : null]}
-            onPress={() => setEditMode((v) => !v)}
-          >
-            <AppText variant="caption" color={editMode ? colors.white : colors.text}>
-              {editMode ? '完了' : '編集'}
+          <Pressable style={styles.addButton} onPress={() => setAddModalVisible(true)}>
+            <AppText variant="caption" color={colors.white}>
+              ＋ 追加
             </AppText>
           </Pressable>
         }
       />
 
-      <View style={styles.list}>
-        {items.map((item) => (
-          <Card key={item.id} style={styles.itemCard}>
-            <View style={styles.row}>
-              <TextInput
-                value={item.name}
-                onChangeText={(v) => updateItem(item.id, { name: v })}
-                style={styles.nameInput}
-              />
-              {editMode ? (
-                <Button label="削除" variant="danger" onPress={() => deleteItem(item.id)} />
-              ) : null}
-            </View>
-            <CuteIconPicker
-              options={ALL_ICON_OPTIONS}
-              value={item.icon}
-              onSelect={(v) => updateItem(item.id, { icon: v })}
-            />
-          </Card>
-        ))}
-      </View>
+      {items.length === 0 ? (
+        <EmptyState icon="📦" message="持ち物がまだ登録されていません" />
+      ) : (
+        <Card style={styles.listCard}>
+          {items.map((item, index) => (
+            <Pressable
+              key={item.id}
+              style={[styles.row, index > 0 ? styles.rowDivider : null]}
+              onPress={() => setEditingItem(item)}
+            >
+              <CuteIcon iconKey={cuteIconKeyForItemEmoji(item.icon)} size={32} fallback={<AppText style={styles.emojiIcon}>{item.icon}</AppText>} />
+              <AppText variant="subtitle" style={styles.itemName} numberOfLines={1}>
+                {item.name}
+              </AppText>
+              <AppText style={styles.chevron} color={colors.textMuted}>
+                ›
+              </AppText>
+            </Pressable>
+          ))}
+        </Card>
+      )}
 
-      <Card style={styles.addCard}>
-        <AppText variant="subtitle">持ち物を追加</AppText>
-        <TextInput
-          value={name}
-          onChangeText={setName}
-          placeholder="持ち物の名前"
-          placeholderTextColor={colors.textMuted}
-          style={styles.nameInput}
-        />
-        <CuteIconPicker options={ALL_ICON_OPTIONS} value={icon} onSelect={setIcon} />
-        <Button label="追加する" onPress={handleAdd} disabled={!name.trim()} />
-      </Card>
+      <ItemEditorModal
+        visible={!!editingItem || addModalVisible}
+        initialName={editingItem?.name}
+        initialIcon={editingItem?.icon}
+        onSave={({ name, icon }) => {
+          if (editingItem) {
+            updateItem(editingItem.id, { name, icon });
+          } else {
+            createItem(name, icon);
+          }
+        }}
+        onDelete={editingItem ? () => deleteItem(editingItem.id) : undefined}
+        onClose={() => {
+          setEditingItem(null);
+          setAddModalVisible(false);
+        }}
+      />
     </Screen>
   );
 }
 
 function createStyles(colors: ColorPalette) {
   return StyleSheet.create({
-    editToggle: {
+    addButton: {
       paddingVertical: spacing.xs,
       paddingHorizontal: spacing.md,
       borderRadius: radius.round,
-      backgroundColor: colors.surfaceAlt,
+      backgroundColor: colors.primary,
       borderWidth: outlineWidth - 1,
       borderColor: colors.black,
       borderBottomWidth: outlineWidth + hardShadow.offsetSm,
       borderRightWidth: outlineWidth + hardShadow.offsetSm,
     },
-    editToggleActive: {
-      backgroundColor: colors.primary,
-    },
-    list: {
-      gap: spacing.sm,
-    },
-    itemCard: {
-      gap: spacing.sm,
+    listCard: {
+      padding: 0,
+      gap: 0,
     },
     row: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: spacing.sm,
+      gap: spacing.md,
+      padding: spacing.md,
     },
-    nameInput: {
+    rowDivider: {
+      borderTopWidth: 1,
+      borderTopColor: colors.border,
+    },
+    emojiIcon: {
+      fontSize: 24,
+    },
+    itemName: {
       flex: 1,
-      backgroundColor: colors.surfaceAlt,
-      borderRadius: radius.sm,
-      padding: spacing.sm,
-      fontSize: 16,
-      color: colors.text,
     },
-    addCard: {
-      gap: spacing.sm,
+    chevron: {
+      fontSize: 24,
     },
   });
 }
