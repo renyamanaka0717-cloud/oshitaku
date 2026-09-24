@@ -4,6 +4,7 @@ import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { AppText } from '@/components/AppText';
 import { Card } from '@/components/Card';
+import { CuteIcon } from '@/components/CuteIcon';
 import { useActiveChild } from '@/features/child/store';
 import { useNotificationStore } from '@/features/notifications/store';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
@@ -28,7 +29,7 @@ export default function NotificationsSettings() {
       <HeaderBar title="通知設定" onBack={goBack} />
 
       <Card style={styles.row}>
-        <AppText style={styles.icon}>☀️</AppText>
+        <CuteIcon iconKey="morningPrep" size={28} fallback={<AppText style={styles.icon}>☀️</AppText>} />
         <View style={styles.info}>
           <AppText variant="subtitle">朝の通知</AppText>
           <TextInput
@@ -46,7 +47,7 @@ export default function NotificationsSettings() {
       </Card>
 
       <Card style={styles.row}>
-        <AppText style={styles.icon}>🌙</AppText>
+        <CuteIcon iconKey="eveningPrep" size={28} fallback={<AppText style={styles.icon}>🌙</AppText>} />
         <View style={styles.info}>
           <AppText variant="subtitle">夜の通知</AppText>
           <TextInput

@@ -153,9 +153,19 @@ export const ALL_ICON_KEY_BY_EMOJI: Record<string, CuteIconKey> = {
   ...AVATAR_ICON_KEY_BY_EMOJI,
 };
 
+// Extra emoji that also represent an already-registered icon but shouldn't
+// get their own picker chip (the canonical emoji above already does) — e.g.
+// ⭐ is used all over the app for "points" alongside the canonical 🪙, and
+// 🗓️ is a spiral-calendar variant of the canonical 📅 "calendar" icon.
+const EMOJI_ALIASES: Record<string, CuteIconKey> = {
+  '⭐': 'points',
+  '🗓️': 'calendar',
+  '📈': 'stats',
+};
+
 export function cuteIconKeyForEmoji(emoji: string | undefined | null): CuteIconKey | undefined {
   if (!emoji) return undefined;
-  return ALL_ICON_KEY_BY_EMOJI[emoji];
+  return ALL_ICON_KEY_BY_EMOJI[emoji] ?? EMOJI_ALIASES[emoji];
 }
 
 export function cuteIconKeyForTaskEmoji(emoji: string | undefined | null): CuteIconKey | undefined {

@@ -5,12 +5,14 @@ import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { AppText } from '@/components/AppText';
 import { Card } from '@/components/Card';
+import { CuteIcon } from '@/components/CuteIcon';
 import { useActiveChild, useChildStore } from '@/features/child/store';
 import { ChildAvatar } from '@/features/child/components/ChildAvatar';
 import { ChildSwitcherModal } from '@/features/child/components/ChildSwitcherModal';
 import { useParentAuthStore } from '@/features/parent/store';
 import { useChoreRequestsStore } from '@/features/chores/requestsStore';
 import { useRewardRequestsStore } from '@/features/rewards/requestsStore';
+import { cuteIconKeyForEmoji } from '@/theme/cuteIcons';
 import { ColorPalette, hardShadow, outlineWidth, radius, spacing, useTheme } from '@/theme';
 
 type MenuItem = { href: string; icon: string; label: string; description: string };
@@ -163,7 +165,11 @@ export default function ParentDashboard() {
       {SECTIONS.map((section) => (
         <View key={section.key} style={[styles.sectionPanel, { backgroundColor: colors[section.tint] as string }]}>
           <View style={styles.sectionHeaderRow}>
-            <AppText style={styles.sectionIllustration}>{section.illustration}</AppText>
+            <CuteIcon
+              iconKey={cuteIconKeyForEmoji(section.illustration)}
+              size={40}
+              fallback={<AppText style={styles.sectionIllustration}>{section.illustration}</AppText>}
+            />
             <View style={styles.sectionHeaderText}>
               <AppText variant="title" color={colors.black}>
                 {section.title}
@@ -183,7 +189,11 @@ export default function ParentDashboard() {
                   style={[styles.menuRow, index > 0 ? styles.menuRowDivider : null]}
                   onPress={() => router.push(item.href as never)}
                 >
-                  <AppText style={styles.menuIcon}>{item.icon}</AppText>
+                  <CuteIcon
+                    iconKey={cuteIconKeyForEmoji(item.icon)}
+                    size={28}
+                    fallback={<AppText style={styles.menuIcon}>{item.icon}</AppText>}
+                  />
                   <View style={styles.menuText}>
                     <AppText variant="subtitle">{item.label}</AppText>
                     <AppText variant="caption">{item.description}</AppText>

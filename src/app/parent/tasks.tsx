@@ -4,6 +4,8 @@ import { router } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { AppText } from '@/components/AppText';
+import { CuteIcon } from '@/components/CuteIcon';
+import { cuteIconKeyForEmoji } from '@/theme/cuteIcons';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 import { goBack } from '@/utils/navigation';
 
@@ -23,7 +25,7 @@ export default function TasksSettings() {
       <View style={styles.menu}>
         {MENU.map((item) => (
           <Pressable key={item.href} style={styles.menuItem} onPress={() => router.push(item.href as never)}>
-            <AppText style={styles.menuIcon}>{item.icon}</AppText>
+            <CuteIcon iconKey={cuteIconKeyForEmoji(item.icon)} size={28} fallback={<AppText style={styles.menuIcon}>{item.icon}</AppText>} />
             <View style={styles.menuText}>
               <AppText variant="subtitle">{item.label}</AppText>
               <AppText variant="caption">{item.description}</AppText>

@@ -4,8 +4,10 @@ import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { AppText } from '@/components/AppText';
 import { Card } from '@/components/Card';
+import { CuteIcon } from '@/components/CuteIcon';
 import { useActiveChild } from '@/features/child/store';
 import { usePointsStore } from '@/features/points/store';
+import { cuteIconKeyForEmoji } from '@/theme/cuteIcons';
 import { ColorPalette, outlineWidth, radius, spacing, useTheme } from '@/theme';
 import { goBack } from '@/utils/navigation';
 
@@ -46,7 +48,7 @@ export default function PointsSettings() {
       {FIELDS.map((field) => (
         <Card key={field.key} style={styles.row}>
           <View style={[styles.iconBox, { backgroundColor: colors[field.tint] as string }]}>
-            <AppText style={styles.icon}>{field.icon}</AppText>
+            <CuteIcon iconKey={cuteIconKeyForEmoji(field.icon)} size={22} fallback={<AppText style={styles.icon}>{field.icon}</AppText>} />
           </View>
           <AppText variant="subtitle" style={styles.label}>
             {field.label}
