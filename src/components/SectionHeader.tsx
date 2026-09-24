@@ -1,5 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 import { AppText } from './AppText';
+import { CuteIcon } from './CuteIcon';
+import { cuteIconKeyForEmoji } from '@/theme/cuteIcons';
 import { spacing } from '@/theme';
 
 type Props = {
@@ -9,10 +11,16 @@ type Props = {
 };
 
 export function SectionHeader({ title, icon, right }: Props) {
+  const iconNode =
+    typeof icon === 'string' ? (
+      <CuteIcon iconKey={cuteIconKeyForEmoji(icon)} size={20} fallback={<AppText style={styles.icon}>{icon}</AppText>} />
+    ) : (
+      icon
+    );
   return (
     <View style={styles.row}>
       <View style={styles.left}>
-        {typeof icon === 'string' ? <AppText style={styles.icon}>{icon}</AppText> : icon}
+        {iconNode}
         <AppText variant="subtitle">{title}</AppText>
       </View>
       {right}

@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { AppText } from './AppText';
+import { CuteIcon } from './CuteIcon';
 import { PressableCard } from './PressableCard';
 import { BounceOnChange } from './BounceOnChange';
 import { Icon } from '@/theme/icons';
@@ -33,7 +34,7 @@ export function PointsBadge({ points, label = 'ポイント', color, onPress, va
   const coin = (
     <BounceOnChange watch={points}>
       <View style={styles.coinWrap}>
-        <Icon name="coin" size={wide ? 26 : 30} />
+        <CuteIcon iconKey="points" size={wide ? 26 : 30} fallback={<Icon name="coin" size={wide ? 26 : 30} />} />
         <View style={styles.sparkle}>
           <Icon name="sparkles" size={11} />
         </View>

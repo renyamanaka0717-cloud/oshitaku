@@ -2,6 +2,8 @@ import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Card } from './Card';
 import { AppText } from './AppText';
+import { CuteIcon } from './CuteIcon';
+import { cuteIconKeyForEmoji } from '@/theme/cuteIcons';
 import { ColorPalette, spacing, useTheme } from '@/theme';
 
 type Props = {
@@ -18,7 +20,7 @@ export function StatCard({ icon, value, label, sublabel, accentColor }: Props) {
   return (
     <Card style={styles.card}>
       <View style={styles.iconWrap}>
-        <AppText style={styles.icon}>{icon}</AppText>
+        <CuteIcon iconKey={cuteIconKeyForEmoji(icon)} size={28} fallback={<AppText style={styles.icon}>{icon}</AppText>} />
       </View>
       <AppText variant="hero" color={accentColor ?? colors.primaryDark} style={styles.value}>
         {value}

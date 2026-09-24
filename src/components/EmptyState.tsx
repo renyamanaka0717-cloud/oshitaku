@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { AppText } from './AppText';
+import { CuteIcon } from './CuteIcon';
+import { cuteIconKeyForEmoji } from '@/theme/cuteIcons';
 import { ColorPalette, spacing, useTheme } from '@/theme';
 
 type Props = {
@@ -13,7 +15,9 @@ export function EmptyState({ icon, message }: Props) {
   const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <View style={styles.container}>
-      {icon ? <AppText style={styles.icon}>{icon}</AppText> : null}
+      {icon ? (
+        <CuteIcon iconKey={cuteIconKeyForEmoji(icon)} size={36} fallback={<AppText style={styles.icon}>{icon}</AppText>} />
+      ) : null}
       <AppText variant="body" color={colors.textMuted} style={styles.message}>
         {message}
       </AppText>
