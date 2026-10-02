@@ -2,7 +2,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { Modal, Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
+import { CuteIcon } from '@/components/CuteIcon';
 import { Chore } from '@/db/models';
+import { cuteIconKeyForEmoji } from '@/theme/cuteIcons';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 type Props = {
@@ -55,14 +57,15 @@ export function ChoreDetailModal({ visible, chore, onComplete, onClose }: Props)
           ) : (
             <>
               <View style={styles.iconBox}>
-                <AppText style={styles.icon}>{chore.icon}</AppText>
+                <CuteIcon iconKey={cuteIconKeyForEmoji(chore.icon)} size={64} fallback={<AppText style={styles.icon}>{chore.icon}</AppText>} />
               </View>
               <AppText variant="title" style={styles.center}>
                 {chore.name}
               </AppText>
               <View style={styles.pointBadge}>
+                <CuteIcon iconKey="points" size={18} fallback={<AppText style={styles.pointEmoji}>⭐</AppText>} />
                 <AppText variant="subtitle" color={colors.primaryDark}>
-                  ⭐ +{chore.pointValue}pt
+                  +{chore.pointValue}pt
                 </AppText>
               </View>
               <View style={styles.fullButtonWrap}>
@@ -109,10 +112,16 @@ function createStyles(colors: ColorPalette) {
       textAlign: 'center',
     },
     pointBadge: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
       backgroundColor: colors.surfaceAlt,
       borderRadius: radius.round,
       paddingVertical: spacing.xs,
       paddingHorizontal: spacing.md,
+    },
+    pointEmoji: {
+      fontSize: 18,
     },
     fullButtonWrap: {
       alignSelf: 'stretch',

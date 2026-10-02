@@ -6,10 +6,12 @@ import { HeaderBar } from '@/components/HeaderBar';
 import { AppText } from '@/components/AppText';
 import { Card } from '@/components/Card';
 import { Button } from '@/components/Button';
+import { CuteIcon } from '@/components/CuteIcon';
 import { EmptyState } from '@/components/EmptyState';
 import { useChildStore } from '@/features/child/store';
 import { ChildAvatar } from '@/features/child/components/ChildAvatar';
 import { useRewardRequestsStore } from '@/features/rewards/requestsStore';
+import { cuteIconKeyForEmoji } from '@/theme/cuteIcons';
 import { ColorPalette, spacing, useTheme } from '@/theme';
 import { goBack } from '@/utils/navigation';
 
@@ -87,9 +89,14 @@ export default function RewardRequestsScreen() {
                     <AppText variant="caption" color={colors.textMuted}>
                       {child?.name ?? ''}
                     </AppText>
-                    <AppText variant="subtitle">
-                      {request.rewardIcon} {request.rewardName}
-                    </AppText>
+                    <View style={styles.rewardLine}>
+                      <CuteIcon
+                        iconKey={cuteIconKeyForEmoji(request.rewardIcon)}
+                        size={18}
+                        fallback={<AppText style={styles.rewardEmoji}>{request.rewardIcon}</AppText>}
+                      />
+                      <AppText variant="subtitle">{request.rewardName}</AppText>
+                    </View>
                     <AppText variant="caption" color={colors.primaryDark}>
                       -{request.pointCost}pt
                     </AppText>
@@ -128,6 +135,14 @@ function createStyles(colors: ColorPalette) {
     info: {
       flex: 1,
       gap: 2,
+    },
+    rewardLine: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
+    },
+    rewardEmoji: {
+      fontSize: 18,
     },
     actionRow: {
       flexDirection: 'row',

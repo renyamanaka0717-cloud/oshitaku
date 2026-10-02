@@ -2,7 +2,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { Image, Modal, Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
+import { CuteIcon } from '@/components/CuteIcon';
 import { Reward } from '@/db/models';
+import { cuteIconKeyForEmoji } from '@/theme/cuteIcons';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 type Props = {
@@ -60,7 +62,7 @@ export function RewardDetailModal({ visible, reward, currentPoints, onRequest, o
                 {reward.imageUri ? (
                   <Image source={{ uri: reward.imageUri }} style={styles.image} resizeMode="cover" />
                 ) : (
-                  <AppText style={styles.icon}>{reward.icon}</AppText>
+                  <CuteIcon iconKey={cuteIconKeyForEmoji(reward.icon)} size={64} fallback={<AppText style={styles.icon}>{reward.icon}</AppText>} />
                 )}
               </View>
               <AppText variant="title" style={styles.center}>
@@ -72,8 +74,9 @@ export function RewardDetailModal({ visible, reward, currentPoints, onRequest, o
                 </AppText>
               ) : null}
               <View style={styles.costBadge}>
+                <CuteIcon iconKey="points" size={18} fallback={<AppText style={styles.pointEmoji}>⭐</AppText>} />
                 <AppText variant="subtitle" color={colors.primaryDark}>
-                  ⭐ {reward.pointCost}pt
+                  {reward.pointCost}pt
                 </AppText>
               </View>
               {!canAfford ? (
@@ -135,10 +138,16 @@ function createStyles(colors: ColorPalette) {
       textAlign: 'center',
     },
     costBadge: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
       backgroundColor: colors.surfaceAlt,
       borderRadius: radius.round,
       paddingVertical: spacing.xs,
       paddingHorizontal: spacing.md,
+    },
+    pointEmoji: {
+      fontSize: 18,
     },
     fullButtonWrap: {
       alignSelf: 'stretch',

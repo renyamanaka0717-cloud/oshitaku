@@ -8,9 +8,11 @@ import { Button } from '@/components/Button';
 import { SectionHeader } from '@/components/SectionHeader';
 import { EmptyState } from '@/components/EmptyState';
 import { ExpandableCard } from '@/components/ExpandableCard';
+import { CuteIcon } from '@/components/CuteIcon';
 import { useActiveChild } from '@/features/child/store';
 import { useChoresStore } from '@/features/chores/store';
 import { usePointsStore } from '@/features/points/store';
+import { cuteIconKeyForEmoji } from '@/theme/cuteIcons';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 import { goBack } from '@/utils/navigation';
 
@@ -56,7 +58,7 @@ export default function ChoresSettings() {
             key={chore.id}
             summary={
               <>
-                <AppText style={styles.summaryIcon}>{chore.icon}</AppText>
+                <CuteIcon iconKey={cuteIconKeyForEmoji(chore.icon)} size={20} fallback={<AppText style={styles.summaryIcon}>{chore.icon}</AppText>} />
                 <AppText variant="body" style={styles.summaryName} numberOfLines={1}>
                   {chore.name}
                 </AppText>

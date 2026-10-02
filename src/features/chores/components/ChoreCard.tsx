@@ -2,7 +2,9 @@ import { useMemo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { Card } from '@/components/Card';
+import { CuteIcon } from '@/components/CuteIcon';
 import { Chore } from '@/db/models';
+import { cuteIconKeyForEmoji } from '@/theme/cuteIcons';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 type Props = {
@@ -19,7 +21,7 @@ export function ChoreCard({ chore, onPress, pending }: Props) {
     <Pressable onPress={onPress}>
       <Card style={[styles.card, pending ? styles.cardPending : null]}>
         <View style={styles.iconBox}>
-          <AppText style={styles.icon}>{chore.icon}</AppText>
+          <CuteIcon iconKey={cuteIconKeyForEmoji(chore.icon)} size={32} fallback={<AppText style={styles.icon}>{chore.icon}</AppText>} />
         </View>
 
         <AppText variant="subtitle" style={styles.name} numberOfLines={1}>
@@ -34,8 +36,9 @@ export function ChoreCard({ chore, onPress, pending }: Props) {
           </View>
         ) : (
           <View style={styles.pointBadge}>
+            <CuteIcon iconKey="points" size={14} fallback={<AppText style={styles.pointEmoji}>⭐</AppText>} />
             <AppText variant="caption" color={colors.primaryDark}>
-              ⭐ +{chore.pointValue}pt
+              +{chore.pointValue}pt
             </AppText>
           </View>
         )}
@@ -76,10 +79,16 @@ function createStyles(colors: ColorPalette) {
       flex: 1,
     },
     pointBadge: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
       backgroundColor: colors.surfaceAlt,
       borderRadius: radius.round,
       paddingVertical: 4,
       paddingHorizontal: spacing.sm,
+    },
+    pointEmoji: {
+      fontSize: 14,
     },
   });
 }

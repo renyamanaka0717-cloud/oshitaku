@@ -8,11 +8,13 @@ import { Card } from '@/components/Card';
 import { SectionHeader } from '@/components/SectionHeader';
 import { EmptyState } from '@/components/EmptyState';
 import { ExpandableCard } from '@/components/ExpandableCard';
+import { CuteIcon } from '@/components/CuteIcon';
 import { AddRewardModal } from '@/features/rewards/components/AddRewardModal';
 import { useActiveChild } from '@/features/child/store';
 import { useRewardsStore } from '@/features/rewards/store';
 import { usePointsStore } from '@/features/points/store';
 import { pickRewardImage } from '@/features/rewards/imagePicker';
+import { cuteIconKeyForEmoji } from '@/theme/cuteIcons';
 import { ColorPalette, hardShadow, outlineWidth, radius, spacing, useTheme } from '@/theme';
 import { goBack } from '@/utils/navigation';
 
@@ -68,7 +70,11 @@ export default function RewardsSettings() {
                   {reward.imageUri ? (
                     <Image source={{ uri: reward.imageUri }} style={styles.image} resizeMode="cover" />
                   ) : (
-                    <AppText style={styles.summaryImagePlaceholder}>{reward.icon}</AppText>
+                    <CuteIcon
+                      iconKey={cuteIconKeyForEmoji(reward.icon)}
+                      size={16}
+                      fallback={<AppText style={styles.summaryImagePlaceholder}>{reward.icon}</AppText>}
+                    />
                   )}
                 </View>
                 <AppText variant="body" style={styles.summaryName} numberOfLines={1}>
@@ -85,7 +91,11 @@ export default function RewardsSettings() {
                 {reward.imageUri ? (
                   <Image source={{ uri: reward.imageUri }} style={styles.image} resizeMode="cover" />
                 ) : (
-                  <AppText style={styles.imagePlaceholder}>{reward.icon}</AppText>
+                  <CuteIcon
+                    iconKey={cuteIconKeyForEmoji(reward.icon)}
+                    size={20}
+                    fallback={<AppText style={styles.imagePlaceholder}>{reward.icon}</AppText>}
+                  />
                 )}
               </Pressable>
               <TextInput
