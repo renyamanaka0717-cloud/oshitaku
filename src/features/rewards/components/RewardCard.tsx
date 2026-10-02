@@ -2,7 +2,9 @@ import { useMemo } from 'react';
 import { Image, Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { Card } from '@/components/Card';
+import { CuteIcon } from '@/components/CuteIcon';
 import { Reward } from '@/db/models';
+import { cuteIconKeyForEmoji } from '@/theme/cuteIcons';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 type Props = {
@@ -22,7 +24,7 @@ export function RewardCard({ reward, onPress, pending }: Props) {
           {reward.imageUri ? (
             <Image source={{ uri: reward.imageUri }} style={styles.image} resizeMode="cover" />
           ) : (
-            <AppText style={styles.icon}>{reward.icon}</AppText>
+            <CuteIcon iconKey={cuteIconKeyForEmoji(reward.icon)} size={32} fallback={<AppText style={styles.icon}>{reward.icon}</AppText>} />
           )}
         </View>
 
@@ -38,8 +40,9 @@ export function RewardCard({ reward, onPress, pending }: Props) {
           </View>
         ) : (
           <View style={styles.costBadge}>
+            <CuteIcon iconKey="points" size={14} fallback={<AppText style={styles.pointEmoji}>⭐</AppText>} />
             <AppText variant="caption" color={colors.primaryDark}>
-              ⭐ {reward.pointCost}pt
+              {reward.pointCost}pt
             </AppText>
           </View>
         )}
@@ -87,10 +90,16 @@ function createStyles(colors: ColorPalette) {
       alignSelf: 'stretch',
     },
     costBadge: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
       backgroundColor: colors.surfaceAlt,
       borderRadius: radius.round,
       paddingVertical: 2,
       paddingHorizontal: spacing.sm,
+    },
+    pointEmoji: {
+      fontSize: 14,
     },
   });
 }

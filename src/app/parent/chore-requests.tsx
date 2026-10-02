@@ -6,10 +6,12 @@ import { HeaderBar } from '@/components/HeaderBar';
 import { AppText } from '@/components/AppText';
 import { Card } from '@/components/Card';
 import { Button } from '@/components/Button';
+import { CuteIcon } from '@/components/CuteIcon';
 import { EmptyState } from '@/components/EmptyState';
 import { useChildStore } from '@/features/child/store';
 import { ChildAvatar } from '@/features/child/components/ChildAvatar';
 import { useChoreRequestsStore } from '@/features/chores/requestsStore';
+import { cuteIconKeyForEmoji } from '@/theme/cuteIcons';
 import { ColorPalette, spacing, useTheme } from '@/theme';
 import { goBack } from '@/utils/navigation';
 
@@ -87,9 +89,14 @@ export default function ChoreRequestsScreen() {
                     <AppText variant="caption" color={colors.textMuted}>
                       {child?.name ?? ''}
                     </AppText>
-                    <AppText variant="subtitle">
-                      {request.choreIcon} {request.choreName}
-                    </AppText>
+                    <View style={styles.choreLine}>
+                      <CuteIcon
+                        iconKey={cuteIconKeyForEmoji(request.choreIcon)}
+                        size={18}
+                        fallback={<AppText style={styles.choreEmoji}>{request.choreIcon}</AppText>}
+                      />
+                      <AppText variant="subtitle">{request.choreName}</AppText>
+                    </View>
                     <AppText variant="caption" color={colors.primaryDark}>
                       +{request.pointValue}pt
                     </AppText>
@@ -128,6 +135,14 @@ function createStyles(colors: ColorPalette) {
     info: {
       flex: 1,
       gap: 2,
+    },
+    choreLine: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
+    },
+    choreEmoji: {
+      fontSize: 18,
     },
     actionRow: {
       flexDirection: 'row',
