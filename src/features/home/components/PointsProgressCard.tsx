@@ -8,7 +8,7 @@ import { ProgressBar } from '@/components/ProgressBar';
 import { BounceOnChange } from '@/components/BounceOnChange';
 import { Icon } from '@/theme/icons';
 import { Reward } from '@/db/models';
-import { ColorPalette, radius, smallShadow, spacing, useTheme } from '@/theme';
+import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
 type Props = {
   points: number;
@@ -22,40 +22,25 @@ export function PointsProgressCard({ points, nextReward, onPress }: Props) {
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
 
-  const canExchange = !!nextReward && points >= nextReward.pointCost;
-  const shortfall = nextReward ? Math.max(0, nextReward.pointCost - points) : 0;
-
   return (
     <PressableCard backgroundColor="transparent" onPress={onPress} style={styles.card}>
       <LinearGradient colors={GRADIENT} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={styles.gradient} />
 
-      <View style={styles.row}>
-        <View style={styles.leftCol}>
-          <BounceOnChange watch={points}>
-            <View style={styles.coinWrap}>
-              <CuteIcon iconKey="points" size={36} fallback={<Icon name="coin" size={32} />} />
-              <View style={styles.sparkle}>
-                <Icon name="sparkles" size={13} />
-              </View>
+      <View style={styles.leftCol}>
+        <BounceOnChange watch={points}>
+          <View style={styles.coinWrap}>
+            <CuteIcon iconKey="points" size={36} fallback={<Icon name="coin" size={32} />} />
+            <View style={styles.sparkle}>
+              <Icon name="sparkles" size={13} />
             </View>
-          </BounceOnChange>
-          <AppText variant="caption" color={colors.text}>
-            もっているポイント
-          </AppText>
-          <AppText variant="hero" color={colors.accentPink}>
-            {points}ポイント
-          </AppText>
-        </View>
-
-        {nextReward ? (
-          <View style={styles.bubble}>
-            <AppText variant="caption" color={colors.text}>
-              {canExchange
-                ? `🎉 ${nextReward.name}と\nこうかんできるよ！`
-                : `あと${shortfall}ポイントで\n${nextReward.name}と\nこうかんできるよ！`}
-            </AppText>
           </View>
-        ) : null}
+        </BounceOnChange>
+        <AppText variant="caption" color={colors.text}>
+          もっているポイント
+        </AppText>
+        <AppText variant="hero" color={colors.accentPink}>
+          {points}ポイント
+        </AppText>
       </View>
 
       {nextReward ? (
@@ -87,11 +72,6 @@ function createStyles(colors: ColorPalette) {
       right: 0,
       bottom: 0,
     },
-    row: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing.md,
-    },
     leftCol: {
       gap: 2,
     },
@@ -103,13 +83,6 @@ function createStyles(colors: ColorPalette) {
       position: 'absolute',
       top: -6,
       right: -8,
-    },
-    bubble: {
-      flex: 1,
-      backgroundColor: colors.surface,
-      borderRadius: radius.lg,
-      padding: spacing.sm,
-      ...smallShadow,
     },
     progressSection: {
       flexDirection: 'row',
