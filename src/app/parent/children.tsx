@@ -1,151 +1,122 @@
 import { useMemo, useState } from 'react';
-import { Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { AppText } from '@/components/AppText';
 import { Card } from '@/components/Card';
-import { Button } from '@/components/Button';
 import { ChildAvatar } from '@/features/child/components/ChildAvatar';
-import { AvatarPicker } from '@/features/child/components/AvatarPicker';
+import { ChildEditorModal } from '@/features/child/components/ChildEditorModal';
 import { useChildStore } from '@/features/child/store';
-import { pickChildAvatarImage } from '@/features/child/imagePicker';
-import { AVATAR_EMOJIS } from '@/features/child/avatars';
+import { Child } from '@/db/models';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 import { goBack } from '@/utils/navigation';
 
 export default function ChildrenSettings() {
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
-  const { children, activeChildId, setActiveChild, addChild, updateChild, removeChild } = useChildStore();
-  const [name, setName] = useState('');
-  const [avatar, setAvatar] = useState(AVATAR_EMOJIS[0]);
-  const [photoUri, setPhotoUri] = useState<string | null>(null);
+  const { children, addChild, updateChild, removeChild } = useChildStore();
+  const [editingChild, setEditingChild] = useState<Child | null>(null);
+  const [addModalVisible, setAddModalVisible] = useState(false);
 
-  const handleAdd = async () => {
-    if (!name.trim()) return;
-    await addChild({ name: name.trim(), avatarEmoji: avatar, avatarImageUri: photoUri });
-    setName('');
-    setPhotoUri(null);
-  };
-
-  const handlePickExistingPhoto = async (childId: string) => {
-    const uri = await pickChildAvatarImage();
-    if (uri) updateChild(childId, { avatarImageUri: uri });
-  };
+  const canDeleteEditing = !!editingChild && children.length > 1;
 
   return (
     <Screen>
       <HeaderBar title="お子さま管理" onBack={goBack} />
 
-      <View style={styles.list}>
-        {children.map((child) => (
-          <Card key={child.id} style={styles.childCard}>
-            <View style={styles.switchRow}>
-              <Pressable style={styles.switchTapArea} onPress={() => setActiveChild(child.id)}>
-                <ChildAvatar
-                  avatarImageUri={child.avatarImageUri}
-                  avatarEmoji={child.avatarEmoji}
-                  avatarColor={child.avatarColor}
-                  size={48}
-                />
-                <AppText variant="subtitle" style={styles.switchLabel}>
-                  {child.id === activeChildId ? '選択中' : 'タップして切りかえ'}
+      {children.length > 0 ? (
+        <Card style={styles.listCard}>
+          {children.map((child, index) => (
+            <Pressable
+              key={child.id}
+              style={[styles.row, index > 0 ? styles.rowDivider : null]}
+              onPress={() => setEditingChild(child)}
+            >
+              <ChildAvatar
+                avatarImageUri={child.avatarImageUri}
+                avatarEmoji={child.avatarEmoji}
+                avatarColor={child.avatarColor}
+                size={48}
+              />
+              <AppText variant="subtitle" style={styles.name} numberOfLines={1}>
+                {child.name}
+              </AppText>
+              <View style={styles.editAffix}>
+                <AppText variant="caption" color={colors.textMuted}>
+                  編集
                 </AppText>
-              </Pressable>
-              {children.length > 1 ? (
-                <Button
-                  label="削除"
-                  variant="danger"
-                  size="md"
-                  onPress={() => removeChild(child.id)}
-                />
-              ) : null}
-            </View>
+                <AppText style={styles.chevron} color={colors.textMuted}>
+                  ›
+                </AppText>
+              </View>
+            </Pressable>
+          ))}
+        </Card>
+      ) : null}
 
-            <AppText variant="caption">名前</AppText>
-            <TextInput
-              value={child.name}
-              onChangeText={(v) => updateChild(child.id, { name: v })}
-              style={styles.input}
-              maxLength={12}
-            />
+      <Pressable style={styles.addRow} onPress={() => setAddModalVisible(true)}>
+        <AppText variant="subtitle" color={colors.primaryDark}>
+          ＋ お子さまを追加
+        </AppText>
+      </Pressable>
 
-            <AppText variant="caption">アイコン</AppText>
-            <AvatarPicker
-              value={child.avatarImageUri ? '' : child.avatarEmoji}
-              onSelect={(a) => updateChild(child.id, { avatarEmoji: a, avatarImageUri: null })}
-              onPickPhoto={() => handlePickExistingPhoto(child.id)}
-            />
-          </Card>
-        ))}
-      </View>
-
-      <Card style={styles.addCard}>
-        <AppText variant="subtitle">きょうだいを追加</AppText>
-        <TextInput
-          value={name}
-          onChangeText={setName}
-          placeholder="名前"
-          placeholderTextColor={colors.textMuted}
-          style={styles.input}
-          maxLength={12}
-        />
-        <View style={styles.photoRow}>
-          <ChildAvatar avatarImageUri={photoUri} avatarEmoji={avatar} avatarColor={colors.accent} size={48} />
-        </View>
-        <AvatarPicker
-          value={photoUri ? '' : avatar}
-          onSelect={(a) => {
-            setAvatar(a);
-            setPhotoUri(null);
-          }}
-          onPickPhoto={async () => {
-            const uri = await pickChildAvatarImage();
-            if (uri) setPhotoUri(uri);
-          }}
-        />
-        <Button label="追加する" onPress={handleAdd} disabled={!name.trim()} />
-      </Card>
+      <ChildEditorModal
+        visible={!!editingChild || addModalVisible}
+        initialName={editingChild?.name}
+        initialAvatarEmoji={editingChild?.avatarEmoji}
+        initialAvatarImageUri={editingChild?.avatarImageUri}
+        avatarColor={editingChild?.avatarColor ?? colors.accent}
+        onSave={({ name, avatarEmoji, avatarImageUri }) => {
+          if (editingChild) {
+            updateChild(editingChild.id, { name, avatarEmoji, avatarImageUri });
+          } else {
+            addChild({ name, avatarEmoji, avatarImageUri });
+          }
+        }}
+        onDelete={canDeleteEditing ? () => removeChild(editingChild!.id) : undefined}
+        onClose={() => {
+          setEditingChild(null);
+          setAddModalVisible(false);
+        }}
+      />
     </Screen>
   );
 }
 
 function createStyles(colors: ColorPalette) {
   return StyleSheet.create({
-    list: {
-      gap: spacing.md,
+    listCard: {
+      padding: 0,
+      gap: 0,
     },
-    childCard: {
-      gap: spacing.sm,
-    },
-    switchRow: {
+    row: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing.md,
-    },
-    switchTapArea: {
-      flex: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing.md,
-    },
-    switchLabel: {
-      flex: 1,
-    },
-    input: {
-      backgroundColor: colors.surfaceAlt,
-      borderRadius: radius.md,
       padding: spacing.md,
-      fontSize: 16,
-      color: colors.text,
     },
-    addCard: {
-      gap: spacing.sm,
+    rowDivider: {
+      borderTopWidth: 1,
+      borderTopColor: colors.border,
     },
-    photoRow: {
+    name: {
+      flex: 1,
+    },
+    editAffix: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: spacing.md,
+      gap: 2,
+    },
+    chevron: {
+      fontSize: 24,
+    },
+    addRow: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: colors.surfaceAlt,
+      borderRadius: radius.lg,
+      paddingVertical: spacing.md,
+      marginTop: spacing.md,
     },
   });
 }
