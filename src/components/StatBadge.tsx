@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { AppText } from './AppText';
 import { PressableCard } from './PressableCard';
-import { ColorPalette, hardShadow, outlineWidth, radius, spacing, useTheme } from '@/theme';
+import { cardShadow, ColorPalette, hairline, radius, spacing, useTheme } from '@/theme';
 
 type Props = {
   icon: string | React.ReactNode;
@@ -93,10 +93,9 @@ function createStyles(colors: ColorPalette, isNeutral: boolean) {
       justifyContent: 'center',
     },
     staticBadge: {
-      borderWidth: outlineWidth,
-      borderColor: colors.black,
-      borderBottomWidth: outlineWidth + hardShadow.offset,
-      borderRightWidth: outlineWidth + hardShadow.offset,
+      borderWidth: hairline,
+      borderColor: 'rgba(0,0,0,0.06)',
+      ...cardShadow,
     },
     innerWide: {
       flexDirection: 'row',
