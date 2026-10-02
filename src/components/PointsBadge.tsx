@@ -5,7 +5,7 @@ import { CuteIcon } from './CuteIcon';
 import { PressableCard } from './PressableCard';
 import { BounceOnChange } from './BounceOnChange';
 import { Icon } from '@/theme/icons';
-import { ColorPalette, outlineWidth, radius, useTheme } from '@/theme';
+import { cardShadow, ColorPalette, hairline, radius, useTheme } from '@/theme';
 
 type Props = {
   points: number;
@@ -96,10 +96,9 @@ function createStyles(colors: ColorPalette, isNeutral: boolean) {
       justifyContent: 'center',
     },
     staticCard: {
-      borderWidth: outlineWidth,
-      borderColor: colors.black,
-      borderBottomWidth: outlineWidth + 5,
-      borderRightWidth: outlineWidth + 5,
+      borderWidth: hairline,
+      borderColor: 'rgba(0,0,0,0.06)',
+      ...cardShadow,
     },
     inner: {
       alignItems: 'center',

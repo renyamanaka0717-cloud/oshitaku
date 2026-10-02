@@ -16,7 +16,7 @@ import { useRewardRequestsStore } from '@/features/rewards/requestsStore';
 import { usePointsStore } from '@/features/points/store';
 import { useActiveChild } from '@/features/child/store';
 import { Reward } from '@/db/models';
-import { colors, hardShadow, outlineWidth, radius, spacing } from '@/theme';
+import { colors, radius, smallShadow, spacing } from '@/theme';
 import { goBack } from '@/utils/navigation';
 
 const POLL_INTERVAL_MS = 8000;
@@ -121,10 +121,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     borderRadius: radius.round,
     backgroundColor: colors.surfaceAlt,
-    borderWidth: outlineWidth - 1,
-    borderColor: colors.black,
-    borderBottomWidth: outlineWidth + hardShadow.offsetSm,
-    borderRightWidth: outlineWidth + hardShadow.offsetSm,
+    ...smallShadow,
   },
   section: {
     gap: spacing.sm,
