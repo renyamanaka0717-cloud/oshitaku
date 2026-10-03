@@ -40,7 +40,25 @@ export type CuteIconKey =
   | 'avatarFox'
   | 'avatarDog'
   | 'avatarPanda'
-  | 'avatarLion';
+  | 'avatarLion'
+  // parent-mode icons
+  | 'kidsSettings'
+  | 'family'
+  | 'alarmClock'
+  | 'approve'
+  | 'notificationBell'
+  | 'cloudSync'
+  | 'history'
+  | 'photoPicker'
+  | 'perfectBonus'
+  | 'subjects'
+  | 'lessons'
+  | 'delete'
+  | 'timetableSubjects'
+  | 'taskChecklist'
+  | 'rewardRequest'
+  | 'timetableSwitch'
+  | 'rename';
 
 // One `require()` line per icon that has an actual file yet — Metro needs
 // a static require for bundling, so this can't be built from a filename
@@ -81,6 +99,23 @@ export const CUTE_ICON_SOURCES: Partial<Record<CuteIconKey, ImageSourcePropType>
   avatarDog: require('@/assets/icons/cute/avatar-dog.png'),
   avatarPanda: require('@/assets/icons/cute/avatar-panda.png'),
   avatarLion: require('@/assets/icons/cute/avatar-lion.png'),
+  kidsSettings: require('@/assets/icons/cute/kids-settings.png'),
+  family: require('@/assets/icons/cute/family.png'),
+  alarmClock: require('@/assets/icons/cute/alarm-clock.png'),
+  approve: require('@/assets/icons/cute/approve.png'),
+  notificationBell: require('@/assets/icons/cute/notification-bell.png'),
+  cloudSync: require('@/assets/icons/cute/cloud-sync.png'),
+  history: require('@/assets/icons/cute/history.png'),
+  photoPicker: require('@/assets/icons/cute/photo-picker.png'),
+  perfectBonus: require('@/assets/icons/cute/perfect-bonus.png'),
+  subjects: require('@/assets/icons/cute/subjects.png'),
+  lessons: require('@/assets/icons/cute/lessons.png'),
+  delete: require('@/assets/icons/cute/delete.png'),
+  timetableSubjects: require('@/assets/icons/cute/timetable-subjects.png'),
+  taskChecklist: require('@/assets/icons/cute/task-checklist.png'),
+  rewardRequest: require('@/assets/icons/cute/reward-request.png'),
+  timetableSwitch: require('@/assets/icons/cute/timetable-switch.png'),
+  rename: require('@/assets/icons/cute/rename.png'),
 };
 
 // Best-effort bridge from the free-text emoji stored on existing morning/
@@ -143,6 +178,29 @@ export function cuteIconKeyForAvatarEmoji(emoji: string | undefined | null): Cut
   return AVATAR_ICON_KEY_BY_EMOJI[emoji];
 }
 
+// Parent-mode-only icon concepts (dashboard menu rows, settings screens,
+// request lists) — same idea as MENU_ICON_KEY_BY_EMOJI above, kept separate
+// since these never appear as task/item/avatar emoji.
+export const PARENT_ICON_KEY_BY_EMOJI: Record<string, CuteIconKey> = {
+  '🧒': 'kidsSettings',
+  '👨‍👩‍👧‍👦': 'family',
+  '⏰': 'alarmClock',
+  '✅': 'approve',
+  '🔔': 'notificationBell',
+  '☁️': 'cloudSync',
+  '🧾': 'history',
+  '📷': 'photoPicker',
+  '✨': 'perfectBonus',
+  '🖍️': 'subjects',
+  '🎨': 'lessons',
+  '🗑️': 'delete',
+  '📚': 'timetableSubjects',
+  '📝': 'taskChecklist',
+  '🛍️': 'rewardRequest',
+  '🔀': 'timetableSwitch',
+  '✏️': 'rename',
+};
+
 // Every registered icon's emoji → key, merged from every domain above — the
 // full set a task or item can be given, so the icon picker offers everything
 // that's been made, not just each domain's "own" icons.
@@ -151,6 +209,7 @@ export const ALL_ICON_KEY_BY_EMOJI: Record<string, CuteIconKey> = {
   ...ITEM_ICON_KEY_BY_EMOJI,
   ...MENU_ICON_KEY_BY_EMOJI,
   ...AVATAR_ICON_KEY_BY_EMOJI,
+  ...PARENT_ICON_KEY_BY_EMOJI,
 };
 
 // Extra emoji that also represent an already-registered icon but shouldn't

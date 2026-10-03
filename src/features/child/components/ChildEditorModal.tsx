@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Modal, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
+import { CuteIcon } from '@/components/CuteIcon';
 import { ChildAvatar } from './ChildAvatar';
 import { AvatarPicker } from './AvatarPicker';
 import { pickChildAvatarImage } from '@/features/child/imagePicker';
@@ -88,7 +89,7 @@ export function ChildEditorModal({
           />
 
           <Pressable style={styles.photoButton} onPress={handlePickPhoto}>
-            <AppText style={styles.photoButtonIcon}>📷</AppText>
+            <CuteIcon iconKey="photoPicker" size={18} fallback={<AppText style={styles.photoButtonIcon}>📷</AppText>} />
             <AppText variant="caption">写真を使う</AppText>
           </Pressable>
 

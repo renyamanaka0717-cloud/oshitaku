@@ -1,10 +1,11 @@
 # Icons8 "Cute Color" icons
 
-All 33 icons are filled in and registered in `src/theme/cuteIcons.ts`
-(source: https://icons8.com/icons/dusk--author-made-by-made). Every PNG
-here is a 256×256 transparent image, downscaled from the original
+All 50 icons are filled in and registered in `src/theme/cuteIcons.ts`
+(source: https://icons8.com/icons/dusk--author-made-by-made). Most PNGs
+here are 256×256 transparent images, downscaled from the original
 1024×1024 exports to keep the app bundle small — plenty of headroom for
-the ~28–44px sizes these render at on screen.
+the ~28–44px sizes these render at on screen. The parent-mode batch below
+is kept at the original 1024×1024 export size.
 
 To replace one later: drop the new PNG in here under the same file name
 (or update the `require()` path in `cuteIcons.ts` if the name changes).
@@ -49,3 +50,22 @@ renders through `<CuteIcon>`.
 - `avatar-dog.png` — 🐶
 - `avatar-panda.png` — 🐼
 - `avatar-lion.png` — 🦁
+
+## Parent-mode icons
+- `kids-settings.png` — お子さまの設定
+- `family.png` — お子さま管理
+- `alarm-clock.png` — 時間設定／時間内達成
+- `approve.png` — おてつだい申請
+- `notification-bell.png` — 通知設定
+- `cloud-sync.png` — クラウド同期
+- `history.png` — 完了履歴／交換履歴
+- `photo-picker.png` — 写真を使う
+- `perfect-bonus.png` — 朝＋夜パーフェクト
+- `subjects.png` — 教科・持ち物を登録する
+- `lessons.png` — 習い事
+- `delete.png` — 削除（時間割の削除など）
+- `timetable-subjects.png` — 時間割・教科
+- `task-checklist.png` — 朝・夜タスク／未完了リマインド
+- `reward-request.png` — ごほうび申請
+- `timetable-switch.png` — 時間割の切り替え
+- `rename.png` — 名前を変更

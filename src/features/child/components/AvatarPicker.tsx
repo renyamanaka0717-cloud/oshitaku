@@ -21,7 +21,7 @@ export function AvatarPicker({ value, onSelect, onPickPhoto }: Props) {
     <View style={styles.row}>
       {onPickPhoto ? (
         <Pressable onPress={onPickPhoto} style={styles.chip} hitSlop={4}>
-          <AppText style={styles.cameraIcon}>📷</AppText>
+          <CuteIcon iconKey="photoPicker" size={28} fallback={<AppText style={styles.cameraIcon}>📷</AppText>} />
         </Pressable>
       ) : null}
       {AVATAR_OPTIONS.map((a) => (
