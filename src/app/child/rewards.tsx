@@ -79,7 +79,7 @@ export default function RewardsScreen() {
           right={<PointsBadge points={totalPoints} variant="compact" />}
         />
         {rewards.length === 0 ? (
-          <EmptyState icon="🎁" message="ごほうびがまだ登録されていません" />
+          <EmptyState icon="🎁" message="ごほうびがまだとうろくされていません" />
         ) : (
           <View style={styles.grid}>
             {rewards.map((reward) => (

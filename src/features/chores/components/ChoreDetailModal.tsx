@@ -38,7 +38,7 @@ export function ChoreDetailModal({ visible, chore, pending, onComplete, onClose 
           {confirming ? (
             <>
               <AppText variant="subtitle" style={styles.center}>
-                {pending ? `「${chore.name}」をもう一度おねがいする？` : `「${chore.name}」を申請する？`}
+                {pending ? `「${chore.name}」をもういちどおねがいする？` : `「${chore.name}」をしんせいする？`}
               </AppText>
               <View style={styles.confirmRow}>
                 <View style={styles.confirmButtonWrap}>
@@ -46,7 +46,7 @@ export function ChoreDetailModal({ visible, chore, pending, onComplete, onClose 
                 </View>
                 <View style={styles.confirmButtonWrap}>
                   <Button
-                    label={pending ? 'おねがいする' : '申請する'}
+                    label={pending ? 'おねがいする' : 'しんせいする'}
                     onPress={() => {
                       onComplete();
                       handleClose();
@@ -71,11 +71,11 @@ export function ChoreDetailModal({ visible, chore, pending, onComplete, onClose 
               </View>
               {pending ? (
                 <AppText variant="caption" color={colors.textMuted} style={styles.center}>
-                  すでに申請中だよ。おうちの人をまだ待ってるなら、もう一度おねがいできるよ
+                  すでにしんせいちゅうだよ。おうちの人をまだまってるなら、もういちどおねがいできるよ
                 </AppText>
               ) : null}
               <View style={styles.fullButtonWrap}>
-                <Button label={pending ? 'もう一度おねがいする' : '申請する'} onPress={() => setConfirming(true)} />
+                <Button label={pending ? 'もういちどおねがいする' : 'しんせいする'} onPress={() => setConfirming(true)} />
               </View>
             </>
           )}

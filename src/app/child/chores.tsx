@@ -81,7 +81,7 @@ export default function ChoresScreen() {
       <View style={styles.section}>
         <SectionHeader title="おてつだいをする" icon="🧹" />
         {chores.length === 0 ? (
-          <EmptyState icon="🧹" message="おてつだいがまだ登録されていません" />
+          <EmptyState icon="🧹" message="おてつだいがまだとうろくされていません" />
         ) : (
           <View style={styles.list}>
             {chores.map((chore) => (

@@ -42,7 +42,7 @@ export function RewardCard({ reward, onPress, pending }: Props) {
         {pending ? (
           <View style={styles.pendingPill}>
             <AppText variant="caption" color={colors.textMuted}>
-              申請中
+              しんせいちゅう
             </AppText>
           </View>
         ) : (

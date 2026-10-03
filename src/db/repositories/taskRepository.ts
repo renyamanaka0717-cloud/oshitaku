@@ -116,18 +116,18 @@ export const moveEveningTask = (childId: string, id: string, direction: 'up' | '
   moveTask('evening_task', childId, id, direction);
 
 export const DEFAULT_MORNING_TASKS: Array<{ label: string; icon: string }> = [
-  { label: '顔を洗う', icon: '🧼' },
-  { label: '歯磨き', icon: '🪥' },
+  { label: '顔をあらう', icon: '🧼' },
+  { label: 'はみがき', icon: '🪥' },
   { label: '朝ごはん', icon: '🍞' },
-  { label: '着替える', icon: '👕' },
-  { label: 'ランドセル確認', icon: '🎒' },
+  { label: 'きがえる', icon: '👕' },
+  { label: 'ランドセルかくにん', icon: '🎒' },
 ];
 
 export const DEFAULT_EVENING_TASKS: Array<{ label: string; icon: string }> = [
-  { label: '宿題', icon: '✏️' },
-  { label: '水筒', icon: '🧴' },
+  { label: 'しゅくだい', icon: '✏️' },
+  { label: 'すいとう', icon: '🧴' },
   { label: 'ハンカチ', icon: '🧻' },
-  { label: '明日の服', icon: '👚' },
+  { label: '明日のふく', icon: '👚' },
 ];
 
 export async function ensureDefaultTasks(childId: string): Promise<void> {

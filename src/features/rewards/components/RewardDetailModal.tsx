@@ -39,7 +39,7 @@ export function RewardDetailModal({ visible, reward, currentPoints, onRequest, o
           {confirming ? (
             <>
               <AppText variant="subtitle" style={styles.center}>
-                {reward.pointCost}ポイントで交換申請する？
+                {reward.pointCost}ポイントでこうかんしんせいする？
               </AppText>
               <View style={styles.confirmRow}>
                 <View style={styles.confirmButtonWrap}>
@@ -47,7 +47,7 @@ export function RewardDetailModal({ visible, reward, currentPoints, onRequest, o
                 </View>
                 <View style={styles.confirmButtonWrap}>
                   <Button
-                    label="申請する"
+                    label="しんせいする"
                     onPress={() => {
                       onRequest();
                       handleClose();
@@ -86,7 +86,7 @@ export function RewardDetailModal({ visible, reward, currentPoints, onRequest, o
               ) : null}
               <View style={styles.fullButtonWrap}>
                 <Button
-                  label="申請する"
+                  label="しんせいする"
                   onPress={() => setConfirming(true)}
                   disabled={!canAfford}
                   variant={canAfford ? 'secondary' : 'ghost'}

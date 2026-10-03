@@ -15,7 +15,7 @@ import { formatJapaneseDate } from '@/utils/date';
 import { goBack } from '@/utils/navigation';
 
 const STATUS_LABEL: Record<string, string> = {
-  pending: '申請中',
+  pending: 'しんせいちゅう',
   approved: 'できた！',
   rejected: 'またこんど',
 };
@@ -46,10 +46,10 @@ export default function ChoreHistoryScreen() {
 
   return (
     <Screen>
-      <HeaderBar title="申請りれき" onBack={goBack} />
+      <HeaderBar title="しんせいりれき" onBack={goBack} />
 
       {sorted.length === 0 ? (
-        <EmptyState icon="🧾" message="まだ申請したおてつだいはありません" />
+        <EmptyState icon="🧾" message="まだしんせいしたおてつだいはありません" />
       ) : (
         <View style={styles.list}>
           {sorted.map((request) => (
