@@ -4,6 +4,7 @@ import { router } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
 import { AppText } from '@/components/AppText';
+import { CuteIcon } from '@/components/CuteIcon';
 import { SectionHeader } from '@/components/SectionHeader';
 import { SubjectPickerModal } from '@/features/timetable/components/SubjectPickerModal';
 import { TimetableSetModal } from '@/features/timetable/components/TimetableSetModal';
@@ -110,12 +111,15 @@ export default function TimetableSettings() {
             <AppText variant="subtitle" color={colors.white}>
               {activeSet?.name ?? '時間割'}
             </AppText>
-            <AppText color={colors.white}>切り替え ▾</AppText>
+            <View style={styles.switchButtonRight}>
+              <CuteIcon iconKey="timetableSwitch" size={18} fallback={null} />
+              <AppText color={colors.white}>切り替え ▾</AppText>
+            </View>
           </Pressable>
         </View>
 
         <Pressable style={styles.subjectsButton} onPress={() => router.push('/parent/subjects')}>
-          <AppText style={styles.subjectsButtonIcon}>🖍️</AppText>
+          <CuteIcon iconKey="subjects" size={20} fallback={<AppText style={styles.subjectsButtonIcon}>🖍️</AppText>} />
           <AppText variant="subtitle" color={colors.white}>
             教科・持ち物を登録する
           </AppText>
@@ -192,7 +196,7 @@ export default function TimetableSettings() {
                   {isCursorHere ? <AppText style={styles.cursorArrow}>▶</AppText> : null}
                 </View>
                 <View style={styles.periodBadge}>
-                  <AppText style={styles.lessonIcon}>🎨</AppText>
+                  <CuteIcon iconKey="lessons" size={22} fallback={<AppText style={styles.lessonIcon}>🎨</AppText>} />
                 </View>
                 <View
                   style={[
@@ -314,6 +318,11 @@ function createStyles(colors: ColorPalette) {
       borderColor: colors.black,
       borderBottomWidth: outlineWidth + hardShadow.offset,
       borderRightWidth: outlineWidth + hardShadow.offset,
+    },
+    switchButtonRight: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.xs,
     },
     subjectsButton: {
       flexDirection: 'row',

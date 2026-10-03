@@ -126,7 +126,7 @@ export default function ParentDashboard() {
               }
               hitSlop={8}
             >
-              <AppText style={styles.headerRequestIcon}>✅</AppText>
+              <CuteIcon iconKey="approve" size={20} fallback={<AppText style={styles.headerRequestIcon}>✅</AppText>} />
               <View style={styles.badge}>
                 <AppText variant="caption" color={colors.white}>
                   {totalPendingCount}

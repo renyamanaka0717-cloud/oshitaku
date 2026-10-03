@@ -65,7 +65,7 @@ export default function NotificationsSettings() {
       </Card>
 
       <Card style={styles.row}>
-        <AppText style={styles.icon}>📝</AppText>
+        <CuteIcon iconKey="taskChecklist" size={28} fallback={<AppText style={styles.icon}>📝</AppText>} />
         <View style={styles.info}>
           <AppText variant="subtitle">未完了リマインド</AppText>
           <AppText variant="caption">朝の通知から{setting.reminderMinutesAfter}分後</AppText>

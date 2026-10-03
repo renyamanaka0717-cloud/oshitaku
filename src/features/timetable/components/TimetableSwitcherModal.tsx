@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { Modal, Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
+import { CuteIcon } from '@/components/CuteIcon';
 import { TimetableSet } from '@/db/models';
 import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 
@@ -67,24 +68,28 @@ export function TimetableSwitcherModal({
 
           <View style={styles.footerActions}>
             <Pressable
+              style={styles.footerActionRow}
               onPress={() => {
                 onClose();
                 onRename();
               }}
               hitSlop={8}
             >
-              <AppText variant="caption">✏️ この時間割の名前を変更</AppText>
+              <CuteIcon iconKey="rename" size={16} fallback={<AppText variant="caption">✏️</AppText>} />
+              <AppText variant="caption">この時間割の名前を変更</AppText>
             </Pressable>
             {sets.length > 1 ? (
               <Pressable
+                style={styles.footerActionRow}
                 onPress={() => {
                   onClose();
                   onDelete();
                 }}
                 hitSlop={8}
               >
+                <CuteIcon iconKey="delete" size={16} fallback={<AppText variant="caption">🗑️</AppText>} />
                 <AppText variant="caption" color={colors.danger}>
-                  🗑️ この時間割を削除
+                  この時間割を削除
                 </AppText>
               </Pressable>
             ) : null}
@@ -146,6 +151,11 @@ function createStyles(colors: ColorPalette) {
       paddingTop: spacing.sm,
       borderTopWidth: 1,
       borderTopColor: colors.border,
+    },
+    footerActionRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
     },
   });
 }
