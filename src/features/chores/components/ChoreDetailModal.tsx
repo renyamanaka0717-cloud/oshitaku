@@ -10,11 +10,12 @@ import { ColorPalette, radius, spacing, useTheme } from '@/theme';
 type Props = {
   visible: boolean;
   chore: Chore | null;
+  pending?: boolean;
   onComplete: () => void;
   onClose: () => void;
 };
 
-export function ChoreDetailModal({ visible, chore, onComplete, onClose }: Props) {
+export function ChoreDetailModal({ visible, chore, pending, onComplete, onClose }: Props) {
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const [confirming, setConfirming] = useState(false);
@@ -37,7 +38,7 @@ export function ChoreDetailModal({ visible, chore, onComplete, onClose }: Props)
           {confirming ? (
             <>
               <AppText variant="subtitle" style={styles.center}>
-                「{chore.name}」を申請する？
+                {pending ? `「${chore.name}」をもう一度おねがいする？` : `「${chore.name}」を申請する？`}
               </AppText>
               <View style={styles.confirmRow}>
                 <View style={styles.confirmButtonWrap}>
@@ -45,7 +46,7 @@ export function ChoreDetailModal({ visible, chore, onComplete, onClose }: Props)
                 </View>
                 <View style={styles.confirmButtonWrap}>
                   <Button
-                    label="申請する"
+                    label={pending ? 'おねがいする' : '申請する'}
                     onPress={() => {
                       onComplete();
                       handleClose();
@@ -68,8 +69,13 @@ export function ChoreDetailModal({ visible, chore, onComplete, onClose }: Props)
                   +{chore.pointValue}pt
                 </AppText>
               </View>
+              {pending ? (
+                <AppText variant="caption" color={colors.textMuted} style={styles.center}>
+                  すでに申請中だよ。おうちの人をまだ待ってるなら、もう一度おねがいできるよ
+                </AppText>
+              ) : null}
               <View style={styles.fullButtonWrap}>
-                <Button label="申請する" onPress={() => setConfirming(true)} />
+                <Button label={pending ? 'もう一度おねがいする' : '申請する'} onPress={() => setConfirming(true)} />
               </View>
             </>
           )}

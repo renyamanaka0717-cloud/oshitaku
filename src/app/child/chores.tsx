@@ -1,8 +1,9 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { useFocusEffect } from 'expo-router';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { router, useFocusEffect } from 'expo-router';
 import { Screen } from '@/components/Screen';
 import { HeaderBar } from '@/components/HeaderBar';
+import { AppText } from '@/components/AppText';
 import { SectionHeader } from '@/components/SectionHeader';
 import { PointsBadge } from '@/components/PointsBadge';
 import { EmptyState } from '@/components/EmptyState';
@@ -15,7 +16,7 @@ import { useChoreRequestsStore } from '@/features/chores/requestsStore';
 import { usePointsStore } from '@/features/points/store';
 import { useActiveChild } from '@/features/child/store';
 import { Chore } from '@/db/models';
-import { spacing } from '@/theme';
+import { colors, radius, smallShadow, spacing } from '@/theme';
 import { goBack } from '@/utils/navigation';
 
 const POLL_INTERVAL_MS = 8000;
@@ -53,13 +54,25 @@ export default function ChoresScreen() {
   );
 
   const handleRequest = async (chore: Chore) => {
-    await requestChore(chore);
+    if (!pendingChoreIds.has(chore.id)) {
+      await requestChore(chore);
+    }
     setSentChoreName(chore.name);
   };
 
   return (
     <Screen>
-      <HeaderBar title="おてつだい" onBack={goBack} />
+      <HeaderBar
+        title="おてつだい"
+        onBack={goBack}
+        right={
+          <Pressable style={styles.historyButton} onPress={() => router.push('/child/chore-history')}>
+            <AppText variant="caption" color={colors.text}>
+              🧾 りれき
+            </AppText>
+          </Pressable>
+        }
+      />
 
       <PointsBadge points={totalPoints} label="いまのポイント" variant="wide" />
 
@@ -84,6 +97,7 @@ export default function ChoresScreen() {
       <ChoreDetailModal
         visible={!!selectedChore}
         chore={selectedChore}
+        pending={!!selectedChore && pendingChoreIds.has(selectedChore.id)}
         onComplete={() => selectedChore && handleRequest(selectedChore)}
         onClose={() => setSelectedChore(null)}
       />
@@ -108,6 +122,13 @@ export default function ChoresScreen() {
 }
 
 const styles = StyleSheet.create({
+  historyButton: {
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.md,
+    borderRadius: radius.round,
+    backgroundColor: colors.surfaceAlt,
+    ...smallShadow,
+  },
   section: {
     gap: spacing.sm,
   },
