@@ -138,28 +138,33 @@ export default function ParentDashboard() {
       />
 
       {child ? (
-        <Card style={styles.childCard}>
-          <ChildAvatar
-            avatarImageUri={child.avatarImageUri}
-            avatarEmoji={child.avatarEmoji}
-            avatarColor={child.avatarColor}
-            size={48}
-          />
-          <View style={styles.childCardText}>
-            <AppText variant="caption">いま設定中のお子さま</AppText>
-            <AppText variant="subtitle">{child.name}</AppText>
-          </View>
-          {children.length > 1 ? (
-            <Pressable style={styles.switchButton} onPress={() => setSwitcherVisible(true)}>
-              <AppText variant="caption" color={colors.text}>
-                切り替え
-              </AppText>
-              <AppText style={styles.switchChevron} color={colors.text}>
-                ›
-              </AppText>
-            </Pressable>
-          ) : null}
-        </Card>
+        <Pressable
+          disabled={children.length <= 1}
+          onPress={() => setSwitcherVisible(true)}
+        >
+          <Card style={styles.childCard}>
+            <ChildAvatar
+              avatarImageUri={child.avatarImageUri}
+              avatarEmoji={child.avatarEmoji}
+              avatarColor={child.avatarColor}
+              size={48}
+            />
+            <View style={styles.childCardText}>
+              <AppText variant="caption">いま設定中のお子さま</AppText>
+              <AppText variant="subtitle">{child.name}</AppText>
+            </View>
+            {children.length > 1 ? (
+              <View style={styles.switchButton}>
+                <AppText variant="caption" color={colors.text}>
+                  切り替え
+                </AppText>
+                <AppText style={styles.switchChevron} color={colors.text}>
+                  ›
+                </AppText>
+              </View>
+            ) : null}
+          </Card>
+        </Pressable>
       ) : null}
 
       {SECTIONS.map((section) => (
