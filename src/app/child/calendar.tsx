@@ -33,7 +33,7 @@ export default function CalendarScreen() {
 
       <View style={styles.section}>
         {upcomingEvents.length === 0 ? (
-          <EmptyState icon="📅" message="まだたのしみな予定はありません" />
+          <EmptyState icon="📅" message="まだたのしみなよていはありません" />
         ) : (
           upcomingEvents.map((event) => (
             <Card key={event.id} style={styles.row}>

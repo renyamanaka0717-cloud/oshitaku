@@ -70,14 +70,14 @@ export default function ChildHome() {
     if (!rule) return [];
     const breakdown: BonusBreakdownItem[] = [];
     if (!morningComplete) {
-      breakdown.push({ label: '朝のおしたくを終わらせる', points: rule.morningComplete });
-      breakdown.push({ label: '朝を時間内に終わらせる', points: rule.onTime });
+      breakdown.push({ label: '朝のおしたくをおわらせる', points: rule.morningComplete });
+      breakdown.push({ label: '朝を時間内におわらせる', points: rule.onTime });
     }
     if (!eveningComplete) {
-      breakdown.push({ label: '夜のおしたくを終わらせる', points: rule.eveningComplete });
+      breakdown.push({ label: '夜のおしたくをおわらせる', points: rule.eveningComplete });
     }
     if (items.length > 0 && !itemsComplete) {
-      breakdown.push({ label: '忘れ物をゼロにする', points: rule.noForgottenItems });
+      breakdown.push({ label: 'わすれものをゼロにする', points: rule.noForgottenItems });
     }
     return breakdown;
   }, [rule, morningComplete, eveningComplete, items.length, itemsComplete]);
@@ -181,7 +181,7 @@ export default function ChildHome() {
           <NavIconLink
             icon="gear"
             cuteKey="settings"
-            label="設定"
+            label="せってい"
             tint={colors.surfaceAlt}
             onPress={() => router.push('/parent/dashboard')}
           />
@@ -194,7 +194,7 @@ export default function ChildHome() {
           color={colors.textMuted}
           onPress={() => router.push('/parent/dashboard')}
         >
-          保護者の方はこちら
+          ほごしゃの方はこちら
         </AppText>
       </View>
 

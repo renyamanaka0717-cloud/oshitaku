@@ -26,9 +26,9 @@ export function TodayBonusCard({ bonusPoints, breakdown }: Props) {
       <Card style={styles.card}>
         <Icon name="party" size={32} />
         <View style={styles.textCol}>
-          <AppText variant="subtitle">今日のボーナス達成！</AppText>
+          <AppText variant="subtitle">今日のボーナスたっせい！</AppText>
           <AppText variant="caption" color={colors.textMuted}>
-            今日もらえるポイントは全部ゲットしたよ
+            今日もらえるポイントはぜんぶゲットしたよ
           </AppText>
         </View>
       </Card>

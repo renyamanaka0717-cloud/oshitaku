@@ -31,7 +31,7 @@ export function ChoreCard({ chore, onPress, pending }: Props) {
         {pending ? (
           <View style={styles.pendingBadge}>
             <AppText variant="caption" color={colors.textMuted}>
-              申請中
+              しんせいちゅう
             </AppText>
           </View>
         ) : (

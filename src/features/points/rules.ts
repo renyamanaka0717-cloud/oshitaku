@@ -39,7 +39,7 @@ async function awardPerfectDayBonus(child: Child, date: string): Promise<{ bonus
     date,
     type: 'perfect_day_bonus',
     amount: rule.perfectDayBonus,
-    note: '朝＋夜パーフェクト達成',
+    note: '朝＋夜パーフェクトたっせい',
   });
 
   notifyCompletionNow('パーフェクトな一日！✨', `${child.name}さん、朝も夜もばっちりだったね！`).catch(() => {});
@@ -75,7 +75,7 @@ export async function evaluateMorning(
     date,
     type: 'morning_complete',
     amount: rule.morningComplete,
-    note: '朝のおしたく完了',
+    note: '朝のおしたくかんりょう',
   });
   result.pointsAwarded += rule.morningComplete;
 
@@ -85,7 +85,7 @@ export async function evaluateMorning(
       date,
       type: 'on_time',
       amount: rule.onTime,
-      note: '時間内達成',
+      note: '時間内たっせい',
     });
     result.pointsAwarded += rule.onTime;
   }
@@ -98,7 +98,7 @@ export async function evaluateMorning(
     result.pointsAwarded += bonus.bonusPoints;
   }
 
-  notifyCompletionNow('朝のおしたく完了！☀️', `${child.name}さん、よくできました！`).catch(() => {});
+  notifyCompletionNow('朝のおしたくかんりょう！☀️', `${child.name}さん、よくできました！`).catch(() => {});
   refreshPoints();
 
   return result;
@@ -132,7 +132,7 @@ export async function evaluateEvening(
     date,
     type: 'evening_complete',
     amount: rule.eveningComplete,
-    note: '夜のおしたく完了',
+    note: '夜のおしたくかんりょう',
   });
   result.pointsAwarded += rule.eveningComplete;
 
@@ -142,7 +142,7 @@ export async function evaluateEvening(
       date,
       type: 'on_time',
       amount: rule.onTime,
-      note: '時間内達成',
+      note: '時間内たっせい',
     });
     result.pointsAwarded += rule.onTime;
   }
@@ -155,7 +155,7 @@ export async function evaluateEvening(
     result.pointsAwarded += bonus.bonusPoints;
   }
 
-  notifyCompletionNow('夜のおしたく完了！🌙', `${child.name}さん、よくできました！`).catch(() => {});
+  notifyCompletionNow('夜のおしたくかんりょう！🌙', `${child.name}さん、よくできました！`).catch(() => {});
   refreshPoints();
 
   return result;
@@ -183,7 +183,7 @@ export async function evaluateNoForgottenItems(
     date,
     type: 'no_forgotten_items',
     amount: rule.noForgottenItems,
-    note: '忘れ物ゼロ',
+    note: 'わすれものゼロ',
   });
   result.pointsAwarded += rule.noForgottenItems;
   refreshPoints();

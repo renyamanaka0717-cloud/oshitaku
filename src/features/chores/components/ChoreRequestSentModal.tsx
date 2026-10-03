@@ -22,10 +22,10 @@ export function ChoreRequestSentModal({ visible, choreName, onClose }: Props) {
         <View style={styles.card}>
           <AppText style={styles.icon}>📨</AppText>
           <AppText variant="hero" style={styles.center}>
-            申請したよ！
+            しんせいしたよ！
           </AppText>
           <AppText variant="subtitle" color={colors.textMuted} style={styles.center}>
-            「{choreName}」をおうちの人が確認するまでまってね
+            「{choreName}」をおうちの人がかくにんするまでまってね
           </AppText>
           <Button label="わかった！" onPress={onClose} />
         </View>

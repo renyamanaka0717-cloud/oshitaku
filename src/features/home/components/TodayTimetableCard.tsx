@@ -17,9 +17,9 @@ export function TodayTimetableCard({ entries }: Props) {
   const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <Card>
-      <SectionHeader title="今日の時間割" icon="📚" />
+      <SectionHeader title="今日のじかんわり" icon="📚" />
       {entries.length === 0 ? (
-        <EmptyState icon="📚" message="時間割がまだ登録されていません" />
+        <EmptyState icon="📚" message="じかんわりがまだとうろくされていません" />
       ) : (
         <View style={styles.list}>
           {entries.map((entry) => (

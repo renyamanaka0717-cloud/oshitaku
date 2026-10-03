@@ -12,7 +12,7 @@ export function TomorrowDateHeader() {
   return (
     <View style={styles.container}>
       <AppText variant="subtitle" color={colors.white}>
-        明日の準備をしよう
+        明日のじゅんびをしよう
       </AppText>
       <AppText variant="title" color={colors.white}>
         明日は…{formatJapaneseDate(tomorrow)}

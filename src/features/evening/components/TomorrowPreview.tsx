@@ -20,10 +20,10 @@ export function TomorrowPreview({ entries, items }: Props) {
 
   return (
     <Card style={styles.card}>
-      <SectionHeader title="明日の時間割" icon="📅" />
+      <SectionHeader title="明日のじかんわり" icon="📅" />
       {entries.length === 0 ? (
         <AppText variant="body" color={colors.textMuted}>
-          時間割が登録されていません
+          じかんわりがとうろくされていません
         </AppText>
       ) : (
         <View style={styles.subjectRow}>
@@ -37,10 +37,10 @@ export function TomorrowPreview({ entries, items }: Props) {
         </View>
       )}
 
-      <SectionHeader title="明日の持ち物" icon="🎒" />
+      <SectionHeader title="明日のもちもの" icon="🎒" />
       {items.length === 0 ? (
         <AppText variant="body" color={colors.textMuted}>
-          明日必要な持ち物はありません
+          明日ひつようなもちものはありません
         </AppText>
       ) : (
         <View style={styles.subjectRow}>

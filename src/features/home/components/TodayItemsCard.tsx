@@ -15,9 +15,9 @@ type Props = {
 export function TodayItemsCard({ items, checked, onToggle }: Props) {
   return (
     <Card>
-      <SectionHeader title="今日の持ち物" icon="🎒" />
+      <SectionHeader title="今日のもちもの" icon="🎒" />
       {items.length === 0 ? (
-        <EmptyState icon="🎒" message="今日必要な持ち物はありません" />
+        <EmptyState icon="🎒" message="今日ひつようなもちものはありません" />
       ) : (
         <View style={styles.list}>
           {items.map((item) => (

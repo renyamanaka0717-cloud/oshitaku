@@ -65,11 +65,11 @@ export default function StatsScreen() {
       <HeaderBar title="とうけい" onBack={goBack} />
 
       <View style={styles.grid}>
-        <StatCard icon="📈" value={`${Math.round(achievementRate * 100)}%`} label="今月の達成率" />
-        <StatCard icon="🔥" value={`${streak}日`} label="連続達成日数" />
-        <StatCard icon="🏆" value={`${longest}日`} label="最長記録" accentColor={colors.accentDark} />
-        <StatCard icon="⭐" value={totalPoints} label="累計ポイント" />
-        <StatCard icon="🎒" value={forgottenDays} label="忘れ物のあった日" accentColor={colors.danger} />
+        <StatCard icon="📈" value={`${Math.round(achievementRate * 100)}%`} label="今月のたっせいりつ" />
+        <StatCard icon="🔥" value={`${streak}日`} label="れんぞくたっせい日数" />
+        <StatCard icon="🏆" value={`${longest}日`} label="さいちょうきろく" accentColor={colors.accentDark} />
+        <StatCard icon="⭐" value={totalPoints} label="るいけいポイント" />
+        <StatCard icon="🎒" value={forgottenDays} label="わすれもののあった日" accentColor={colors.danger} />
       </View>
 
       <Card style={styles.chartCard}>
