@@ -18,7 +18,6 @@ import { useItemsStore } from '@/features/items/store';
 import { useMorningStore } from '@/features/morning/store';
 import { useEveningStore } from '@/features/evening/store';
 import { usePointsStore } from '@/features/points/store';
-import { useRewardsStore } from '@/features/rewards/store';
 import { getSuggestedMode } from '@/features/home/timeMode';
 import { Icon } from '@/theme/icons';
 import { ColorPalette, spacing, useTheme } from '@/theme';
@@ -57,13 +56,6 @@ export default function ChildHome() {
 
   const totalPoints = usePointsStore((s) => s.total);
   const rule = usePointsStore((s) => s.rule);
-  const rewards = useRewardsStore((s) => s.rewards);
-
-  const nextReward = useMemo(() => {
-    const active = rewards.filter((r) => r.isActive);
-    if (active.length === 0) return null;
-    return [...active].sort((a, b) => a.pointCost - b.pointCost)[0];
-  }, [rewards]);
 
   const bonusPoints = useMemo(() => {
     if (!rule) return 0;
@@ -146,11 +138,7 @@ export default function ChildHome() {
       </FadeInUp>
 
       <FadeInUp delay={220}>
-        <PointsProgressCard
-          points={totalPoints}
-          nextReward={nextReward}
-          onPress={() => router.push('/child/rewards')}
-        />
+        <PointsProgressCard points={totalPoints} onPress={() => router.push('/child/rewards')} />
       </FadeInUp>
 
       <FadeInUp delay={280}>
