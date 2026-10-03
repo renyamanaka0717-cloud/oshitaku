@@ -12,7 +12,7 @@ type Props = {
   label?: string;
   color?: string;
   onPress?: () => void;
-  variant?: 'square' | 'wide';
+  variant?: 'square' | 'wide' | 'compact';
 };
 
 // Points are an "info" card, not an "action" card: a quiet white face
@@ -30,19 +30,29 @@ export function PointsBadge({ points, label = 'ポイント', color, onPress, va
   const isNeutral = bg === colors.surface || bg === colors.surfaceAlt || bg === colors.background;
   const styles = useMemo(() => createStyles(colors, isNeutral), [colors, isNeutral]);
   const wide = variant === 'wide';
+  const compact = variant === 'compact';
 
   const coin = (
     <BounceOnChange watch={points}>
       <View style={styles.coinWrap}>
-        <CuteIcon iconKey="points" size={wide ? 26 : 30} fallback={<Icon name="coin" size={wide ? 26 : 30} />} />
-        <View style={styles.sparkle}>
-          <Icon name="sparkles" size={11} />
-        </View>
+        <CuteIcon iconKey="points" size={compact ? 18 : wide ? 26 : 30} fallback={<Icon name="coin" size={compact ? 18 : wide ? 26 : 30} />} />
+        {compact ? null : (
+          <View style={styles.sparkle}>
+            <Icon name="sparkles" size={11} />
+          </View>
+        )}
       </View>
     </BounceOnChange>
   );
 
-  const content = wide ? (
+  const content = compact ? (
+    <View style={styles.innerCompact}>
+      {coin}
+      <AppText variant="subtitle" style={styles.compactValue} numberOfLines={1}>
+        {points}pt
+      </AppText>
+    </View>
+  ) : wide ? (
     <View style={styles.wideStack}>
       <View style={styles.innerWide}>
         {coin}
@@ -66,7 +76,7 @@ export function PointsBadge({ points, label = 'ポイント', color, onPress, va
     </View>
   );
 
-  const cardStyle = wide ? styles.cardWide : styles.card;
+  const cardStyle = compact ? styles.cardCompact : wide ? styles.cardWide : styles.card;
 
   if (onPress) {
     return (
@@ -95,6 +105,13 @@ function createStyles(colors: ColorPalette, isNeutral: boolean) {
       alignItems: 'center',
       justifyContent: 'center',
     },
+    cardCompact: {
+      borderRadius: radius.round,
+      paddingVertical: 6,
+      paddingHorizontal: 12,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
     staticCard: {
       borderWidth: hairline,
       borderColor: 'rgba(0,0,0,0.06)',
@@ -112,6 +129,14 @@ function createStyles(colors: ColorPalette, isNeutral: boolean) {
     wideStack: {
       alignItems: 'center',
       gap: 2,
+    },
+    innerCompact: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 6,
+    },
+    compactValue: {
+      color: isNeutral ? colors.text : colors.black,
     },
     coinWrap: {
       position: 'relative',

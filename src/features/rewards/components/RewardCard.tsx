@@ -24,7 +24,7 @@ export function RewardCard({ reward, onPress, pending }: Props) {
           {reward.imageUri ? (
             <Image source={{ uri: reward.imageUri }} style={styles.image} resizeMode="cover" />
           ) : (
-            <CuteIcon iconKey={cuteIconKeyForEmoji(reward.icon)} size={32} fallback={<AppText style={styles.icon}>{reward.icon}</AppText>} />
+            <CuteIcon iconKey={cuteIconKeyForEmoji(reward.icon)} size={76} fallback={<AppText style={styles.icon}>{reward.icon}</AppText>} />
           )}
         </View>
 
@@ -32,17 +32,23 @@ export function RewardCard({ reward, onPress, pending }: Props) {
           {reward.name}
         </AppText>
 
+        <View style={styles.costBadge}>
+          <CuteIcon iconKey="points" size={18} fallback={<AppText style={styles.pointEmoji}>⭐</AppText>} />
+          <AppText variant="subtitle" color={colors.primaryDark}>
+            {reward.pointCost}pt
+          </AppText>
+        </View>
+
         {pending ? (
-          <View style={styles.pendingBadge}>
+          <View style={styles.pendingPill}>
             <AppText variant="caption" color={colors.textMuted}>
               申請中
             </AppText>
           </View>
         ) : (
-          <View style={styles.costBadge}>
-            <CuteIcon iconKey="points" size={14} fallback={<AppText style={styles.pointEmoji}>⭐</AppText>} />
-            <AppText variant="caption" color={colors.primaryDark}>
-              {reward.pointCost}pt
+          <View style={styles.ctaPill}>
+            <AppText variant="caption" color={colors.white}>
+              こうかんする
             </AppText>
           </View>
         )}
@@ -64,12 +70,6 @@ function createStyles(colors: ColorPalette) {
     cardPending: {
       opacity: 0.6,
     },
-    pendingBadge: {
-      backgroundColor: colors.surfaceAlt,
-      borderRadius: radius.round,
-      paddingVertical: 2,
-      paddingHorizontal: spacing.sm,
-    },
     imageBox: {
       width: '100%',
       aspectRatio: 1,
@@ -84,7 +84,7 @@ function createStyles(colors: ColorPalette) {
       height: '100%',
     },
     icon: {
-      fontSize: 32,
+      fontSize: 64,
     },
     name: {
       alignSelf: 'stretch',
@@ -93,13 +93,27 @@ function createStyles(colors: ColorPalette) {
       flexDirection: 'row',
       alignItems: 'center',
       gap: 4,
-      backgroundColor: colors.surfaceAlt,
+      backgroundColor: colors.yellow,
       borderRadius: radius.round,
-      paddingVertical: 2,
-      paddingHorizontal: spacing.sm,
+      paddingVertical: 3,
+      paddingHorizontal: spacing.md,
     },
     pointEmoji: {
-      fontSize: 14,
+      fontSize: 18,
+    },
+    pendingPill: {
+      alignSelf: 'stretch',
+      alignItems: 'center',
+      backgroundColor: colors.surfaceAlt,
+      borderRadius: radius.round,
+      paddingVertical: 6,
+    },
+    ctaPill: {
+      alignSelf: 'stretch',
+      alignItems: 'center',
+      backgroundColor: colors.primary,
+      borderRadius: radius.round,
+      paddingVertical: 6,
     },
   });
 }

@@ -66,16 +66,18 @@ export default function RewardsScreen() {
         right={
           <Pressable style={styles.historyButton} onPress={() => router.push('/child/reward-history')}>
             <AppText variant="caption" color={colors.text}>
-              🧾 りれき
+              🧾 こうかんしたもの
             </AppText>
           </Pressable>
         }
       />
 
-      <PointsBadge points={totalPoints} label="いまのポイント" variant="wide" />
-
       <View style={styles.section}>
-        <SectionHeader title="ごほうびこうかん" icon="🎁" />
+        <SectionHeader
+          title="ごほうびをえらぼう！"
+          icon="🎁"
+          right={<PointsBadge points={totalPoints} variant="compact" />}
+        />
         {rewards.length === 0 ? (
           <EmptyState icon="🎁" message="ごほうびがまだ登録されていません" />
         ) : (
