@@ -83,7 +83,7 @@ export function AllCompleteCelebration({ visible, onClose, perfectDay }: Props) 
             </Animated.View>
           )}
           <AppText variant="hero" style={styles.center}>
-            {perfectDay ? 'パーフェクトな一日！✨' : 'やったね！'}
+            {perfectDay ? 'パーフェクトな\n一日！✨' : 'やったね！'}
           </AppText>
           <AppText variant="body" color={colors.textMuted} style={styles.center}>
             {perfectDay ? '朝も夜もばっちりだったね！' : '今日のおしたく、ぜんぶできたよ！'}
