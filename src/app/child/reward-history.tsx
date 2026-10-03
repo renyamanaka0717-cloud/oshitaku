@@ -28,7 +28,7 @@ export default function RewardHistoryScreen() {
 
   return (
     <Screen>
-      <HeaderBar title="こうかんりれき" onBack={goBack} />
+      <HeaderBar title="こうかんしたもの" onBack={goBack} />
 
       {exchanges.length === 0 ? (
         <EmptyState icon="🧾" message="まだこうかんしたごほうびはありません" />
