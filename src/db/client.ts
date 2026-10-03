@@ -320,6 +320,30 @@ async function migrate(db: SQLite.SQLiteDatabase) {
     version = 12;
   }
 
+  if (version < 13) {
+    // Backfill: align existing children's default task labels with the
+    // simplified hiragana wording now used for new profiles. Matches the
+    // exact old label text, so a parent's own renamed tasks are untouched.
+    const morningRelabels: Array<[string, string]> = [
+      ['顔を洗う', '顔をあらう'],
+      ['歯磨き', 'はみがき'],
+      ['着替える', 'きがえる'],
+      ['ランドセル確認', 'ランドセルかくにん'],
+    ];
+    const eveningRelabels: Array<[string, string]> = [
+      ['宿題', 'しゅくだい'],
+      ['水筒', 'すいとう'],
+      ['明日の服', '明日のふく'],
+    ];
+    for (const [oldLabel, newLabel] of morningRelabels) {
+      await db.runAsync('UPDATE morning_task SET label = ? WHERE label = ?', [newLabel, oldLabel]);
+    }
+    for (const [oldLabel, newLabel] of eveningRelabels) {
+      await db.runAsync('UPDATE evening_task SET label = ? WHERE label = ?', [newLabel, oldLabel]);
+    }
+    version = 13;
+  }
+
   await db.execAsync(`PRAGMA user_version = ${version}`);
 }
 
