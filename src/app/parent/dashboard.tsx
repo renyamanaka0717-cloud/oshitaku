@@ -170,11 +170,13 @@ export default function ParentDashboard() {
       {SECTIONS.map((section) => (
         <View key={section.key} style={[styles.sectionPanel, { backgroundColor: colors[section.tint] as string }]}>
           <View style={styles.sectionHeaderRow}>
-            <CuteIcon
-              iconKey={cuteIconKeyForEmoji(section.illustration)}
-              size={40}
-              fallback={<AppText style={styles.sectionIllustration}>{section.illustration}</AppText>}
-            />
+            <View style={styles.sectionIconBox}>
+              <CuteIcon
+                iconKey={cuteIconKeyForEmoji(section.illustration)}
+                size={40}
+                fallback={<AppText style={styles.sectionIllustration}>{section.illustration}</AppText>}
+              />
+            </View>
             <View style={styles.sectionHeaderText}>
               <AppText variant="title" color={colors.black}>
                 {section.title}
@@ -194,11 +196,13 @@ export default function ParentDashboard() {
                   style={[styles.menuRow, index > 0 ? styles.menuRowDivider : null]}
                   onPress={() => router.push(item.href as never)}
                 >
-                  <CuteIcon
-                    iconKey={cuteIconKeyForEmoji(item.icon)}
-                    size={28}
-                    fallback={<AppText style={styles.menuIcon}>{item.icon}</AppText>}
-                  />
+                  <View style={styles.menuIconBox}>
+                    <CuteIcon
+                      iconKey={cuteIconKeyForEmoji(item.icon)}
+                      size={32}
+                      fallback={<AppText style={styles.menuIcon}>{item.icon}</AppText>}
+                    />
+                  </View>
                   <View style={styles.menuText}>
                     <AppText variant="subtitle">{item.label}</AppText>
                     <AppText variant="caption">{item.description}</AppText>
@@ -265,6 +269,18 @@ function createStyles(colors: ColorPalette) {
       gap: spacing.md,
       paddingHorizontal: spacing.xs,
     },
+    sectionIconBox: {
+      width: 64,
+      height: 64,
+      borderRadius: radius.lg,
+      backgroundColor: colors.surface,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth: outlineWidth - 1,
+      borderColor: colors.black,
+      borderBottomWidth: outlineWidth + hardShadow.offsetSm,
+      borderRightWidth: outlineWidth + hardShadow.offsetSm,
+    },
     sectionIllustration: {
       fontSize: 40,
     },
@@ -288,6 +304,16 @@ function createStyles(colors: ColorPalette) {
     menuRowDivider: {
       borderTopWidth: 1,
       borderTopColor: colors.border,
+    },
+    menuIconBox: {
+      width: 48,
+      height: 48,
+      borderRadius: radius.md,
+      backgroundColor: colors.surfaceAlt,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth: outlineWidth - 1,
+      borderColor: colors.black,
     },
     menuIcon: {
       fontSize: 28,

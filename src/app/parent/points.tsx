@@ -48,7 +48,7 @@ export default function PointsSettings() {
       {FIELDS.map((field) => (
         <Card key={field.key} style={styles.row}>
           <View style={[styles.iconBox, { backgroundColor: colors[field.tint] as string }]}>
-            <CuteIcon iconKey={cuteIconKeyForEmoji(field.icon)} size={22} fallback={<AppText style={styles.icon}>{field.icon}</AppText>} />
+            <CuteIcon iconKey={cuteIconKeyForEmoji(field.icon)} size={30} fallback={<AppText style={styles.icon}>{field.icon}</AppText>} />
           </View>
           <AppText variant="subtitle" style={styles.label}>
             {field.label}
@@ -81,8 +81,8 @@ function createStyles(colors: ColorPalette) {
       gap: spacing.md,
     },
     iconBox: {
-      width: 48,
-      height: 48,
+      width: 56,
+      height: 56,
       borderRadius: radius.md,
       alignItems: 'center',
       justifyContent: 'center',

@@ -7,7 +7,7 @@ import { Card } from '@/components/Card';
 import { CuteIcon } from '@/components/CuteIcon';
 import { useActiveChild } from '@/features/child/store';
 import { useNotificationStore } from '@/features/notifications/store';
-import { ColorPalette, radius, spacing, useTheme } from '@/theme';
+import { ColorPalette, outlineWidth, radius, spacing, useTheme } from '@/theme';
 import { goBack } from '@/utils/navigation';
 
 export default function NotificationsSettings() {
@@ -29,7 +29,9 @@ export default function NotificationsSettings() {
       <HeaderBar title="通知設定" onBack={goBack} />
 
       <Card style={styles.row}>
-        <CuteIcon iconKey="morningPrep" size={28} fallback={<AppText style={styles.icon}>☀️</AppText>} />
+        <View style={styles.iconBox}>
+          <CuteIcon iconKey="morningPrep" size={30} fallback={<AppText style={styles.icon}>☀️</AppText>} />
+        </View>
         <View style={styles.info}>
           <AppText variant="subtitle">朝の通知</AppText>
           <TextInput
@@ -47,7 +49,9 @@ export default function NotificationsSettings() {
       </Card>
 
       <Card style={styles.row}>
-        <CuteIcon iconKey="eveningPrep" size={28} fallback={<AppText style={styles.icon}>🌙</AppText>} />
+        <View style={styles.iconBox}>
+          <CuteIcon iconKey="eveningPrep" size={30} fallback={<AppText style={styles.icon}>🌙</AppText>} />
+        </View>
         <View style={styles.info}>
           <AppText variant="subtitle">夜の通知</AppText>
           <TextInput
@@ -65,7 +69,9 @@ export default function NotificationsSettings() {
       </Card>
 
       <Card style={styles.row}>
-        <CuteIcon iconKey="taskChecklist" size={28} fallback={<AppText style={styles.icon}>📝</AppText>} />
+        <View style={styles.iconBox}>
+          <CuteIcon iconKey="taskChecklist" size={30} fallback={<AppText style={styles.icon}>📝</AppText>} />
+        </View>
         <View style={styles.info}>
           <AppText variant="subtitle">未完了リマインド</AppText>
           <AppText variant="caption">朝の通知から{setting.reminderMinutesAfter}分後</AppText>
@@ -85,6 +91,16 @@ function createStyles(colors: ColorPalette) {
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing.md,
+    },
+    iconBox: {
+      width: 56,
+      height: 56,
+      borderRadius: radius.md,
+      backgroundColor: colors.surfaceAlt,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth: outlineWidth - 1,
+      borderColor: colors.black,
     },
     icon: {
       fontSize: 28,
