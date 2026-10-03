@@ -6,7 +6,7 @@ import { HeaderBar } from '@/components/HeaderBar';
 import { AppText } from '@/components/AppText';
 import { CuteIcon } from '@/components/CuteIcon';
 import { cuteIconKeyForEmoji } from '@/theme/cuteIcons';
-import { ColorPalette, radius, spacing, useTheme } from '@/theme';
+import { ColorPalette, outlineWidth, radius, spacing, useTheme } from '@/theme';
 import { goBack } from '@/utils/navigation';
 
 const MENU: Array<{ href: string; icon: string; label: string; description: string }> = [
@@ -25,7 +25,9 @@ export default function TasksSettings() {
       <View style={styles.menu}>
         {MENU.map((item) => (
           <Pressable key={item.href} style={styles.menuItem} onPress={() => router.push(item.href as never)}>
-            <CuteIcon iconKey={cuteIconKeyForEmoji(item.icon)} size={28} fallback={<AppText style={styles.menuIcon}>{item.icon}</AppText>} />
+            <View style={styles.menuIconBox}>
+              <CuteIcon iconKey={cuteIconKeyForEmoji(item.icon)} size={32} fallback={<AppText style={styles.menuIcon}>{item.icon}</AppText>} />
+            </View>
             <View style={styles.menuText}>
               <AppText variant="subtitle">{item.label}</AppText>
               <AppText variant="caption">{item.description}</AppText>
@@ -52,6 +54,16 @@ function createStyles(colors: ColorPalette) {
       backgroundColor: colors.surface,
       borderRadius: radius.lg,
       padding: spacing.md,
+    },
+    menuIconBox: {
+      width: 48,
+      height: 48,
+      borderRadius: radius.md,
+      backgroundColor: colors.surfaceAlt,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth: outlineWidth - 1,
+      borderColor: colors.black,
     },
     menuIcon: {
       fontSize: 28,
