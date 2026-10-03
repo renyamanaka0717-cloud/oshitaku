@@ -30,8 +30,10 @@ export const useChoreRequestsStore = create<ChoreRequestsState>((set, get) => ({
   justApproved: null,
 
   load: async (childId: string) => {
-    const requests = await choreRequestRepository.listChoreRequests(childId);
-    set({ requests });
+    const childRequests = await choreRequestRepository.listChoreRequests(childId);
+    const merged = new Map(get().requests.map((r) => [r.id, r]));
+    for (const r of childRequests) merged.set(r.id, r);
+    set({ requests: Array.from(merged.values()) });
   },
 
   requestChore: async (chore: Chore) => {

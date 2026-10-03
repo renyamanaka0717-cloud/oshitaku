@@ -29,6 +29,7 @@ export default function ChoresScreen() {
 
   const requests = useChoreRequestsStore((s) => s.requests);
   const requestChore = useChoreRequestsStore((s) => s.requestChore);
+  const loadRequests = useChoreRequestsStore((s) => s.load);
   const pollRemote = useChoreRequestsStore((s) => s.pollRemote);
   const justApproved = useChoreRequestsStore((s) => s.justApproved);
   const clearJustApproved = useChoreRequestsStore((s) => s.clearJustApproved);
@@ -45,12 +46,13 @@ export default function ChoresScreen() {
   useFocusEffect(
     useCallback(() => {
       if (!child) return;
+      loadRequests(child.id);
       pollRemote([child.id]);
       pollTimer.current = setInterval(() => pollRemote([child.id]), POLL_INTERVAL_MS);
       return () => {
         if (pollTimer.current) clearInterval(pollTimer.current);
       };
-    }, [child, pollRemote])
+    }, [child, loadRequests, pollRemote])
   );
 
   const handleRequest = async (chore: Chore) => {
