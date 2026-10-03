@@ -50,7 +50,7 @@ export function ChoreCelebration({ visible, chore, onClose }: Props) {
             {chore.icon}
           </Animated.Text>
           <AppText variant="hero" style={styles.center}>
-            おてつだいカンリョウ！
+            おてつだい{'\n'}カンリョウ！
           </AppText>
           <AppText variant="subtitle" color={colors.primaryDark} style={styles.center}>
             +{chore.pointValue}ポイント ゲット！
